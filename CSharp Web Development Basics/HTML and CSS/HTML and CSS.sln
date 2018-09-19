@@ -1,0 +1,43 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.27703.2000
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{8EB621D0-F8DD-4AD5-9BDD-4DA9E1A6C3FD}"
+	ProjectSection(SolutionItems) = preProject
+		all-beers.html = all-beers.html
+		index.html = index.html
+		login.html = login.html
+		order.html = order.html
+		register.html = register.html
+		template.html = template.html
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "style", "style", "{EA612F79-380C-4216-BE1B-751165029F07}"
+	ProjectSection(SolutionItems) = preProject
+		form.css = form.css
+		style.css = style.css
+		table.css = table.css
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "images", "images", "{D5C81C01-1F8D-4252-96C5-A755C137E786}"
+	ProjectSection(SolutionItems) = preProject
+		image\beer_1.png = image\beer_1.png
+		image\beer_2.png = image\beer_2.png
+		image\beer_3.png = image\beer_3.png
+		image\beer_4.png = image\beer_4.png
+		image\logo.png = image\logo.png
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{EA612F79-380C-4216-BE1B-751165029F07} = {8EB621D0-F8DD-4AD5-9BDD-4DA9E1A6C3FD}
+		{D5C81C01-1F8D-4252-96C5-A755C137E786} = {8EB621D0-F8DD-4AD5-9BDD-4DA9E1A6C3FD}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F6DBE587-9CA6-404F-BEDF-9F0B31F95583}
+	EndGlobalSection
+EndGlobal
