@@ -45,11 +45,10 @@ namespace SIS.WebServer
             }
         }
 
-        private async Task ListenLoop(Socket client)
+        private async void ListenLoop(Socket client)
         {
             var connectionHandler = new ConnectionHandler(client, this.serverRoutingTable);
             await connectionHandler.ProcessRequestAsync();
-            //responseTask.Wait();
         }
     }
 }
