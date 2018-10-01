@@ -41,11 +41,11 @@ namespace SIS.WebServer
 
                 var client = tcpListener.AcceptSocketAsync().Result;
 
-                Task.Run(() => ListenLoop(client));
+                Task.Run(() => Listen(client));
             }
         }
 
-        private async void ListenLoop(Socket client)
+        public async void Listen(Socket client)
         {
             var connectionHandler = new ConnectionHandler(client, this.serverRoutingTable);
             await connectionHandler.ProcessRequestAsync();
