@@ -58,7 +58,7 @@ namespace SIS.WebServer
 
         private IHttpResponse HandleRequest(IHttpRequest httpRequest)
         {
-            if (!this.serverRoutingTable.Routes.ContainsKey(httpRequest.RequestMethod) || 
+            if (!this.serverRoutingTable.Routes.ContainsKey(httpRequest.RequestMethod) ||
                !this.serverRoutingTable.Routes[httpRequest.RequestMethod].ContainsKey(httpRequest.Path))
             {
                 return new HttpResponse(HttpResponseStatusCode.NotFound);
@@ -95,6 +95,7 @@ namespace SIS.WebServer
                 var httpResponse = this.HandleRequest(httpRequest);
                 await this.PrepareResponse(httpResponse);
             }
+
 
             this.client.Shutdown(SocketShutdown.Both);
         }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace SIS.WebServer
@@ -34,20 +35,21 @@ namespace SIS.WebServer
             this.isRinning = true;
 
             Console.WriteLine($"Server started at http//{LocalHostIpAddress}:{this.port}");
+            while (isRinning)
+            {
+                Console.WriteLine("Waiting for client...");
 
-            var task = Task.Run(() => ListenLoop());
-            task.Wait();
+                var client = tcpListener.AcceptSocketAsync().Result;
+
+                Task.Run(() => ListenLoop(client));
+            }
         }
 
-        public async Task ListenLoop()
+        private async Task ListenLoop(Socket client)
         {
-            while (this.isRinning)
-            {
-                var client = await this.tcpListener.AcceptSocketAsync();
-                var connectionHandler = new ConnectionHandler(client, this.serverRoutingTable);
-                var responseTask = connectionHandler.ProcessRequestAsync();
-                responseTask.Wait();
-            }
+            var connectionHandler = new ConnectionHandler(client, this.serverRoutingTable);
+            await connectionHandler.ProcessRequestAsync();
+            //responseTask.Wait();
         }
     }
 }
