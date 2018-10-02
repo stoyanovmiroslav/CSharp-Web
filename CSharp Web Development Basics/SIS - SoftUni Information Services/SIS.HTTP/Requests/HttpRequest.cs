@@ -1,9 +1,13 @@
 ﻿using SIS.HTTP.Common;
+using SIS.HTTP.Cookies;
+using SIS.HTTP.Cookies.Contracts;
 using SIS.HTTP.Enums;
 using SIS.HTTP.Exceptions;
 using SIS.HTTP.Headers;
 using SIS.HTTP.Headers.Contracts;
 using SIS.HTTP.Requests.Contracts;
+using SIS.HTTP.Session;
+using SIS.HTTP.Session.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -18,13 +22,18 @@ namespace SIS.HTTP.Requests
             this.FormData = new Dictionary<string, object>();
             this.QueryData = new Dictionary<string, object>();
             this.Headers = new HttpHeaderCollection();
+            this.Cookies = new HttpCookieCollection();
 
             this.ParseRequest(requesString);
         }
 
+        public IHttpSession Session { get; set; }
+
         public string Path { get; private set; }
 
         public string Url { get; private set; }
+
+        public IHttpCookieCollection Cookies { get; }
 
         public Dictionary<string, object> FormData { get; }
 
@@ -50,7 +59,31 @@ namespace SIS.HTTP.Requests
             this.ParseRequestPath(requestLine);
 
             this.ParseHeaders(splitRequestContent.Skip(1).ToArray());
+            this.ParseCookie();
             this.ParseRequestParameters(splitRequestContent);
+        }
+
+        private void ParseCookie()
+        {
+            if (!this.Headers.ContainsHeader(HttpHeader.Cookie)) return;
+
+            string cookiesString = this.Headers.GetHeader(HttpHeader.Cookie).Value;
+
+            if (string.IsNullOrEmpty(cookiesString)) return;
+
+            string[] splitCookies = cookiesString.Split("; ");
+
+            foreach (var splitCookie in splitCookies)
+            {
+                string[] cookieParts = splitCookie.Split("=", StringSplitOptions.RemoveEmptyEntries);
+
+                if (cookieParts.Length != 2) continue;
+
+                string key = cookieParts[0];
+                string value = cookieParts[1];
+
+                this.Cookies.Add(new HttpCookie(key, value, false));
+            }
         }
 
         private void ParseRequestParameters(string[] splitRequestContent)

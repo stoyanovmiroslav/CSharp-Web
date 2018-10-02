@@ -3,11 +3,14 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using SIS.HTTP.Cookies;
 using SIS.HTTP.Enums;
 using SIS.HTTP.Requests;
 using SIS.HTTP.Requests.Contracts;
 using SIS.HTTP.Responses;
 using SIS.HTTP.Responses.Contracts;
+using SIS.HTTP.Session;
+using SIS.HTTP.Session.Contracts;
 using SIS.WebServer.Routing;
 
 namespace SIS.WebServer
@@ -74,16 +77,16 @@ namespace SIS.WebServer
             await this.client.SendAsync(byteSegments, SocketFlags.None);
 
             // Only for Test
-            string print = Encoding.UTF8.GetString(byteSegments);
-            Console.WriteLine(new string('*', 20));
-            Console.Write("Seconds: ");
-            for (int i = 1; i <= 10; i++)
-            {
-                Thread.Sleep(1000);
-                Console.Write(i + " ");
-            }
-            Console.WriteLine();
-            Console.WriteLine(print + Environment.NewLine + DateTime.Now);
+            //string print = Encoding.UTF8.GetString(byteSegments);
+            //Console.WriteLine(new string('*', 20));
+            //Console.Write("Seconds: ");
+            //for (int i = 1; i <= 10; i++)
+            //{
+            //    Thread.Sleep(1000);
+            //    Console.Write(i + " ");
+            //}
+            //Console.WriteLine();
+            //Console.WriteLine(print + Environment.NewLine + DateTime.Now);
         }
 
         public async Task ProcessRequestAsync()
@@ -92,12 +95,43 @@ namespace SIS.WebServer
 
             if (httpRequest != null)
             {
+                string sessionId = this.SetRequestSession(httpRequest);
+
                 var httpResponse = this.HandleRequest(httpRequest);
+
+                this.SetResponseSession(httpResponse, sessionId);
+
                 await this.PrepareResponse(httpResponse);
             }
 
-
             this.client.Shutdown(SocketShutdown.Both);
+        }
+
+        private string SetRequestSession(IHttpRequest httpRequest)
+        {
+            string sessionId = null;
+
+            if (httpRequest.Cookies.ConstainsCookie(HttpSessionStorage.SessionKey))
+            {
+                var cookie = httpRequest.Cookies.GetCookie(HttpSessionStorage.SessionKey);
+                sessionId = cookie.Value;
+                httpRequest.Session = HttpSessionStorage.GetSession(sessionId);
+            }
+            else
+            {
+                sessionId = Guid.NewGuid().ToString();
+                httpRequest.Session = HttpSessionStorage.GetSession(sessionId);
+            }
+
+            return sessionId;
+        }
+
+        private void SetResponseSession(IHttpResponse httpResponse, string sessionId)
+        {
+            if (sessionId != null)
+            {
+                httpResponse.AddCookie(new HttpCookie(HttpSessionStorage.SessionKey, $"{sessionId}; HttpOnly=true"));
+            }
         }
     }
 }

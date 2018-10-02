@@ -6,6 +6,8 @@ namespace SIS.HTTP.Headers
 {
     public class HttpHeader
     {
+        public const string Cookie = "Cookie";
+
         public HttpHeader(string key, string value)
         {
             this.Key = key;
