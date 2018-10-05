@@ -15,6 +15,13 @@ namespace IRunes.Controlers
     {
         public IHttpResponse Create(IHttpRequest request)
         {
+            var username = this.GetUsername(request);
+
+            if (username == null)
+            {
+                return this.View("User/Login");
+            }
+
             return this.View("/album/create");
         }
 
@@ -51,6 +58,13 @@ namespace IRunes.Controlers
 
         public IHttpResponse Details(IHttpRequest request)
         {
+            var username = this.GetUsername(request);
+
+            if (username == null)
+            {
+                return this.View("User/Login");
+            }
+
             var albumId = request.QueryData["id"].ToString();
 
             var album = this.db.Albums.Include(x => x.Tracks).FirstOrDefault(x => x.Id == albumId);
@@ -89,16 +103,16 @@ namespace IRunes.Controlers
 
         public IHttpResponse All(IHttpRequest request)
         {
-            this.ViewBag["albums"] = "There are currently no albums.";
-
-            string albumsParameters = null;
-
             var username = this.GetUsername(request);
 
             if (username == null)
             {
                 return this.View("User/Login");
             }
+
+            this.ViewBag["albums"] = "There are currently no albums.";
+
+            string albumsParameters = null;
 
             var user = db.Users.Include(x => x.Albums).FirstOrDefault(x => x.Username == username);
 
@@ -118,8 +132,6 @@ namespace IRunes.Controlers
             {
                 this.ViewBag["albums"] = albumsParameters;
             }
-
-           
 
             return this.View("/album/all");
         }

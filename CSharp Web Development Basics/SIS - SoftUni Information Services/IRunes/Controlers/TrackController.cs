@@ -13,12 +13,8 @@ namespace IRunes.Controlers
 {
     public class TrackController : BaseController
     {
-        public IHttpResponse All(IHttpRequest request)
+        public IHttpResponse Create(IHttpRequest request)
         {
-            this.ViewBag["albums"] = "There are currently no albums.";
-
-            string albumsParameters = null;
-
             var username = this.GetUsername(request);
 
             if (username == null)
@@ -26,30 +22,6 @@ namespace IRunes.Controlers
                 return this.View("User/Login");
             }
 
-            var user = db.Users.Include(x => x.Albums).FirstOrDefault(x => x.Username == username);
-
-            if (user == null)
-            {
-                return this.View("User/Login");
-            }
-
-            var albums = user.Albums.ToArray();
-
-            foreach (var album in albums)
-            {
-                albumsParameters += $"<a href=\"/album/details?id={album.Id}\">{album.Name}</a></li><br/>";
-            }
-
-            if (albumsParameters != null)
-            {
-                this.ViewBag["albums"] = albumsParameters;
-            }
-
-            return this.View("/album/all");
-        }
-
-        public IHttpResponse Create(IHttpRequest request)
-        {
             string albumId = request.QueryData["albumId"].ToString();
             this.ViewBag["albumId"] = albumId;
 
@@ -76,18 +48,53 @@ namespace IRunes.Controlers
                 return this.View("/track/create");
             }
 
-            var album = db.Albums.FirstOrDefault(x => x.Id == albumId);
+            var album = this.db.Albums.Include(x => x.Tracks).FirstOrDefault(x => x.Id == albumId);
 
             album.Tracks.Add(new Track{ Name = name, Link = link, Price = price });
             db.SaveChanges();
 
-            var response = All(request);
-            return response;
+            string albumCover = HttpUtility.UrlDecode(album.Cover);
+
+            var tracksPrice = album.Tracks.Sum(x => x.Price);
+            var tracksPriceAfterDiscount = tracksPrice - (tracksPrice * 13 / 100);
+
+            var albumData = new StringBuilder();
+            albumData.Append($"<br/><img src=\"{albumCover}\" width=\"250\" height=\"250\"><br/>");
+            albumData.Append($"<b>Name: {album.Name}</b><br/>");
+            albumData.Append($"<b>Price: ${tracksPriceAfterDiscount}</b><br/>");
+
+            var tracks = album.Tracks.ToArray();
+
+            var sbTracks = new StringBuilder();
+
+            this.ViewBag["tracks"] = "";
+
+            if (tracks.Length > 0)
+            {
+                foreach (var track in tracks)
+                {
+                    sbTracks.Append($"<a href=\"/track/details?id={track.Id}&albumId={albumId}\">{track.Name}</a></li><br/>");
+                }
+
+                this.ViewBag["tracks"] = sbTracks.ToString();
+            }
+
+            this.ViewBag["albumId"] = album.Id;
+            this.ViewBag["album"] = albumData.ToString();
+            
+            return this.View("/album/details");
         }
 
         public IHttpResponse Details(IHttpRequest request)
         {
-            //TODO Id to String
+            var username = this.GetUsername(request);
+
+            if (username == null)
+            {
+                return this.View("User/Login");
+            }
+
+            //TODO trackId from string to int
             var trackId = request.QueryData["id"].ToString();
             var albumId = request.QueryData["albumId"].ToString();
 
