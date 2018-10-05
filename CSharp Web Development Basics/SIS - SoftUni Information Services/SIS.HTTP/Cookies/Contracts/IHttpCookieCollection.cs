@@ -4,11 +4,11 @@ using System.Text;
 
 namespace SIS.HTTP.Cookies.Contracts
 {
-    public interface IHttpCookieCollection
+    public interface IHttpCookieCollection : IEnumerable<HttpCookie>
     {
         void Add(HttpCookie httpCookie);
 
-        bool ConstainsCookie(string key);
+        bool ContainsCookie(string key);
 
         HttpCookie GetCookie(string key);
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 
 namespace SIS.HTTP.Cookies
@@ -7,22 +8,27 @@ namespace SIS.HTTP.Cookies
     public class HttpCookie
     {
         private const int HttpCookieDefaultExpirationDays = 3;
+        private const string HttpCookieDefaultPath = "/";
 
-        public HttpCookie(string key, string value, int expires = HttpCookieDefaultExpirationDays)
+        public HttpCookie(string key, string value, int expires = HttpCookieDefaultExpirationDays, string path = HttpCookieDefaultPath)
         {
             this.Key = key;
             this.Value = value;
             this.IsNew = true;
+            this.Path = path;
             this.Expires = DateTime.UtcNow.AddDays(expires);
         }
 
-        public HttpCookie(string key, string value, bool isNew, int expires = HttpCookieDefaultExpirationDays)
+        public HttpCookie(string key, string value, bool isNew, int expires = HttpCookieDefaultExpirationDays, string path = HttpCookieDefaultPath)
+            : this(key, value, expires)
         {
-            this.Key = key;
-            this.Value = value;
             this.IsNew = isNew;
-            this.Expires = DateTime.UtcNow.AddDays(expires);
+            
         }
+
+        public string Path { get; set; }
+
+        public bool HttpOnly { get; set; } = true;
 
         public string Key { get; set; }
 
@@ -32,9 +38,27 @@ namespace SIS.HTTP.Cookies
 
         public bool IsNew { get; set; }
 
+        public void Delete()
+        {
+            this.Expires = DateTime.UtcNow.AddDays(-1);
+        } 
+
         public override string ToString()
         {
-            return $"{this.Key}={this.Value};"; //Expires={this.Expires.ToLongTimeString()}";
+            string expires = this.Expires.ToString("ddd, dd MMM yyyy HH:mm:ss 'GMT'", CultureInfo.InvariantCulture);
+
+            StringBuilder sb = new StringBuilder();
+
+            sb.Append($"{this.Key}={this.Value}; Expires={expires}");
+           
+            if (this.HttpOnly)
+            {
+                sb.Append("; HttpOnly");
+            }
+
+            sb.Append($"; Path={this.Path}");
+
+            return sb.ToString();
         }
     }
 }

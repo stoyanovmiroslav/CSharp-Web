@@ -59,7 +59,10 @@ namespace SIS.HTTP.Responses
 
             if (this.Cookies.HasCookies())
             {
-                stringBuilder.AppendLine($"Set-Cookie: {this.Cookies}");
+                foreach (var cookie in this.Cookies)
+                {
+                    stringBuilder.AppendLine($"Set-Cookie: {cookie}");
+                }
             }
 
             stringBuilder.AppendLine();

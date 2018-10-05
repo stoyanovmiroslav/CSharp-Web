@@ -95,11 +95,15 @@ namespace SIS.WebServer
 
             if (httpRequest != null)
             {
+                bool isNewSession = !httpRequest.Cookies.ContainsCookie(HttpSessionStorage.SessionKey);
+
                 string sessionId = this.SetRequestSession(httpRequest);
 
                 var httpResponse = this.HandleRequest(httpRequest);
 
-                this.SetResponseSession(httpResponse, sessionId);
+                this.SetResponseSession(httpResponse, sessionId, isNewSession);
+
+
 
                 await this.PrepareResponse(httpResponse);
             }
@@ -111,7 +115,7 @@ namespace SIS.WebServer
         {
             string sessionId = null;
 
-            if (httpRequest.Cookies.ConstainsCookie(HttpSessionStorage.SessionKey))
+            if (httpRequest.Cookies.ContainsCookie(HttpSessionStorage.SessionKey))
             {
                 var cookie = httpRequest.Cookies.GetCookie(HttpSessionStorage.SessionKey);
                 sessionId = cookie.Value;
@@ -126,11 +130,11 @@ namespace SIS.WebServer
             return sessionId;
         }
 
-        private void SetResponseSession(IHttpResponse httpResponse, string sessionId)
+        private void SetResponseSession(IHttpResponse httpResponse, string sessionId, bool isNewSession)
         {
-            if (sessionId != null)
+            if (isNewSession)
             {
-                httpResponse.AddCookie(new HttpCookie(HttpSessionStorage.SessionKey, $"{sessionId}; HttpOnly=true"));
+                httpResponse.AddCookie(new HttpCookie(HttpSessionStorage.SessionKey, $"{sessionId}"));
             }
         }
     }

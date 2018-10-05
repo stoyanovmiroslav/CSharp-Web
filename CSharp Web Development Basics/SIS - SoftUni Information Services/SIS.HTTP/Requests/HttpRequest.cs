@@ -75,7 +75,7 @@ namespace SIS.HTTP.Requests
 
             foreach (var splitCookie in splitCookies)
             {
-                string[] cookieParts = splitCookie.Split("=", StringSplitOptions.RemoveEmptyEntries);
+                string[] cookieParts = splitCookie.Split("=", 2, StringSplitOptions.RemoveEmptyEntries);
 
                 if (cookieParts.Length != 2) continue;
 
@@ -105,7 +105,7 @@ namespace SIS.HTTP.Requests
 
         private void ParseQueryParameters(string url)
         {
-            if (!url.Contains("?"))
+            if (!url.Contains("?") || url.EndsWith("?"))
             {
                 return;
             }

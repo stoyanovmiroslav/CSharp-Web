@@ -12,5 +12,10 @@ namespace SIS.HTTP.Exceptions
             : base(Message)
         {
         }
+
+        public BadRequestException(string massage)
+          : base(massage)
+        {
+        }
     }
 }

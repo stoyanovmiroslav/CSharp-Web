@@ -1,6 +1,7 @@
 ﻿using SIS.HTTP.Cookies.Contracts;
 using SIS.HTTP.Exceptions;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Text;
 
@@ -20,19 +21,27 @@ namespace SIS.HTTP.Cookies
             this.cookies[httpCookie.Key] = httpCookie;
         }
 
-        public bool ConstainsCookie(string key)
+        public bool ContainsCookie(string key)
         {
             return this.cookies.ContainsKey(key);
         }
 
         public HttpCookie GetCookie(string key)
         {
-            if (!ConstainsCookie(key))
+            if (!ContainsCookie(key))
             {
                 throw new BadRequestException();
             }
 
             return this.cookies[key];
+        }
+
+        public IEnumerator<HttpCookie> GetEnumerator()
+        {
+            foreach (var cookie in this.cookies)
+            {
+                yield return cookie.Value;
+            }
         }
 
         public bool HasCookies()
@@ -43,6 +52,11 @@ namespace SIS.HTTP.Cookies
         public override string ToString()
         {
             return string.Join("; ", cookies.Values);
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }
