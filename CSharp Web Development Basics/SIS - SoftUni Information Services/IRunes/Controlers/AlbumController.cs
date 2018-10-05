@@ -60,7 +60,7 @@ namespace IRunes.Controlers
             var tracksPriceAfterDiscount = tracksPrice - (tracksPrice * 13 / 100);
 
             var albumData = new StringBuilder();
-            albumData.Append($"<img src=\"{albumCover}\" width=\"250\" height=\"250\"><br/>");
+            albumData.Append($"<br/><img src=\"{albumCover}\" width=\"250\" height=\"250\"><br/>");
             albumData.Append($"<b>Name: {album.Name}</b><br/>");
             albumData.Append($"<b>Price: ${tracksPriceAfterDiscount}</b><br/>");
 

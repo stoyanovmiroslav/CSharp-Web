@@ -14,10 +14,10 @@ namespace IRunes.Controlers
 {
     public abstract class BaseController
     {
-        protected IRunesDbContext db;
+        private const string VIEW_FOLDER_PATH = "../../../Views/";
+        private const string FILE_EXTENTION = ".html";
 
-        private const string Root = "../../../Views/";
-        private const string FileExtention = ".html";
+        protected IRunesDbContext db;
 
         protected BaseController()
         {
@@ -26,27 +26,26 @@ namespace IRunes.Controlers
             this.ViewBag = new Dictionary<string, string>();
         }
 
-        public Dictionary<string, string> ViewBag { get; set; }
+        protected IUserCookieService userCookieService { get; }
 
-        public IUserCookieService userCookieService { get; }
+        protected Dictionary<string, string> ViewBag { get; set; }
 
         protected IHttpResponse View(string viewName)
         {
-            string content = ViewFactory(viewName);
+            string content = GetViewContent(viewName);
 
             this.ViewBag["body"] = content;
-
+            
             viewName = "_LayoutLogin";
 
-            string fullcontent = ViewFactory(viewName);
+            string fullContent = GetViewContent(viewName);
 
-
-            return new HtmlResult(HttpResponseStatusCode.Ok, fullcontent);
+            return new HtmlResult(HttpResponseStatusCode.Ok, fullContent);
         }
 
-        protected string ViewFactory(string viewName)
+        protected string GetViewContent(string viewName)
         {
-            var content = File.ReadAllText(Root + viewName + FileExtention);
+            var content = File.ReadAllText(VIEW_FOLDER_PATH + viewName + FILE_EXTENTION);
 
             foreach (var viewBagKey in ViewBag.Keys)
             {

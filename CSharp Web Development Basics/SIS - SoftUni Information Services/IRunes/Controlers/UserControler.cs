@@ -54,9 +54,8 @@ namespace IRunes.Controlers
             var userCookieValue = this.userCookieService.GetUserCookie(username);
 
             this.ViewBag["username"] = username;
-            string content = this.ViewFactory("Home/IndexLogin");
 
-            var response = new HtmlResult(HttpResponseStatusCode.Ok, content);
+            var response = this.View("Home/IndexLogin");
 
             response.Cookies.Add(new HttpCookie("IRunes_auth", userCookieValue));
 
