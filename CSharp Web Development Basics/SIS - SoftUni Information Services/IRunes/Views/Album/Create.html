@@ -1,17 +1,25 @@
-﻿<h1><strong>Create Album</strong></h1>
-<hr />
-<form method="post", action="/album/create">
-    <div>
-        <label for="name"><b>Name</b></label>
-        <input type="text" placeholder="Name" name="name" required>
-    </div>
-    <div>
-        <label for="cover"><b>Cover</b></label>
-        <input type="text" placeholder="Cover" name="cover" required>
-    </div>
-    <button type="submit">Create</button>
-</form>
-<hr />
-<a href="/album/all">Back To All</a>
-<hr />
-<p>CopyRight &copy; Sanity Design Studios, All rights reserved.</p>
+﻿<div class="container w-50">
+    <p style="font-size:xx-large; color:#228B22; text-align:center">Create Album</p>  <!--TODO-->
+    <hr class="my-1" style="padding-bottom: 4px; border-color: #228B22">
+    <form method="post", action="/album/create">
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" class="form-control" name="name" aria-describedby="name" placeholder="Name">
+        </div>
+        <div class="form-group">
+            <label for="cover">Cover</label>
+            <input type="text" class="form-control" name="cover" aria-describedby="cover" placeholder="Cover">
+        </div>
+        <hr class="my-1" style="padding-bottom: 4px; border-color: #228B22">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-sm-6">
+                    <div><button type="submit" class="btn btn-success">Create</button></div>
+                </div>
+                <div class="col-sm-6">
+                    <a href="/album/all" class="btn btn-success btn-center">Back To All</a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

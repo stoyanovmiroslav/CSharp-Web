@@ -1,9 +1,20 @@
-﻿{{album}}
-<hr />
-<a href="/track/create?albumId={{albumId}}">Create Track</a>
-<hr />
-{{tracks}}
-<hr />
-<a href="/album/all">Back To All</a>
-<hr />
-<p>CopyRight &copy; Sanity Design Studios, All rights reserved.</p>
+﻿<div class="form-row">
+    <div class="col-md-5 mb-3 text-center">
+        {{album}}
+        <div class="container">
+            <div class="row">
+                <div class="col-sm-6">
+                    <a href="/track/create?albumId={{albumId}}" class="btn btn-success">Create Track</a>
+                </div>
+                <div class="col-sm-6">
+                    <a href="/album/all" class="btn btn-success">Back To All</a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-1 mb-3"></div>
+    <div class="col-md-6 mb-3">
+        <h2><b>Tracks</b></h2>
+        {{tracks}}
+    </div>
+</div>

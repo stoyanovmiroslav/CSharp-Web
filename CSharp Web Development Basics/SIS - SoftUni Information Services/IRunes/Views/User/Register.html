@@ -1,23 +1,23 @@
-﻿<form method="post" action="/user/register">
-    <h1>Register</h1>
-    <div>
-        <label for="email"><b>Username</b></label>
-        <input type="text" placeholder="Username" name="username" required>
-    </div>
-    <div>
-        <label for="psw"><b>Password</b></label>
-        <input type="password" placeholder="Enter Password" name="password" required>
-    </div>
-    <div>
-        <label for="psw-repeat"><b>Confirm Password</b></label>
-        <input type="password" placeholder="Confirm Password" name="confirm-password" required>
-    </div>
-    <div>
-        <label for="email"><b>Email</b></label>
-        <input type="email" placeholder="Email" name="email" required>
-    </div>
-
-    <button type="submit" class="registerbtn">Register</button>
-</form>
-<hr />
-<p>CopyRight &copy; Sanity Design Studios, All rights reserved.</p>
+﻿<div class="container w-50">
+    <p style="font-size:xx-large; color:#228B22; text-align:center">Register</p>  <!--TODO-->
+    <hr class="my-1" style="padding-bottom: 4px; border-color: #228B22">
+    <form method="post" , action="/user/register">
+        <div class="form-group">
+            <label for="exampleInputEmail1">Username</label>
+            <input type="text" class="form-control" name="username" aria-describedby="usernameHelp" placeholder="Username">
+        </div>
+        <div class="form-group">
+            <label for="exampleInputPassword1">Password</label>
+            <input type="password" class="form-control" name="password" placeholder="Password">
+        </div>
+        <div class="form-group">
+            <label for="exampleInpuConfirmPassword1">Confirm Password</label>
+            <input type="password" class="form-control" name="confirm-password" placeholder="Confirm Password">
+        </div>
+        <div class="form-group">
+            <label for="exampleInputEmail1">Email</label>
+            <input type="email" class="form-control" name="email" placeholder="Email">
+        </div>
+        <div class="text-center"><button type="submit" class="btn btn-success">Register</button></div>
+    </form>
+</div>
