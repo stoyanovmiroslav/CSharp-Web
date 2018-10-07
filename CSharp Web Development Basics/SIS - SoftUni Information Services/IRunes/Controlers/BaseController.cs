@@ -34,20 +34,19 @@ namespace IRunes.Controlers
 
         protected IHttpResponse View(string viewName)
         {
-            string content = GetViewContent(viewName);
+            string bodyContent = GetViewContent(viewName);
 
-            this.ViewBag["body"] = content;
+            this.ViewBag["body"] = bodyContent;
 
             string layout = "_LayoutLogout";
-
             if (IsUserAuthenticated)
             {
                 layout = "_LayoutLogin";
             }
 
-            string fullContent = GetViewContent(layout);
+            string viewContent = GetViewContent(layout);
 
-            return new HtmlResult(HttpResponseStatusCode.Ok, fullContent);
+            return new HtmlResult(HttpResponseStatusCode.Ok, viewContent);
         }
 
         protected string GetViewContent(string viewName)
@@ -73,10 +72,10 @@ namespace IRunes.Controlers
 
             this.ViewBag["errorMassage"] = massage;
 
-            StringBuilder content = new StringBuilder();
+            StringBuilder bodyContent = new StringBuilder();
 
-            content.Append(GetViewContent(errorViewName));
-            content.Append(GetViewContent(currentView));
+            bodyContent.Append(GetViewContent(errorViewName));
+            bodyContent.Append(GetViewContent(currentView));
 
             string layout = "_LayoutLogout";
             if (IsUserAuthenticated)
@@ -84,10 +83,10 @@ namespace IRunes.Controlers
                 layout = "_LayoutLogin";
             }
 
-            this.ViewBag["body"] = content.ToString();
-            string fullContent = GetViewContent(layout);
+            this.ViewBag["body"] = bodyContent.ToString();
+            string viewContent = GetViewContent(layout);
 
-            return new HtmlResult(HttpResponseStatusCode.BadRequest, fullContent);
+            return new HtmlResult(HttpResponseStatusCode.BadRequest, viewContent);
         }
 
         protected string GetUsername(IHttpRequest request)
