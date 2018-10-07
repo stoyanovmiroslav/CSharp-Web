@@ -26,6 +26,8 @@ namespace IRunes.Controlers
             this.ViewBag = new Dictionary<string, string>();
         }
 
+        protected bool IsUserAuthenticated { get; set; } = false;
+
         protected IUserCookieService userCookieService { get; }
 
         protected Dictionary<string, string> ViewBag { get; set; }
@@ -35,10 +37,15 @@ namespace IRunes.Controlers
             string content = GetViewContent(viewName);
 
             this.ViewBag["body"] = content;
-            
-            viewName = "_LayoutLogin";
 
-            string fullContent = GetViewContent(viewName);
+            string layout = "_LayoutLogout";
+
+            if (IsUserAuthenticated)
+            {
+                layout = "_LayoutLogin";
+            }
+
+            string fullContent = GetViewContent(layout);
 
             return new HtmlResult(HttpResponseStatusCode.Ok, fullContent);
         }
@@ -60,10 +67,27 @@ namespace IRunes.Controlers
             return content;
         }
 
-        protected IHttpResponse BadRequestError(string errorMessage)
+        protected IHttpResponse BadRequestError(string massage = "Page Not Found", string currentView = "Home/Index")
         {
-            var content = $"<h1>{errorMessage}</h1>";
-            return new HtmlResult(HttpResponseStatusCode.BadRequest, content);
+            string errorViewName = "Error\\Error";
+
+            this.ViewBag["errorMassage"] = massage;
+
+            StringBuilder content = new StringBuilder();
+
+            content.Append(GetViewContent(errorViewName));
+            content.Append(GetViewContent(currentView));
+
+            string layout = "_LayoutLogout";
+            if (IsUserAuthenticated)
+            {
+                layout = "_LayoutLogin";
+            }
+
+            this.ViewBag["body"] = content.ToString();
+            string fullContent = GetViewContent(layout);
+
+            return new HtmlResult(HttpResponseStatusCode.BadRequest, fullContent);
         }
 
         protected string GetUsername(IHttpRequest request)
@@ -72,6 +96,9 @@ namespace IRunes.Controlers
             {
                 return null;
             }
+
+            this.IsUserAuthenticated = true;
+
             var cookie = request.Cookies.GetCookie("IRunes_auth");
             var cookieContent = cookie.Value;
             var userName = this.userCookieService.GetUserData(cookieContent);

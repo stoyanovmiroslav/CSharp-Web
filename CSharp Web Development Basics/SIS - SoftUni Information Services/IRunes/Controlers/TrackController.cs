@@ -50,7 +50,7 @@ namespace IRunes.Controlers
 
             var album = this.db.Albums.Include(x => x.Tracks).FirstOrDefault(x => x.Id == albumId);
 
-            album.Tracks.Add(new Track{ Name = name, Link = link, Price = price });
+            album.Tracks.Add(new Track { Name = name, Link = link, Price = price });
             db.SaveChanges();
 
             string albumCover = HttpUtility.UrlDecode(album.Cover);
@@ -81,7 +81,7 @@ namespace IRunes.Controlers
 
             this.ViewBag["albumId"] = album.Id;
             this.ViewBag["album"] = albumData.ToString();
-            
+
             return this.View("/album/details");
         }
 
@@ -102,12 +102,16 @@ namespace IRunes.Controlers
 
             string trackLink = HttpUtility.UrlDecode(track.Link);
 
-            var trackData = new StringBuilder();
-            trackData.Append($"<iframe width=\"300\" height=\"220\" src=\"{trackLink}\"></iframe><br/>");
-            trackData.Append($"<b>Name: {track.Name}</b><br/>");
-            trackData.Append($"<b>Price: ${track.Price}</b><br/>");
+            var trackInfo = new StringBuilder();
+            trackInfo.Append($"<b>Track Name: {track.Name}</b><br/>");
+            trackInfo.Append($"<b>Track Price: ${track.Price}</b><br/>");
 
-            this.ViewBag["trackData"] = trackData.ToString();
+            //string trackVideo = $"<iframe width=\"300\" height=\"220\" src=\"{trackLink}\"></iframe><br/>";
+            string trackVideo = $"<iframe class=\"embed-responsive-item\" src=\"{trackLink}\"></iframe><br/>";
+
+            this.ViewBag["trackVideo"] = trackVideo;
+            this.ViewBag["trackInfo"] = trackInfo.ToString();
+
             this.ViewBag["albumId"] = albumId;
 
             return this.View("Track/Details");

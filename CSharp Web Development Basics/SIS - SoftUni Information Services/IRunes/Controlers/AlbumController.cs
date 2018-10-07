@@ -74,7 +74,7 @@ namespace IRunes.Controlers
             var tracksPriceAfterDiscount = tracksPrice - (tracksPrice * 13 / 100);
 
             var albumData = new StringBuilder();
-            //albumData.Append($"<div class=\"text-center\"><img src=\"{albumCover}\" width=\"250\" height=\"250\"><div/>");
+
             albumData.Append($"<br/><img src=\"{albumCover}\" width=\"250\" height=\"250\"><br/>");
             albumData.Append($"<p class=\"text-center\"><b>Album Name: {album.Name}</b></p>");
             albumData.Append($"<p class=\"text-center\"><b>Album Price: ${tracksPriceAfterDiscount}</b></p>");
@@ -87,9 +87,10 @@ namespace IRunes.Controlers
 
             if (tracks.Length > 0)
             {
-                foreach (var track in tracks)
+                for (int i = 1; i < tracks.Length; i++)
                 {
-                    sbTracks.Append($"<a href=\"/track/details?id={track.Id}&albumId={albumId}\">{track.Name}</a></li><br/>");
+                    var track = tracks[i];
+                    sbTracks.Append($"<b>&bull; {i}.</b> <a href=\"/track/details?id={track.Id}&albumId={albumId}\">{track.Name}</a></br>");
                 }
 
                 this.ViewBag["tracks"] = sbTracks.ToString();

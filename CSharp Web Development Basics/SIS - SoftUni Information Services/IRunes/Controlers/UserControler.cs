@@ -46,7 +46,7 @@ namespace IRunes.Controlers
 
             if (user == null)
             {
-                return this.View("User/Login");
+                return this.BadRequestError("Invalid username or password!", "User/Login");
             }
 
             request.Session.AddParameter("username", username);
@@ -54,6 +54,8 @@ namespace IRunes.Controlers
             var userCookieValue = this.userCookieService.GetUserCookie(username);
 
             this.ViewBag["username"] = username;
+
+            this.IsUserAuthenticated = true;
 
             var response = this.View("Home/IndexLogin");
 
@@ -96,22 +98,22 @@ namespace IRunes.Controlers
 
             if (string.IsNullOrWhiteSpace(username) || username.Length < 6)
             {
-                return this.BadRequestError("Username should be 6 or more characters long!");
+                return this.BadRequestError("Username should be 6 or more characters long!", "User/Register");
             }
 
             if (this.db.Users.Any(x => x.Username == username))
             {
-                return this.BadRequestError("Username already exist!");
+                return this.BadRequestError("Username already exist!", "User/Register");
             }
 
             if (password != confirmPassword)
             {
-                return this.BadRequestError("confirm password does not match password!");
+                return this.BadRequestError("Confirm password does not match password!", "User/Register");
             }
 
             if (string.IsNullOrWhiteSpace(password) || password.Length < 6)
             {
-                return this.BadRequestError("Password should be 6 or more characters long!");
+                return this.BadRequestError("Password should be 6 or more characters long!", "User/Register");
             }
 
             string hashedPassword = this.hashService.Hash(password);

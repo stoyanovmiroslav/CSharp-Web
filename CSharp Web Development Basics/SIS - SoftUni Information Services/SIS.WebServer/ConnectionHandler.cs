@@ -103,8 +103,6 @@ namespace SIS.WebServer
 
                 this.SetResponseSession(httpResponse, sessionId, isNewSession);
 
-
-
                 await this.PrepareResponse(httpResponse);
             }
 
