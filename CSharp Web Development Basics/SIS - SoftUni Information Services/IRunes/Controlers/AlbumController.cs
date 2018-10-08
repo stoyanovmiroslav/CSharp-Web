@@ -22,7 +22,7 @@ namespace IRunes.Controlers
                 return this.View("User/Login");
             }
 
-            return this.View("/album/create");
+            return this.View();
         }
 
         public IHttpResponse CreatePost(IHttpRequest request)
@@ -100,7 +100,7 @@ namespace IRunes.Controlers
             this.ViewBag["album"] = albumData.ToString();
             
 
-            return this.View("Album/Details");
+            return this.View();
         }
 
         public IHttpResponse All(IHttpRequest request)
@@ -135,7 +135,7 @@ namespace IRunes.Controlers
                 this.ViewBag["albums"] = albumsParameters;
             }
 
-            return this.View("/album/all");
+            return this.View();
         }
     }
 }

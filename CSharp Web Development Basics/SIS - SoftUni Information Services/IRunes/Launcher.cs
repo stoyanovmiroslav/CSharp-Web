@@ -14,11 +14,11 @@ namespace IRunes
 
             serverRoutingTable.Routes[HttpRequestMethod.GET]["/"] = request => new HomeController().Index(request);
             serverRoutingTable.Routes[HttpRequestMethod.GET]["/home/index"] = request => new HomeController().Index(request);
-            serverRoutingTable.Routes[HttpRequestMethod.GET]["/user/login"] = request => new UserControler().Login(request);
-            serverRoutingTable.Routes[HttpRequestMethod.POST]["/user/login"] = request => new UserControler().LoginPost(request);
-            serverRoutingTable.Routes[HttpRequestMethod.GET]["/user/register"] = request => new UserControler().Register(request);
-            serverRoutingTable.Routes[HttpRequestMethod.POST]["/user/register"] = request => new UserControler().RegisterPost(request);
-            serverRoutingTable.Routes[HttpRequestMethod.GET]["/user/logout"] = request => new UserControler().Logout(request);
+            serverRoutingTable.Routes[HttpRequestMethod.GET]["/user/login"] = request => new UserController().Login(request);
+            serverRoutingTable.Routes[HttpRequestMethod.POST]["/user/login"] = request => new UserController().LoginPost(request);
+            serverRoutingTable.Routes[HttpRequestMethod.GET]["/user/register"] = request => new UserController().Register(request);
+            serverRoutingTable.Routes[HttpRequestMethod.POST]["/user/register"] = request => new UserController().RegisterPost(request);
+            serverRoutingTable.Routes[HttpRequestMethod.GET]["/user/logout"] = request => new UserController().Logout(request);
             serverRoutingTable.Routes[HttpRequestMethod.GET]["/album/all"] = request => new AlbumController().All(request);
             serverRoutingTable.Routes[HttpRequestMethod.GET]["/album/create"] = request => new AlbumController().Create(request);
             serverRoutingTable.Routes[HttpRequestMethod.POST]["/album/create"] = request => new AlbumController().CreatePost(request);

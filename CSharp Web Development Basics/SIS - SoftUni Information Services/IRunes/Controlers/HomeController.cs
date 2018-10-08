@@ -12,12 +12,12 @@ namespace IRunes.Controlers
 
             if (username == null)
             {
-                return this.View("Home/Index");
+                return this.View();
             }
 
             this.ViewBag["username"] = username;
 
-            return this.View("Home/IndexLogin");
+            return this.View("IndexLogin");
         }
     }
 }

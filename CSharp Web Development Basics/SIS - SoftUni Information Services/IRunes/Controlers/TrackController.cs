@@ -25,7 +25,7 @@ namespace IRunes.Controlers
             string albumId = request.QueryData["albumId"].ToString();
             this.ViewBag["albumId"] = albumId;
 
-            return this.View("/Track/Create");
+            return this.View();
         }
 
         public IHttpResponse CreatePost(IHttpRequest request)
@@ -106,7 +106,6 @@ namespace IRunes.Controlers
             trackInfo.Append($"<b>Track Name: {track.Name}</b><br/>");
             trackInfo.Append($"<b>Track Price: ${track.Price}</b><br/>");
 
-            //string trackVideo = $"<iframe width=\"300\" height=\"220\" src=\"{trackLink}\"></iframe><br/>";
             string trackVideo = $"<iframe class=\"embed-responsive-item\" src=\"{trackLink}\"></iframe><br/>";
 
             this.ViewBag["trackVideo"] = trackVideo;
@@ -114,7 +113,7 @@ namespace IRunes.Controlers
 
             this.ViewBag["albumId"] = albumId;
 
-            return this.View("Track/Details");
+            return this.View();
         }
     }
 }

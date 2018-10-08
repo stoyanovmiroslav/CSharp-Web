@@ -13,11 +13,11 @@ using SIS.WebServer.Results;
 
 namespace IRunes.Controlers
 {
-    public class UserControler : BaseController
+    public class UserController : BaseController
     {
         IHashService hashService;
 
-        public UserControler()
+        public UserController()
         {
             this.hashService = new HashService();
         }
@@ -32,7 +32,7 @@ namespace IRunes.Controlers
                 return this.View("Home/IndexLogin");
             }
 
-            return this.View("User/Login");
+            return this.View();
         }
 
         public IHttpResponse LoginPost(IHttpRequest request)
@@ -86,7 +86,7 @@ namespace IRunes.Controlers
 
         public IHttpResponse Register(IHttpRequest request)
         {
-            return this.View("User/Register");
+            return this.View();
         }
 
         public IHttpResponse RegisterPost(IHttpRequest request)

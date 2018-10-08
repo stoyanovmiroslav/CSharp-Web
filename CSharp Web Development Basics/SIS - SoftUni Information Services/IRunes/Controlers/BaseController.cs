@@ -7,6 +7,7 @@ using SIS.HTTP.Responses.Contracts;
 using SIS.WebServer.Results;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 
@@ -14,8 +15,11 @@ namespace IRunes.Controlers
 {
     public abstract class BaseController
     {
-        private const string VIEW_FOLDER_PATH = "../../../Views/";
+        private const string VIEW_FOLDER_PATH = "../../../Views";
         private const string FILE_EXTENTION = ".html";
+        private const string DEFAULT_CONTROLER_NAME = "Controller";
+
+        private string GetCurrentControllerName => this.GetType().Name.Replace(DEFAULT_CONTROLER_NAME, string.Empty);
 
         protected IRunesDbContext db;
 
@@ -32,7 +36,7 @@ namespace IRunes.Controlers
 
         protected Dictionary<string, string> ViewBag { get; set; }
 
-        protected IHttpResponse View(string viewName)
+        protected IHttpResponse View(string viewName = null)
         {
             string bodyContent = GetViewContent(viewName);
 
@@ -51,19 +55,33 @@ namespace IRunes.Controlers
 
         protected string GetViewContent(string viewName)
         {
-            var content = File.ReadAllText(VIEW_FOLDER_PATH + viewName + FILE_EXTENTION);
+            string controlerName = GetCurrentControllerName;
+            string actionName = new StackFrame(2).GetMethod().Name;
+
+            string fullPath = $"{VIEW_FOLDER_PATH}/{viewName}{FILE_EXTENTION}";
+
+            if (viewName == null)
+            {
+                fullPath = $"{VIEW_FOLDER_PATH}/{controlerName}/{actionName}{FILE_EXTENTION}";
+            }
+            else if (viewName.Contains("_Layout"))
+            {
+                fullPath = $"{VIEW_FOLDER_PATH}/{viewName}{FILE_EXTENTION}";
+            }
+
+            var fileContent = File.ReadAllText(fullPath);
 
             foreach (var viewBagKey in ViewBag.Keys)
             {
                 string placeHolder = $"{{{{{viewBagKey}}}}}";
 
-                if (content.Contains(viewBagKey))
+                if (fileContent.Contains(viewBagKey))
                 {
-                    content = content.Replace(placeHolder, this.ViewBag[viewBagKey]);
+                    fileContent = fileContent.Replace(placeHolder, this.ViewBag[viewBagKey]);
                 }
             }
 
-            return content;
+            return fileContent;
         }
 
         protected IHttpResponse BadRequestError(string massage = "Page Not Found", string currentView = "Home/Index")
