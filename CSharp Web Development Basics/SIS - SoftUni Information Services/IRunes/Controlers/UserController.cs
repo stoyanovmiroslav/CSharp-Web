@@ -56,7 +56,6 @@ namespace IRunes.Controlers
             this.ViewBag["username"] = username;
 
             this.IsUserAuthenticated = true;
-           // this.ViewBag["NonAuthenticated"] = "d-none";
 
             var response = this.View("Home/Index");
 
