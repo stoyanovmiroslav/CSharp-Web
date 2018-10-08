@@ -15,7 +15,7 @@ namespace IRunes.Controlers
 {
     public abstract class BaseController
     {
-        private const string VIEW_FOLDER_PATH = "../../../Views";
+        private const string VIEWS_FOLDER_PATH = "../../../Views";
         private const string FILE_EXTENTION = ".html";
         private const string DEFAULT_CONTROLER_NAME = "Controller";
         private const string LAYOUT = "_Layout";
@@ -43,41 +43,41 @@ namespace IRunes.Controlers
         {
             string bodyContent = GetViewContent(viewName);
 
-            this.SetLoyoutViewBag(bodyContent);
+            this.SetViewBagParameters(bodyContent);
 
-            string viewContent = GetViewContent(LAYOUT);
+            string fullViewContent = GetViewContent(LAYOUT);
 
-            return new HtmlResult(HttpResponseStatusCode.Ok, viewContent);
+            return new HtmlResult(HttpResponseStatusCode.Ok, fullViewContent);
         }
 
-        protected IHttpResponse BadRequestError(string massage = "Page Not Found", string currentView = "Home/Index")
+        protected IHttpResponse BadRequestError(string massage = "Page Not Found", string currentViewPath = "Home/Index")
         {
             this.ViewBag["errorMassage"] = massage;
 
             StringBuilder bodyContent = new StringBuilder();
             bodyContent.Append(GetViewContent(ERROR_VIEW_PATH));
-            bodyContent.Append(GetViewContent(currentView));
+            bodyContent.Append(GetViewContent(currentViewPath));
 
-            this.SetLoyoutViewBag(bodyContent.ToString());
+            this.SetViewBagParameters(bodyContent.ToString());
 
             string fullViewContent = GetViewContent(LAYOUT);
 
             return new HtmlResult(HttpResponseStatusCode.BadRequest, fullViewContent);
         }
 
-        private void SetLoyoutViewBag(string bodyContent)
+        private void SetViewBagParameters(string bodyContent)
         {
             this.ViewBag["body"] = bodyContent;
-            this.ViewBag["isLoginNavVisable"] = "";
-            this.ViewBag["isLogoutNavVisable"] = "";
+            this.ViewBag["NonAuthenticated"] = "";
+            this.ViewBag["Authenticated"] = "";
 
             if (IsUserAuthenticated)
             {
-                this.ViewBag["isLoginNavVisable"] = "d-none";
+                this.ViewBag["NonAuthenticated"] = "d-none";
             }
             else
             {
-                this.ViewBag["isLogoutNavVisable"] = "d-none";
+                this.ViewBag["Authenticated"] = "d-none";
             }
         }
 
@@ -86,11 +86,11 @@ namespace IRunes.Controlers
             string controlerName = GetCurrentControllerName;
             string actionName = new StackFrame(2).GetMethod().Name;
 
-            string fullPath = $"{VIEW_FOLDER_PATH}/{viewName}{FILE_EXTENTION}";
+            string fullPath = $"{VIEWS_FOLDER_PATH}/{viewName}{FILE_EXTENTION}";
 
             if (viewName == null)
             {
-                fullPath = $"{VIEW_FOLDER_PATH}/{controlerName}/{actionName}{FILE_EXTENTION}";
+                fullPath = $"{VIEWS_FOLDER_PATH}/{controlerName}/{actionName}{FILE_EXTENTION}";
             }
 
             var fileContent = File.ReadAllText(fullPath);

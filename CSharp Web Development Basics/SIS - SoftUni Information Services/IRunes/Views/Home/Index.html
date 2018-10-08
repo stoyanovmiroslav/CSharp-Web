@@ -1,6 +1,11 @@
-﻿<div class="jumbotron bg-success">
+﻿<div class="jumbotron bg-success {{NonAuthenticated}}">
     <h2 class="display-7 text-light">Welcome to IRunes</h2>
     <hr class="my-1" style="border-color: #FFFFFF; border-top-width: 2px; padding-bottom: 2px;">
     <p><a href="/user/login" class="text-warning font-weight-bold">Login</a><span class="text-white font-weight-bold"> if you have an account.</span></p>
     <p><a href="/user/register" class="text-warning font-weight-bold">Register</a><span class="text-white font-weight-bold"> if you don't.</span></p>
+</div>
+<div class="jumbotron bg-success {{Authenticated}}">
+    <h2 class="display-7 text-light">Welcome, {{username}}</h2>
+    <hr class="my-1" style="border-color: #FFFFFF; border-top-width: 2px; padding-bottom: 2px;">
+    <p class="lead text-light">IRunes wishes you a fun experience.</p>
 </div>

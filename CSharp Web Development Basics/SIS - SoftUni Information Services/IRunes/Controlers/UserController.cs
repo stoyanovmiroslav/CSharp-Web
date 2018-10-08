@@ -29,7 +29,7 @@ namespace IRunes.Controlers
             if (username != null)
             {
                 this.ViewBag["username"] = username;
-                return this.View("Home/IndexLogin");
+                return this.View("Home/Index");
             }
 
             return this.View();
@@ -56,8 +56,9 @@ namespace IRunes.Controlers
             this.ViewBag["username"] = username;
 
             this.IsUserAuthenticated = true;
+           // this.ViewBag["NonAuthenticated"] = "d-none";
 
-            var response = this.View("Home/IndexLogin");
+            var response = this.View("Home/Index");
 
             response.Cookies.Add(new HttpCookie("IRunes_auth", userCookieValue));
 
