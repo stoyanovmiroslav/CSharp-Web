@@ -17,7 +17,7 @@ namespace IRunes.Controlers
 
             this.ViewBag["username"] = username;
 
-            return this.View("IndexLogin");
+            return this.View("Home/IndexLogin");
         }
     }
 }
