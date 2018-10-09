@@ -26,27 +26,6 @@ namespace SIS.WebServer
             this.serverRoutingTable = serverRoutingTable;
         }
 
-        //public void Run()
-        //{
-        //    this.listener.Start();
-        //    this.isRunning = true;
-
-        //    Console.WriteLine($"Server started at http://{LocalhostIpAddress}:{port}");
-
-        //    var task = Task.Run(this.ListenLoop);
-        //    task.Wait();
-        //}
-
-        //public async Task ListenLoop()
-        //{
-        //    while (this.isRunning)
-        //    {
-        //        var client = this.listener.AcceptSocketAsync().GetAwaiter().GetResult();
-        //        var connectionHandler = new ConnectionHandler(client, this.serverRoutingTable);
-        //        await connectionHandler.ProcessRequestAsync();
-        //    }
-        //}
-
         public void Run()
         {
             this.listener.Start();

@@ -98,7 +98,6 @@ namespace IRunes.Controlers
 
             this.ViewBag["albumId"] = album.Id;
             this.ViewBag["album"] = albumData.ToString();
-            
 
             return this.View();
         }

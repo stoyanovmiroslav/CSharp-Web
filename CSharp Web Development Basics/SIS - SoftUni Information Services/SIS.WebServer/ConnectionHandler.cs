@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net.Sockets;
 using System.Text;
 using System.Threading;
@@ -11,12 +12,15 @@ using SIS.HTTP.Responses;
 using SIS.HTTP.Responses.Contracts;
 using SIS.HTTP.Session;
 using SIS.HTTP.Session.Contracts;
+using SIS.WebServer.Results;
 using SIS.WebServer.Routing;
 
 namespace SIS.WebServer
 {
     public class ConnectionHandler
     {
+        private const string RESOURCES_FOLDER_PATH = "../../../Resources";
+
         private readonly Socket client;
 
         private readonly ServerRoutingTable serverRoutingTable;
@@ -64,10 +68,30 @@ namespace SIS.WebServer
             if (!this.serverRoutingTable.Routes.ContainsKey(httpRequest.RequestMethod) ||
                !this.serverRoutingTable.Routes[httpRequest.RequestMethod].ContainsKey(httpRequest.Path))
             {
-                return new HttpResponse(HttpResponseStatusCode.NotFound);
+                return returnIfResource(httpRequest.Path);
             }
 
             return this.serverRoutingTable.Routes[httpRequest.RequestMethod][httpRequest.Path].Invoke(httpRequest);
+        }
+
+        private IHttpResponse returnIfResource(string path)
+        {
+            int indexOfLastDot = path.LastIndexOf('.');
+            int indexOflastSlash = path.LastIndexOf('/');
+
+            string fileFolder = path.Substring(indexOfLastDot + 1);
+            string fileFullName = path.Substring(indexOflastSlash + 1);
+
+            string resourceFullPath = $"{RESOURCES_FOLDER_PATH}/{fileFolder}/{fileFullName}";
+
+            if (File.Exists(resourceFullPath))
+            {
+                byte[] resource = File.ReadAllBytes(resourceFullPath);
+
+                return new InlineResourseResult(HttpResponseStatusCode.Ok, resource);
+            }
+
+            return new HttpResponse(HttpResponseStatusCode.NotFound);
         }
 
         private async Task PrepareResponse(IHttpResponse httpResponse)
@@ -75,18 +99,6 @@ namespace SIS.WebServer
             byte[] byteSegments = httpResponse.GetBytes();
 
             await this.client.SendAsync(byteSegments, SocketFlags.None);
-
-            // Only for Test
-            //string print = Encoding.UTF8.GetString(byteSegments);
-            //Console.WriteLine(new string('*', 20));
-            //Console.Write("Seconds: ");
-            //for (int i = 1; i <= 10; i++)
-            //{
-            //    Thread.Sleep(1000);
-            //    Console.Write(i + " ");
-            //}
-            //Console.WriteLine();
-            //Console.WriteLine(print + Environment.NewLine + DateTime.Now);
         }
 
         public async Task ProcessRequestAsync()

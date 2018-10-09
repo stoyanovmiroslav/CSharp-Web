@@ -21,9 +21,6 @@ namespace IRunes.Controlers
         private const string LAYOUT = "_Layout";
         private const string ERROR_VIEW_PATH = "Error/Error";
 
-
-        private string GetCurrentControllerName => this.GetType().Name.Replace(DEFAULT_CONTROLER_NAME, string.Empty);
-
         protected IRunesDbContext db;
 
         protected BaseController()
@@ -32,6 +29,8 @@ namespace IRunes.Controlers
             this.userCookieService = new UserCookieService();
             this.ViewBag = new Dictionary<string, string>();
         }
+
+        private string GetCurrentControllerName => this.GetType().Name.Replace(DEFAULT_CONTROLER_NAME, string.Empty);
 
         protected bool IsUserAuthenticated { get; set; } = false;
 
