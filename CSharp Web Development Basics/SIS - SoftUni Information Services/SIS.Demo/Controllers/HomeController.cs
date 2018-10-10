@@ -3,7 +3,7 @@ using SIS.HTTP.Enums;
 using SIS.HTTP.Responses.Contracts;
 using SIS.MvcFramework;
 
-namespace SIS.Demo
+namespace SIS.Demo.Controllers
 {
     public class HomeController : Controller
     {

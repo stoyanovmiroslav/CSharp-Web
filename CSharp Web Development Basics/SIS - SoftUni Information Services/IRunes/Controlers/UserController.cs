@@ -29,7 +29,7 @@ namespace IRunes.Controlers
             if (this.User != null)
             {
                 this.ViewBag["username"] = this.User;
-                return this.View("Home/Index");
+                return this.Redirect("/");
             }
 
             return this.View();

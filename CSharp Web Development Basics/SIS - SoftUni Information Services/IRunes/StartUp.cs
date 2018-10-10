@@ -1,4 +1,4 @@
-﻿using SIS.MvcFramework;
+﻿using SIS.MvcFramework.Contracts;
 using System;
 using System.Collections.Generic;
 using System.Text;

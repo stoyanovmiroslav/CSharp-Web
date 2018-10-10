@@ -68,10 +68,15 @@ namespace SIS.MvcFramework
 
             string fullViewContent = GetViewContent(LAYOUT);
 
-            this.Response.Headers.Add(new HttpHeader("Content-Type", "text/html"));
-            this.Response.Content = Encoding.UTF8.GetBytes(fullViewContent);
+            PrepateHtmlResult(fullViewContent);
 
             return this.Response;
+        }
+
+        private void PrepateHtmlResult(string fullViewContent)
+        {
+            this.Response.Headers.Add(new HttpHeader("Content-Type", "text/html"));
+            this.Response.Content = Encoding.UTF8.GetBytes(fullViewContent);
         }
 
         protected IHttpResponse Redirect(string location)

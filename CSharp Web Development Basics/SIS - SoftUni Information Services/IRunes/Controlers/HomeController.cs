@@ -10,11 +10,6 @@ namespace IRunes.Controlers
         [HttpGet("/")]
         public IHttpResponse Index()
         {
-            if (this.User == null)
-            {
-                return this.View();
-            }
-          
             this.ViewBag["username"] = this.User;
 
             return this.View();

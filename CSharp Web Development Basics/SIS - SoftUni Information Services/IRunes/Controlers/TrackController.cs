@@ -19,7 +19,7 @@ namespace IRunes.Controlers
         {
             if (this.User == null)
             {
-                return this.View("User/Login");
+                return this.Redirect("User/Login");
             }
 
             string albumId = this.Request.QueryData["albumId"].ToString();
@@ -33,7 +33,7 @@ namespace IRunes.Controlers
         {
             if (this.User == null)
             {
-                return this.View("User/Login");
+                return this.Redirect("User/Login");
             }
 
             string albumId = this.Request.QueryData["albumId"].ToString();
@@ -44,7 +44,7 @@ namespace IRunes.Controlers
 
             if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(link) || price == 0)
             {
-                return this.View("/track/create");
+                return this.Redirect("/Track/reate");
             }
 
             var album = this.db.Albums.Include(x => x.Tracks).FirstOrDefault(x => x.Id == albumId);
@@ -81,7 +81,7 @@ namespace IRunes.Controlers
             this.ViewBag["albumId"] = album.Id;
             this.ViewBag["album"] = albumData.ToString();
 
-            return this.View("/album/details");
+            return this.Redirect("/album/details");
         }
 
         [HttpGet("/track/details")]
@@ -89,7 +89,7 @@ namespace IRunes.Controlers
         {
             if (this.User == null)
             {
-                return this.View("User/Login");
+                return this.Redirect("User/Login");
             }
 
             //TODO: trackId from string to int
