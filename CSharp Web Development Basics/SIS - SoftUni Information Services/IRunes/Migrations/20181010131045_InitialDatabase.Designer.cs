@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace IRunes.Migrations
 {
     [DbContext(typeof(IRunesDbContext))]
-    [Migration("20181004162153_InitialDatabaseModels")]
-    partial class InitialDatabaseModels
+    [Migration("20181010131045_InitialDatabase")]
+    partial class InitialDatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -42,9 +42,8 @@ namespace IRunes.Migrations
 
             modelBuilder.Entity("IRunes.Models.Track", b =>
                 {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
 
                     b.Property<string>("AlbumId");
 

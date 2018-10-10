@@ -9,6 +9,7 @@ using SIS.WebServer.Results;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
+using System.Net;
 using System.Text;
 
 namespace SIS.MvcFramework
@@ -113,8 +114,8 @@ namespace SIS.MvcFramework
 
             string fullViewContent = GetViewContent(LAYOUT);
 
-            this.Response.Headers.Add(new HttpHeader("Content-Type", "text/html"));
-            this.Response.Content = Encoding.UTF8.GetBytes(fullViewContent);
+            this.PrepateHtmlResult(fullViewContent);
+            
             this.Response.StatusCode = HttpResponseStatusCode.BadRequest;
 
             return this.Response;

@@ -20,6 +20,8 @@ namespace SIS.HTTP.Headers
 
         public const string Location = "Location";
 
+        public const string ContentLocation = "Content-Location";
+
         public HttpHeader(string key, string value)
         {
             this.Key = key;

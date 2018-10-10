@@ -19,7 +19,7 @@ namespace IRunes.Controlers
         {
             if (this.User == null)
             {
-                return this.View("User/Login");
+                return this.Redirect("/user/login");
             }
 
             return this.View();
@@ -30,7 +30,7 @@ namespace IRunes.Controlers
         {
             if (this.User == null)
             {
-                return this.View("User/Login");
+                return this.Redirect("/user/login");
             }
 
             string name = this.Request.FormData["name"].ToString();
@@ -38,21 +38,20 @@ namespace IRunes.Controlers
 
             if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(cover))
             {
-                return this.View("/album/create");
+                return this.Redirect("/album/create");
             }
 
             var user = db.Users.FirstOrDefault(x => x.Username == this.User);
 
             if (user == null)
             {
-                return this.View("User/Login");
+                return this.Redirect("/user/login");
             }
 
             user.Albums.Add(new Album { Name = name, Cover = cover });
             db.SaveChanges();
 
-            var response = All();
-            return response;
+            return this.Redirect("/album/all");
         }
 
         [HttpGet("/album/details")]
@@ -60,7 +59,7 @@ namespace IRunes.Controlers
         {
             if (this.User == null)
             {
-                return this.View("User/Login");
+                return this.Redirect("/user/login");
             }
 
             var albumId = this.Request.QueryData["id"].ToString();
@@ -105,7 +104,7 @@ namespace IRunes.Controlers
         {
             if (this.User == null)
             {
-                return this.View("User/Login");
+                return this.Redirect("/user/login");
             }
 
             this.ViewBag["albums"] = "There are currently no albums.";
@@ -116,7 +115,7 @@ namespace IRunes.Controlers
 
             if (user == null)
             {
-                return this.View("User/Login");
+                return this.Redirect("/user/login");
             }
 
             var albums = user.Albums.ToArray();
