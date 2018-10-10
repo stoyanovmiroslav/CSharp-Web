@@ -9,6 +9,7 @@ using SIS.HTTP.Cookies;
 using SIS.HTTP.Enums;
 using SIS.HTTP.Requests.Contracts;
 using SIS.HTTP.Responses.Contracts;
+using SIS.MvcFramework.HttpAttributes;
 using SIS.WebServer.Results;
 
 namespace IRunes.Controlers
@@ -22,23 +23,23 @@ namespace IRunes.Controlers
             this.hashService = new HashService();
         }
 
-        public IHttpResponse Login(IHttpRequest request)
+        [HttpGet("/user/login")]
+        public IHttpResponse Login()
         {
-            var username = this.GetUsername(request);
-
-            if (username != null)
+            if (this.User != null)
             {
-                this.ViewBag["username"] = username;
+                this.ViewBag["username"] = this.User;
                 return this.View("Home/Index");
             }
 
             return this.View();
         }
 
-        public IHttpResponse LoginPost(IHttpRequest request)
+        [HttpPost("/user/login")]
+        public IHttpResponse LoginPost()
         {
-            string username = request.FormData["username"].ToString();
-            string password = request.FormData["password"].ToString();
+            string username = this.Request.FormData["username"].ToString();
+            string password = this.Request.FormData["password"].ToString();
 
             string hashedPassword = this.hashService.Hash(password);
 
@@ -49,52 +50,43 @@ namespace IRunes.Controlers
                 return this.BadRequestError("Invalid username or password!", "User/Login");
             }
 
-            request.Session.AddParameter("username", username);
+            this.Request.Session.AddParameter("username", username);
 
             var userCookieValue = this.userCookieService.GetUserCookie(username);
+            this.Response.Cookies.Add(new HttpCookie(AUTH_COOKIE_KEY, userCookieValue));
 
-            this.ViewBag["username"] = username;
-
-            this.IsUserAuthenticated = true;
-
-            var response = this.View("Home/Index");
-
-            response.Cookies.Add(new HttpCookie("IRunes_auth", userCookieValue));
-
-            return response;
+            return this.Redirect("/");
         }
 
-        public IHttpResponse Logout(IHttpRequest request)
+        [HttpGet("/user/logout")]
+        public IHttpResponse Logout()
         {
-            var username = this.GetUsername(request);
-
-            if (username == null)
+            if (this.User == null)
             {
-                return this.View("Home/Index");
+                return this.Redirect("/");
             }
 
-            var response = new RedirectResult("/");
-
-            var cookie = request.Cookies.GetCookie("IRunes_auth");
-
+            var cookie = this.Request.Cookies.GetCookie(AUTH_COOKIE_KEY);
             cookie.Delete();
 
-            response.Cookies.Add(cookie);
+            this.Response.Cookies.Add(cookie);
 
-            return response;
+            return this.Redirect("/");
         }
 
-        public IHttpResponse Register(IHttpRequest request)
+        [HttpGet("/user/register")]
+        public IHttpResponse Register()
         {
             return this.View();
         }
 
-        public IHttpResponse RegisterPost(IHttpRequest request)
+        [HttpPost("/user/register")]
+        public IHttpResponse RegisterPost()
         {
-            string username = request.FormData["username"].ToString();
-            string password = request.FormData["password"].ToString();
-            string confirmPassword = request.FormData["confirm-password"].ToString();
-            string email = request.FormData["email"].ToString();
+            string username = this.Request.FormData["username"].ToString();
+            string password = this.Request.FormData["password"].ToString();
+            string confirmPassword = this.Request.FormData["confirm-password"].ToString();
+            string email = this.Request.FormData["email"].ToString();
 
             if (string.IsNullOrWhiteSpace(username) || username.Length < 6)
             {
@@ -128,7 +120,10 @@ namespace IRunes.Controlers
             db.Users.Add(user);
             db.SaveChanges();
 
-            return this.View("User/Login");
+            var userCookieValue = this.userCookieService.GetUserCookie(username);
+            this.Response.Cookies.Add(new HttpCookie(AUTH_COOKIE_KEY, userCookieValue));
+
+            return this.Redirect("/");
         }
     }
 }

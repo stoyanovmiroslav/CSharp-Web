@@ -7,17 +7,17 @@ using Microsoft.EntityFrameworkCore;
 using SIS.HTTP.Enums;
 using SIS.HTTP.Requests.Contracts;
 using SIS.HTTP.Responses.Contracts;
+using SIS.MvcFramework.HttpAttributes;
 using SIS.WebServer.Results;
 
 namespace IRunes.Controlers
 {
     public class AlbumController : BaseController
     {
-        public IHttpResponse Create(IHttpRequest request)
+        [HttpGet("/album/create")]
+        public IHttpResponse Create()
         {
-            var username = this.GetUsername(request);
-
-            if (username == null)
+            if (this.User == null)
             {
                 return this.View("User/Login");
             }
@@ -25,24 +25,23 @@ namespace IRunes.Controlers
             return this.View();
         }
 
-        public IHttpResponse CreatePost(IHttpRequest request)
+        [HttpPost("/album/create")]
+        public IHttpResponse CreatePost()
         {
-            var username = this.GetUsername(request);
-
-            if (username == null)
+            if (this.User == null)
             {
                 return this.View("User/Login");
             }
 
-            string name = request.FormData["name"].ToString();
-            string cover = request.FormData["cover"].ToString();
+            string name = this.Request.FormData["name"].ToString();
+            string cover = this.Request.FormData["cover"].ToString();
 
             if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(cover))
             {
                 return this.View("/album/create");
             }
 
-            var user = db.Users.FirstOrDefault(x => x.Username == username);
+            var user = db.Users.FirstOrDefault(x => x.Username == this.User);
 
             if (user == null)
             {
@@ -52,20 +51,19 @@ namespace IRunes.Controlers
             user.Albums.Add(new Album { Name = name, Cover = cover });
             db.SaveChanges();
 
-            var response = All(request);
+            var response = All();
             return response;
         }
 
-        public IHttpResponse Details(IHttpRequest request)
+        [HttpGet("/album/details")]
+        public IHttpResponse Details()
         {
-            var username = this.GetUsername(request);
-
-            if (username == null)
+            if (this.User == null)
             {
                 return this.View("User/Login");
             }
 
-            var albumId = request.QueryData["id"].ToString();
+            var albumId = this.Request.QueryData["id"].ToString();
 
             var album = this.db.Albums.Include(x => x.Tracks).FirstOrDefault(x => x.Id == albumId);
             string albumCover = HttpUtility.UrlDecode(album.Cover);
@@ -102,11 +100,10 @@ namespace IRunes.Controlers
             return this.View();
         }
 
-        public IHttpResponse All(IHttpRequest request)
+        [HttpGet("/album/all")]
+        public IHttpResponse All()
         {
-            var username = this.GetUsername(request);
-
-            if (username == null)
+            if (this.User == null)
             {
                 return this.View("User/Login");
             }
@@ -115,7 +112,7 @@ namespace IRunes.Controlers
 
             string albumsParameters = null;
 
-            var user = db.Users.Include(x => x.Albums).FirstOrDefault(x => x.Username == username);
+            var user = db.Users.Include(x => x.Albums).FirstOrDefault(x => x.Username == this.User);
 
             if (user == null)
             {

@@ -16,7 +16,7 @@ namespace IRunes.Data
 
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
         {
-            optionsBuilder.UseSqlServer(@"Server=MIROSLAV-STOYAN\SQLEXPRESS;Database=IRunesApp;Trusted_Connection=True;");
+            optionsBuilder.UseSqlServer(@"Server=.\SQLEXPRESS;Database=IRunesApp;Trusted_Connection=True;");
         }
     }
 }

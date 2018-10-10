@@ -2,6 +2,7 @@
 using SIS.WebServer;
 using SIS.WebServer.Routing;
 using System;
+using System.Diagnostics;
 
 namespace SIS.Demo
 {

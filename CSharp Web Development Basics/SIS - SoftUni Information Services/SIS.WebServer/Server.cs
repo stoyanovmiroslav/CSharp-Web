@@ -39,7 +39,6 @@ namespace SIS.WebServer
                 var client = listener.AcceptSocketAsync().GetAwaiter().GetResult();
 
                 Task.Run(() => Listen(client));
-
             }
         }
 

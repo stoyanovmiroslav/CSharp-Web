@@ -1,20 +1,21 @@
 ﻿using System;
 using SIS.HTTP.Requests.Contracts;
 using SIS.HTTP.Responses.Contracts;
+using SIS.MvcFramework.HttpAttributes;
 
 namespace IRunes.Controlers
 {
     public class HomeController : BaseController
     {
-        public IHttpResponse Index(IHttpRequest request)
+        [HttpGet("/")]
+        public IHttpResponse Index()
         {
-            var username = this.GetUsername(request);
-            if (username == null)
+            if (this.User == null)
             {
                 return this.View();
             }
           
-            this.ViewBag["username"] = username;
+            this.ViewBag["username"] = this.User;
 
             return this.View();
         }

@@ -7,41 +7,40 @@ using Microsoft.EntityFrameworkCore;
 using SIS.HTTP.Enums;
 using SIS.HTTP.Requests.Contracts;
 using SIS.HTTP.Responses.Contracts;
+using SIS.MvcFramework.HttpAttributes;
 using SIS.WebServer.Results;
 
 namespace IRunes.Controlers
 {
     public class TrackController : BaseController
     {
-        public IHttpResponse Create(IHttpRequest request)
+        [HttpGet("/track/create")]
+        public IHttpResponse Create()
         {
-            var username = this.GetUsername(request);
-
-            if (username == null)
+            if (this.User == null)
             {
                 return this.View("User/Login");
             }
 
-            string albumId = request.QueryData["albumId"].ToString();
+            string albumId = this.Request.QueryData["albumId"].ToString();
             this.ViewBag["albumId"] = albumId;
 
             return this.View();
         }
 
-        public IHttpResponse CreatePost(IHttpRequest request)
+        [HttpPost("/track/create")]
+        public IHttpResponse CreatePost()
         {
-            var username = this.GetUsername(request);
-
-            if (username == null)
+            if (this.User == null)
             {
                 return this.View("User/Login");
             }
 
-            string albumId = request.QueryData["albumId"].ToString();
+            string albumId = this.Request.QueryData["albumId"].ToString();
 
-            string name = request.FormData["name"].ToString();
-            string link = request.FormData["link"].ToString();
-            decimal price = decimal.Parse(request.FormData["price"].ToString());
+            string name = this.Request.FormData["name"].ToString();
+            string link = this.Request.FormData["link"].ToString();
+            decimal price = decimal.Parse(this.Request.FormData["price"].ToString());
 
             if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(link) || price == 0)
             {
@@ -85,18 +84,17 @@ namespace IRunes.Controlers
             return this.View("/album/details");
         }
 
-        public IHttpResponse Details(IHttpRequest request)
+        [HttpGet("/track/details")]
+        public IHttpResponse Details()
         {
-            var username = this.GetUsername(request);
-
-            if (username == null)
+            if (this.User == null)
             {
                 return this.View("User/Login");
             }
 
-            //TODO trackId from string to int
-            var trackId = request.QueryData["id"].ToString();
-            var albumId = request.QueryData["albumId"].ToString();
+            //TODO: trackId from string to int
+            var trackId = this.Request.QueryData["id"].ToString();
+            var albumId = this.Request.QueryData["albumId"].ToString();
 
             var track = this.db.Tracks.FirstOrDefault(x => x.Id == int.Parse(trackId));
 
