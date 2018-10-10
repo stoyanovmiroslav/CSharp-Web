@@ -60,6 +60,7 @@ namespace SIS.MvcFramework
         private static IHttpResponse ExecuteAction(Type controllerType, MethodInfo methodInfo, IHttpRequest request)
         {
             var controllerInstance = Activator.CreateInstance(controllerType) as Controller;
+
             if (controllerInstance == null)
             {
                 return new TextResult(HttpResponseStatusCode.InternalServerError, "Controller not found.");
@@ -69,19 +70,6 @@ namespace SIS.MvcFramework
 
             var httpResponse = methodInfo.Invoke(controllerInstance, new object[] { }) as IHttpResponse;
             return httpResponse;
-
-            //serverRoutingTable.Routes[HttpRequestMethod.GET]["/user/login"] = request => new UserController().Login(request);
-            //serverRoutingTable.Routes[HttpRequestMethod.POST]["/user/login"] = request => new UserController().LoginPost(request);
-            //serverRoutingTable.Routes[HttpRequestMethod.GET]["/user/register"] = request => new UserController().Register(request);
-            //serverRoutingTable.Routes[HttpRequestMethod.POST]["/user/register"] = request => new UserController().RegisterPost(request);
-            //serverRoutingTable.Routes[HttpRequestMethod.GET]["/user/logout"] = request => new UserController().Logout(request);
-            //serverRoutingTable.Routes[HttpRequestMethod.GET]["/album/all"] = request => new AlbumController().All(request);
-            //serverRoutingTable.Routes[HttpRequestMethod.GET]["/album/create"] = request => new AlbumController().Create(request);
-            //serverRoutingTable.Routes[HttpRequestMethod.POST]["/album/create"] = request => new AlbumController().CreatePost(request);
-            //serverRoutingTable.Routes[HttpRequestMethod.GET]["/album/details"] = request => new AlbumController().Details(request);
-            //serverRoutingTable.Routes[HttpRequestMethod.GET]["/track/create"] = request => new TrackController().Create(request);
-            //serverRoutingTable.Routes[HttpRequestMethod.POST]["/track/create"] = request => new TrackController().CreatePost(request);
-            //serverRoutingTable.Routes[HttpRequestMethod.GET]["/track/details"] = request => new TrackController().Details(request);
         }
     }
 }

@@ -57,10 +57,11 @@ namespace IRunes.Controlers
             var tracksPrice = album.Tracks.Sum(x => x.Price);
             var tracksPriceAfterDiscount = tracksPrice - (tracksPrice * 13 / 100);
 
-            var albumData = new StringBuilder();
-            albumData.Append($"<br/><img src=\"{albumCover}\" width=\"250\" height=\"250\"><br/>");
-            albumData.Append($"<b>Name: {album.Name}</b><br/>");
-            albumData.Append($"<b>Price: ${tracksPriceAfterDiscount}</b><br/>");
+            string albumData = System.IO.File.ReadAllText(VIEWS_FOLDER_PATH + "/Parts/AlbumInfo" + HTML_EXTENTION);
+
+            albumData = albumData.Replace("{{tracksPriceAfterDiscount}}", tracksPriceAfterDiscount.ToString())
+                                 .Replace("{{albumName}}", album.Name)
+                                 .Replace("{{albumCover}}", albumCover);
 
             var tracks = album.Tracks.ToArray();
 
@@ -70,9 +71,18 @@ namespace IRunes.Controlers
 
             if (tracks.Length > 0)
             {
-                foreach (var track in tracks)
+                string trackList = System.IO.File.ReadAllText(VIEWS_FOLDER_PATH + "/Parts/TrackList" + HTML_EXTENTION);
+
+                for (int i = 1; i < tracks.Length; i++)
                 {
-                    sbTracks.Append($"<a href=\"/track/details?id={track.Id}&albumId={albumId}\">{track.Name}</a></li><br/>");
+                    var track = tracks[i];
+
+                    string replacedTrackList = trackList.Replace("{{numeration}}", i.ToString())
+                                                        .Replace("{{trackId}}", track.Id)
+                                                        .Replace("{{albumId}}", albumId)
+                                                        .Replace("{{trackName}}", track.Name);
+
+                    sbTracks.Append(replacedTrackList);
                 }
 
                 this.ViewBag["tracks"] = sbTracks.ToString();
@@ -99,16 +109,14 @@ namespace IRunes.Controlers
 
             string trackLink = HttpUtility.UrlDecode(track.Link);
 
-            var trackInfo = new StringBuilder();
-            trackInfo.Append($"<b>Track Name: {track.Name}</b><br/>");
-            trackInfo.Append($"<b>Track Price: ${track.Price}</b><br/>");
-
-            string trackVideo = $"<iframe class=\"embed-responsive-item\" src=\"{trackLink}\"></iframe><br/>";
-
-            this.ViewBag["trackVideo"] = trackVideo;
-            this.ViewBag["trackInfo"] = trackInfo.ToString();
-
             this.ViewBag["albumId"] = albumId;
+
+            this.ViewBag["trackLink"] = trackLink;
+            this.ViewBag["trackVideo"] = this.InsertViewParameters("/Parts/Video");
+
+            this.ViewBag["trackName"] = track.Name;
+            this.ViewBag["trackPrice"] = track.Price.ToString();
+            this.ViewBag["trackInfo"] = this.InsertViewParameters("/Parts/TrackInfo");
 
             return this.View();
         }

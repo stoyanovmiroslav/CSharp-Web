@@ -65,9 +65,9 @@ namespace SIS.HTTP.Requests
 
         private void ParseCookie()
         {
-            if (!this.Headers.ContainsHeader(HttpHeader.Cookie)) return;
+            if (!this.Headers.ContainsHeader(HttpHeader.COOKIE)) return;
 
-            string cookiesString = this.Headers.GetHeader(HttpHeader.Cookie).Value;
+            string cookiesString = this.Headers.GetHeader(HttpHeader.COOKIE).Value;
 
             if (string.IsNullOrEmpty(cookiesString)) return;
 
@@ -188,7 +188,7 @@ namespace SIS.HTTP.Requests
 
         private bool IsValidRequestLine(string[] requestLine)
         {
-            if (requestLine.Length != 3 || requestLine[2] != GlobalConstans.HttpOneProtocolFragment)
+            if (requestLine.Length != 3 || requestLine[2] != GlobalConstans.HTTP_ONE_PROTOCOL_FRAGMENT)
             {
                 return false;
             }

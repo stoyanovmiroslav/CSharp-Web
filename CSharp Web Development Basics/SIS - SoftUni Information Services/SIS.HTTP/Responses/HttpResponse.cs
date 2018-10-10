@@ -55,7 +55,7 @@ namespace SIS.HTTP.Responses
         {
             StringBuilder stringBuilder = new StringBuilder();
 
-            stringBuilder.AppendLine($"{GlobalConstans.HttpOneProtocolFragment} {this.StatusCode.GetResponseLine()}")
+            stringBuilder.AppendLine($"{GlobalConstans.HTTP_ONE_PROTOCOL_FRAGMENT} {this.StatusCode.GetResponseLine()}")
                          .AppendLine($"{this.Headers}");
 
             if (this.Cookies.HasCookies())

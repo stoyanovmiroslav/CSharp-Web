@@ -70,11 +70,11 @@ namespace IRunes.Controlers
             var tracksPrice = album.Tracks.Sum(x => x.Price);
             var tracksPriceAfterDiscount = tracksPrice - (tracksPrice * 13 / 100);
 
-            var albumData = new StringBuilder();
+            string albumData = System.IO.File.ReadAllText(VIEWS_FOLDER_PATH + "/Parts/AlbumInfo" + HTML_EXTENTION);
 
-            albumData.Append($"<br/><img src=\"{albumCover}\" width=\"250\" height=\"250\"><br/>");
-            albumData.Append($"<p class=\"text-center\"><b>Album Name: {album.Name}</b></p>");
-            albumData.Append($"<p class=\"text-center\"><b>Album Price: ${tracksPriceAfterDiscount}</b></p>");
+            albumData = albumData.Replace("{{tracksPriceAfterDiscount}}", tracksPriceAfterDiscount.ToString())
+                                 .Replace("{{albumName}}", album.Name)
+                                 .Replace("{{albumCover}}", albumCover);
 
             var tracks = album.Tracks.ToArray();
 
@@ -84,10 +84,18 @@ namespace IRunes.Controlers
 
             if (tracks.Length > 0)
             {
+                string trackList = System.IO.File.ReadAllText(VIEWS_FOLDER_PATH + "/Parts/TrackList" + HTML_EXTENTION);
+
                 for (int i = 1; i < tracks.Length; i++)
                 {
                     var track = tracks[i];
-                    sbTracks.Append($"<b>&bull; {i}.</b> <a href=\"/track/details?id={track.Id}&albumId={albumId}\">{track.Name}</a></br>");
+
+                    string replacedTrackList = trackList.Replace("{{numeration}}", i.ToString())
+                                                        .Replace("{{trackId}}", track.Id)
+                                                        .Replace("{{albumId}}", albumId)
+                                                        .Replace("{{trackName}}", track.Name);
+
+                    sbTracks.Append(replacedTrackList);
                 }
 
                 this.ViewBag["tracks"] = sbTracks.ToString();
@@ -109,8 +117,6 @@ namespace IRunes.Controlers
 
             this.ViewBag["albums"] = "There are currently no albums.";
 
-            string albumsParameters = null;
-
             var user = db.Users.Include(x => x.Albums).FirstOrDefault(x => x.Username == this.User);
 
             if (user == null)
@@ -120,14 +126,19 @@ namespace IRunes.Controlers
 
             var albums = user.Albums.ToArray();
 
+            string albumListHtml = System.IO.File.ReadAllText(VIEWS_FOLDER_PATH + "/Parts/AlbumList" + HTML_EXTENTION);
+
+            var sb = new StringBuilder();
+
             foreach (var album in albums)
             {
-                albumsParameters += $"<a href=\"/album/details?id={album.Id}\">{album.Name}</a></li><br/>";
+                sb.Append(albumListHtml.Replace("{{albumId}}", album.Id)
+                                       .Replace("{{albumName}}", album.Name));
             }
 
-            if (albumsParameters != null)
+            if (sb.Length != 0)
             {
-                this.ViewBag["albums"] = albumsParameters;
+                this.ViewBag["albums"] = sb.ToString();
             }
 
             return this.View();

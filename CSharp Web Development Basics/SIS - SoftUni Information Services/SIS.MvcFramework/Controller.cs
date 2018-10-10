@@ -16,11 +16,16 @@ namespace SIS.MvcFramework
 {
     public abstract class Controller
     {
-        private const string VIEWS_FOLDER_PATH = "../../../Views";
-        private const string FILE_EXTENTION = ".html";
+        protected const string VIEWS_FOLDER_PATH = "../../../Views";
+
+        protected const string HTML_EXTENTION = ".html";
+
         private const string DEFAULT_CONTROLER_NAME = "Controller";
+
         private const string LAYOUT = "_Layout";
+
         private const string ERROR_VIEW_PATH = "Error/Error";
+
         protected const string AUTH_COOKIE_KEY = "IRunes_auth";
 
         public Controller()
@@ -37,8 +42,6 @@ namespace SIS.MvcFramework
 
         private string GetCurrentControllerName => this.GetType().Name.Replace(DEFAULT_CONTROLER_NAME, string.Empty);
 
-        protected bool IsUserAuthenticated { get; set; } = false;
-
         protected IUserCookieService userCookieService { get; }
 
         protected Dictionary<string, string> ViewBag { get; set; }
@@ -52,8 +55,6 @@ namespace SIS.MvcFramework
                     return null;
                 }
 
-                this.IsUserAuthenticated = true;
-
                 var cookie = this.Request.Cookies.GetCookie(AUTH_COOKIE_KEY);
                 var cookieContent = cookie.Value;
                 var userName = this.userCookieService.GetUserData(cookieContent);
@@ -63,41 +64,41 @@ namespace SIS.MvcFramework
 
         protected IHttpResponse View(string viewName = null)
         {
-            string bodyContent = GetViewContent(viewName);
+            string bodyContent = InsertViewParameters(viewName);
 
             this.SetViewBagParameters(bodyContent);
 
-            string fullViewContent = GetViewContent(LAYOUT);
+            string fullViewContent = InsertViewParameters(LAYOUT);
 
-            PrepateHtmlResult(fullViewContent);
+            PrepareHtmlResult(fullViewContent);
 
             return this.Response;
         }
 
-        private void PrepateHtmlResult(string fullViewContent)
+        private void PrepareHtmlResult(string fullViewContent)
         {
-            this.Response.Headers.Add(new HttpHeader("Content-Type", "text/html"));
+            this.Response.Headers.Add(new HttpHeader(HttpHeader.CONTENT_TYPE, "text/html"));
             this.Response.Content = Encoding.UTF8.GetBytes(fullViewContent);
         }
 
         protected IHttpResponse Redirect(string location)
         {
-            this.Response.Headers.Add(new HttpHeader(HttpHeader.Location, location));
-            this.Response.StatusCode = HttpResponseStatusCode.SeeOther; // TODO: Found better?
+            this.Response.Headers.Add(new HttpHeader(HttpHeader.LOCATION, location));
+            this.Response.StatusCode = HttpResponseStatusCode.SeeOther;
             return this.Response;
         }
 
         protected IHttpResponse File(byte[] content)
         {
-            this.Response.Headers.Add(new HttpHeader(HttpHeader.ContentLength, content.Length.ToString()));
-            this.Response.Headers.Add(new HttpHeader(HttpHeader.ContentDisposition, "inline"));
+            this.Response.Headers.Add(new HttpHeader(HttpHeader.CONTENT_LENGTH, content.Length.ToString()));
+            this.Response.Headers.Add(new HttpHeader(HttpHeader.CONTENT_DISPOSITION, "inline"));
             this.Response.Content = content;
             return this.Response;
         }
 
         protected IHttpResponse Text(string content)
         {
-            this.Response.Headers.Add(new HttpHeader(HttpHeader.ContentType, "text/plain; charset=utf-8"));
+            this.Response.Headers.Add(new HttpHeader(HttpHeader.CONTENT_TYPE, "text/plain; charset=utf-8"));
             this.Response.Content = Encoding.UTF8.GetBytes(content);
             return this.Response;
         }
@@ -107,14 +108,14 @@ namespace SIS.MvcFramework
             this.ViewBag["errorMassage"] = massage;
 
             StringBuilder bodyContent = new StringBuilder();
-            bodyContent.Append(GetViewContent(ERROR_VIEW_PATH));
-            bodyContent.Append(GetViewContent(currentViewPath));
+            bodyContent.Append(InsertViewParameters(ERROR_VIEW_PATH));
+            bodyContent.Append(InsertViewParameters(currentViewPath));
 
             this.SetViewBagParameters(bodyContent.ToString());
 
-            string fullViewContent = GetViewContent(LAYOUT);
+            string fullViewContent = InsertViewParameters(LAYOUT);
 
-            this.PrepateHtmlResult(fullViewContent);
+            this.PrepareHtmlResult(fullViewContent);
             
             this.Response.StatusCode = HttpResponseStatusCode.BadRequest;
 
@@ -127,26 +128,26 @@ namespace SIS.MvcFramework
             this.ViewBag["NonAuthenticated"] = "";
             this.ViewBag["Authenticated"] = "";
 
-            if (IsUserAuthenticated)
-            {
-                this.ViewBag["NonAuthenticated"] = "d-none";
-            }
-            else
+            if (this.User == null)
             {
                 this.ViewBag["Authenticated"] = "d-none";
             }
+            else
+            {
+                this.ViewBag["NonAuthenticated"] = "d-none";
+            }
         }
 
-        protected string GetViewContent(string viewName)
+        protected string InsertViewParameters(string viewName)
         {
             string controlerName = GetCurrentControllerName;
             string actionName = new StackFrame(2).GetMethod().Name;
 
-            string fullPath = $"{VIEWS_FOLDER_PATH}/{viewName}{FILE_EXTENTION}";
+            string fullPath = $"{VIEWS_FOLDER_PATH}/{viewName}{HTML_EXTENTION}";
 
             if (viewName == null)
             {
-                fullPath = $"{VIEWS_FOLDER_PATH}/{controlerName}/{actionName}{FILE_EXTENTION}";
+                fullPath = $"{VIEWS_FOLDER_PATH}/{controlerName}/{actionName}{HTML_EXTENTION}";
             }
 
             var fileContent = System.IO.File.ReadAllText(fullPath);

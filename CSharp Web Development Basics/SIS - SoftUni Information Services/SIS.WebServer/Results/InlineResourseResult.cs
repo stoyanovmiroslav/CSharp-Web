@@ -12,8 +12,8 @@ namespace SIS.WebServer.Results
         public InlineResourseResult(HttpResponseStatusCode statusCode, byte[] content)
             : base(statusCode)
         {
-            this.Headers.Add(new HttpHeader(HttpHeader.ContentLength, content.Length.ToString()));
-            this.Headers.Add(new HttpHeader(HttpHeader.ContentDisposition, "inline"));
+            this.Headers.Add(new HttpHeader(HttpHeader.CONTENT_LENGTH, content.Length.ToString()));
+            this.Headers.Add(new HttpHeader(HttpHeader.CONTENT_DISPOSITION, "inline"));
 
             this.Content = content;
         }

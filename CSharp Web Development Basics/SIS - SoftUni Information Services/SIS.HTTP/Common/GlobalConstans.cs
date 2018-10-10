@@ -6,8 +6,6 @@ namespace SIS.HTTP.Common
 {
     public static class GlobalConstans
     {
-        public const string HttpOneProtocolFragment = "HTTP/1.1";
-
-        public const string HttpHeaderKey = "Host";
+        public const string HTTP_ONE_PROTOCOL_FRAGMENT = "HTTP/1.1";
     }
 }
