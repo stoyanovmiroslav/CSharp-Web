@@ -1,12 +1,17 @@
 ﻿using SIS.HTTP.Enums;
+using SIS.HTTP.Extensions;
 using SIS.HTTP.Requests.Contracts;
 using SIS.HTTP.Responses.Contracts;
 using SIS.MvcFramework.Contracts;
 using SIS.MvcFramework.HttpAttributes;
+using SIS.MvcFramework.Services;
+using SIS.MvcFramework.Services.Contracts;
 using SIS.WebServer;
 using SIS.WebServer.Results;
 using SIS.WebServer.Routing;
 using System;
+using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Reflection;
 
@@ -16,10 +21,13 @@ namespace SIS.MvcFramework
     {
         public static void Start(IMvcApplication application)
         {
-            application.ConfigureServices();
+            CultureInfo.DefaultThreadCurrentCulture = CultureInfo.InvariantCulture;
+
+            var serviceCollection  = new ServiceCollection();
+            application.ConfigureServices(serviceCollection );
 
             var serverRoutingTable = new ServerRoutingTable();
-            AutoRegisterRoutes(serverRoutingTable, application);
+            AutoRegisterRoutes(serverRoutingTable, application, serviceCollection);
 
             application.Configure();
 
@@ -27,7 +35,7 @@ namespace SIS.MvcFramework
             server.Run();
         }
 
-        private static void AutoRegisterRoutes(ServerRoutingTable serverRoutingTable, IMvcApplication application)
+        private static void AutoRegisterRoutes(ServerRoutingTable serverRoutingTable, IMvcApplication application, IServiceCollection serviceCollection)
         {
             var controllers = application.GetType().Assembly.GetTypes()
                  .Where(myType => myType.IsClass
@@ -51,15 +59,14 @@ namespace SIS.MvcFramework
                         continue;
                     }
 
-                    serverRoutingTable.Add(httpAttribute.Method, httpAttribute.Path, (request) => ExecuteAction(controller, methodInfo, request));
-                    //Console.WriteLine($"Route registered: {controller.Name}.{methodInfo.Name} => {httpAttribute.Method} => {httpAttribute.Path}");
+                    serverRoutingTable.Add(httpAttribute.Method, httpAttribute.Path, (request) => ExecuteAction(controller, methodInfo, request, serviceCollection));
                 }
             }
         }
 
-        private static IHttpResponse ExecuteAction(Type controllerType, MethodInfo methodInfo, IHttpRequest request)
+        private static IHttpResponse ExecuteAction(Type controllerType, MethodInfo methodInfo, IHttpRequest request, IServiceCollection serviceCollection)
         {
-            var controllerInstance = Activator.CreateInstance(controllerType) as Controller;
+            var controllerInstance = serviceCollection.CreateInstance(controllerType) as Controller;
 
             if (controllerInstance == null)
             {
@@ -67,9 +74,91 @@ namespace SIS.MvcFramework
             }
 
             controllerInstance.Request = request;
+            controllerInstance.userCookieService = serviceCollection.CreateInstance<IUserCookieService>();
 
-            var httpResponse = methodInfo.Invoke(controllerInstance, new object[] { }) as IHttpResponse;
+            var actionParameters = methodInfo.GetParameters();
+            var actionParameterObjects = new List<object>();
+
+            foreach (var actionParameter in actionParameters)
+            {
+                if (actionParameter.ParameterType.IsValueType ||
+                    Type.GetTypeCode(actionParameter.ParameterType) == TypeCode.String)
+                {
+                    var stringValue = GetRequestData(request, actionParameter.Name);
+                    actionParameterObjects.Add(TryParse(stringValue, actionParameter.ParameterType));
+                }
+                else
+                {
+                    var instance = serviceCollection.CreateInstance(actionParameter.ParameterType);
+
+                    var properties = instance.GetType().GetProperties();
+
+                    foreach (var property in properties)
+                    {
+                        string stringValue = GetRequestData(request, property.Name);
+
+                        if (stringValue != null)
+                        {
+                            var value = TryParse(stringValue, property.PropertyType);
+                            property.SetValue(instance, value);
+                        }
+                    }
+
+                    actionParameterObjects.Add(instance);
+                }
+            }
+
+            var httpResponse = methodInfo.Invoke(controllerInstance, actionParameterObjects.ToArray()) as IHttpResponse;
             return httpResponse;
+        }
+
+        private static string GetRequestData(IHttpRequest request, string key)
+        {
+            key = key.ToLower();
+            string stringValue = null;
+
+            if (request.FormData.Any(x => x.Key.ToLower() == key))
+            {
+                stringValue = request.FormData.First(x => x.Key.ToLower() == key).Value.ToString().UrlDecode();
+            }
+            else if (request.QueryData.Any(x => x.Key.ToLower() == key))
+            {
+                stringValue = request.QueryData.First(x => x.Key.ToLower() == key).Value.ToString().UrlDecode();
+            }
+
+            return stringValue;
+        }
+
+        private static object TryParse(string stringValue, Type type)
+        {
+            var typeCode = Type.GetTypeCode(type);
+            object value = null;
+            switch (typeCode)
+            {
+                case TypeCode.Int32:
+                    if (int.TryParse(stringValue, out var intValue)) value = intValue;
+                    break;
+                case TypeCode.Char:
+                    if (char.TryParse(stringValue, out var charValue)) value = charValue;
+                    break;
+                case TypeCode.Int64:
+                    if (long.TryParse(stringValue, out var longValue)) value = longValue;
+                    break;
+                case TypeCode.Double:
+                    if (double.TryParse(stringValue, out var doubleValue)) value = doubleValue;
+                    break;
+                case TypeCode.Decimal:
+                    if (decimal.TryParse(stringValue, out var decimalValue)) value = decimalValue;
+                    break;
+                case TypeCode.DateTime:
+                    if (DateTime.TryParse(stringValue, out var dateTimeValue)) value = dateTimeValue;
+                    break;
+                case TypeCode.String:
+                    value = stringValue;
+                    break;
+            }
+
+            return value;
         }
     }
 }

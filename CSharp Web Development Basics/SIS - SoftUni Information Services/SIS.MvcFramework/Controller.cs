@@ -3,13 +3,9 @@ using SIS.HTTP.Headers;
 using SIS.HTTP.Requests.Contracts;
 using SIS.HTTP.Responses;
 using SIS.HTTP.Responses.Contracts;
-using SIS.MvcFramework.Services;
 using SIS.MvcFramework.Services.Contracts;
-using SIS.WebServer.Results;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.IO;
-using System.Net;
 using System.Text;
 
 namespace SIS.MvcFramework
@@ -30,9 +26,7 @@ namespace SIS.MvcFramework
 
         public Controller()
         {
-            this.userCookieService = new UserCookieService();
             this.ViewBag = new Dictionary<string, string>();
-
             this.Response = new HttpResponse { StatusCode = HttpResponseStatusCode.Ok };
         }
 
@@ -42,7 +36,7 @@ namespace SIS.MvcFramework
 
         private string GetCurrentControllerName => this.GetType().Name.Replace(DEFAULT_CONTROLER_NAME, string.Empty);
 
-        protected IUserCookieService userCookieService { get; }
+        public IUserCookieService userCookieService { get; internal set; }
 
         protected Dictionary<string, string> ViewBag { get; set; }
 

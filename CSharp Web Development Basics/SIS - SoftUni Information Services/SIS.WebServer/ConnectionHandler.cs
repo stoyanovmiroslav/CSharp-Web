@@ -2,7 +2,6 @@
 using System.IO;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using SIS.HTTP.Cookies;
 using SIS.HTTP.Enums;
@@ -11,7 +10,6 @@ using SIS.HTTP.Requests.Contracts;
 using SIS.HTTP.Responses;
 using SIS.HTTP.Responses.Contracts;
 using SIS.HTTP.Session;
-using SIS.HTTP.Session.Contracts;
 using SIS.WebServer.Results;
 using SIS.WebServer.Routing;
 

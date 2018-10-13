@@ -1,14 +1,11 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Text;
 using System.Web;
 using IRunes.Models;
+using IRunes.ViewModels.Album;
 using Microsoft.EntityFrameworkCore;
-using SIS.HTTP.Enums;
-using SIS.HTTP.Requests.Contracts;
 using SIS.HTTP.Responses.Contracts;
 using SIS.MvcFramework.HttpAttributes;
-using SIS.WebServer.Results;
 
 namespace IRunes.Controlers
 {
@@ -26,17 +23,14 @@ namespace IRunes.Controlers
         }
 
         [HttpPost("/album/create")]
-        public IHttpResponse CreatePost()
+        public IHttpResponse DoCreate(DoCreateViewModel model)
         {
             if (this.User == null)
             {
                 return this.Redirect("/user/login");
             }
 
-            string name = this.Request.FormData["name"].ToString();
-            string cover = this.Request.FormData["cover"].ToString();
-
-            if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(cover))
+            if (string.IsNullOrWhiteSpace(model.Name) || string.IsNullOrWhiteSpace(model.Cover))
             {
                 return this.Redirect("/album/create");
             }
@@ -48,23 +42,21 @@ namespace IRunes.Controlers
                 return this.Redirect("/user/login");
             }
 
-            user.Albums.Add(new Album { Name = name, Cover = cover });
+            user.Albums.Add(new Album { Name = model.Name, Cover = model.Cover });
             db.SaveChanges();
 
             return this.Redirect("/album/all");
         }
 
         [HttpGet("/album/details")]
-        public IHttpResponse Details()
+        public IHttpResponse Details(DetailsViewModel model)
         {
             if (this.User == null)
             {
                 return this.Redirect("/user/login");
             }
 
-            var albumId = this.Request.QueryData["id"].ToString();
-
-            var album = this.db.Albums.Include(x => x.Tracks).FirstOrDefault(x => x.Id == albumId);
+            var album = this.db.Albums.Include(x => x.Tracks).FirstOrDefault(x => x.Id == model.AlbumId);
             string albumCover = HttpUtility.UrlDecode(album.Cover);
 
             var tracksPrice = album.Tracks.Sum(x => x.Price);
@@ -86,13 +78,13 @@ namespace IRunes.Controlers
             {
                 string trackList = System.IO.File.ReadAllText(VIEWS_FOLDER_PATH + "/Parts/TrackList" + HTML_EXTENTION);
 
-                for (int i = 1; i < tracks.Length; i++)
+                for (int i = 1; i <= tracks.Length; i++)
                 {
-                    var track = tracks[i];
+                    var track = tracks[i - 1];
 
                     string replacedTrackList = trackList.Replace("{{numeration}}", i.ToString())
                                                         .Replace("{{trackId}}", track.Id)
-                                                        .Replace("{{albumId}}", albumId)
+                                                        .Replace("{{albumId}}", model.AlbumId)
                                                         .Replace("{{trackName}}", track.Name);
 
                     sbTracks.Append(replacedTrackList);

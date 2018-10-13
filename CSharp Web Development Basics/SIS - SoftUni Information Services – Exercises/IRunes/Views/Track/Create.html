@@ -1,0 +1,33 @@
+﻿<div class="container w-50 container-botom-margin">
+    <p class="form-title">Create Track</p>
+    <hr class="my-1">
+    <form method="post" , action="/track/create?albumId={{albumId}}">
+        <div class="form-group">
+            <label for="name">Name</label>
+            <input type="text" class="form-control" name="name" aria-describedby="name" placeholder="Name">
+        </div>
+        <div class="row">
+            <div class="col-sm-5">
+                <label for="cover">Link</label>
+                <input type="url" class="form-control" name="link" aria-describedby="link" placeholder="Link">
+            </div>
+            <div class="col-sm-2"></div>
+            <div class="col-sm-5">
+                <label for="cover">Price</label>
+                <input type="number" min="0.01" class="form-control" name="price" aria-describedby="price" placeholder="Price">
+            </div>
+        </div>
+        <br />
+        <hr class="my-1">
+        <div class="container">
+            <div class="row text-center">
+                <div class="col-sm-6">
+                    <div><button type="submit" class="btn btn-success">Create</button></div>
+                </div>
+                <div class="col-sm-6">
+                    <a href="/album/details?id={{albumId}}" class="btn btn-success btn-center">Back To All</a>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

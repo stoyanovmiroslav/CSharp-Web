@@ -1,6 +1,4 @@
-﻿using System;
-using SIS.HTTP.Requests.Contracts;
-using SIS.HTTP.Responses.Contracts;
+﻿using SIS.HTTP.Responses.Contracts;
 using SIS.MvcFramework.HttpAttributes;
 
 namespace IRunes.Controlers

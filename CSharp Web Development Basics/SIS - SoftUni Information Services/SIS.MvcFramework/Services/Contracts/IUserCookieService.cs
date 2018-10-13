@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace SIS.MvcFramework.Services.Contracts
+﻿namespace SIS.MvcFramework.Services.Contracts
 {
     public interface IUserCookieService
     {
