@@ -38,6 +38,7 @@ namespace SIS.Framework.Routers
             }
 
             var controller = this.GetController(controllerName, request);
+            controller.Request = request;
 
             var action = this.GetAction(requestMethod, controller, actionName);
 

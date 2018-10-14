@@ -20,11 +20,7 @@ namespace CakeApp.Controllers
         protected BaseController()
         {
             this.db = new CakeAppDbContext();
-            this.userCookieService = new UserCookieService();
         }
-
-        public IUserCookieService userCookieService  { get; }
-
 
         //protected IActionResult ViewParameters(string viewName, string content)
         //{
@@ -40,18 +36,5 @@ namespace CakeApp.Controllers
         //    var content = $"<h1>{errorMessage}</h1>";
         //    return new HtmlResult(HttpResponseStatusCode.BadRequest, content);
         //}
-
-
-        protected string GetUsername(IHttpRequest request)
-        {
-            if (!request.Cookies.ContainsCookie(".auth-cakes"))
-            {
-                return null;
-            }
-            var cookie = request.Cookies.GetCookie(".auth-cakes");
-            var cookieContent = cookie.Value;
-            var userName = this.userCookieService.GetUserData(cookieContent);
-            return userName;
-        }
     }
 }

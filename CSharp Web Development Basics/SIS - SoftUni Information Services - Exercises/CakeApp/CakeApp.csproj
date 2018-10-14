@@ -20,25 +20,25 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Views\aboutus.html">
+    <None Update="Views\Home\AboutUs.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Views\addCake.html">
+    <None Update="Views\Cake\AddCake.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
     <None Update="Views\Home\Index.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Views\login.html">
+    <None Update="Views\Account\Login.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Views\profile.html">
+    <None Update="Views\Home\Profile.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Views\register.html">
+    <None Update="Views\Account\Register.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
-    <None Update="Views\search.html">
+    <None Update="Views\Home\Search.html">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
