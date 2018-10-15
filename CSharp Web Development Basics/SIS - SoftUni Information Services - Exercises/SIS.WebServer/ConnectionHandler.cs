@@ -1,8 +1,6 @@
 ﻿using System;
-using System.IO;
 using System.Net.Sockets;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using SIS.HTTP.Cookies;
 using SIS.HTTP.Requests;
@@ -56,7 +54,6 @@ namespace SIS.WebServer
 
             return new HttpRequest(result.ToString());
         }
-
 
         private async Task PrepareResponse(IHttpResponse httpResponse)
         {

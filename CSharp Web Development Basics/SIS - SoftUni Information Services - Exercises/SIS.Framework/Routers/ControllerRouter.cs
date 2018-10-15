@@ -1,6 +1,7 @@
 ﻿using SIS.Framework.ActionResult.Contracts;
 using SIS.Framework.Attributes;
 using SIS.Framework.Controlers;
+using SIS.HTTP.Extensions;
 using SIS.HTTP.Requests.Contracts;
 using SIS.HTTP.Responses;
 using SIS.HTTP.Responses.Contracts;
@@ -8,6 +9,7 @@ using SIS.WebServer.Api.Contracts;
 using SIS.WebServer.Results;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Reflection;
 
@@ -21,25 +23,23 @@ namespace SIS.Framework.Routers
             var actionName = string.Empty;
             var requestMethod = request.RequestMethod.ToString();
 
-            if (request.Url == "/")
+            if (request.Path == "/")
             {
-                controllerName = "HomeController";
+                controllerName = "Home";
                 actionName = "Index";
             }
             else
             {
-                var requestUrlSplit = request.Url.Split("/", StringSplitOptions.RemoveEmptyEntries);
+                var requestUrlSplit = request.Path.Split("/", StringSplitOptions.RemoveEmptyEntries);
 
                 if (requestUrlSplit.Length >= 2)
                 {
-                    controllerName = requestUrlSplit[0];
+                    controllerName = requestUrlSplit[0].Capitalize();
                     actionName = requestUrlSplit[1];
                 }
             }
 
             var controller = this.GetController(controllerName, request);
-            controller.Request = request;
-
             var action = this.GetAction(requestMethod, controller, actionName);
 
             if (controller == null || action == null)
@@ -47,19 +47,103 @@ namespace SIS.Framework.Routers
                 return new HttpResponse(HTTP.Enums.HttpResponseStatusCode.NotFound);
             }
 
-            return this.PrepareResponse(controller, action);
+            controller.Request = request;
+
+            object[] actionParameters = this.MapActionParameters(action, request, controller);
+
+            IActionResult actionResult = (IActionResult)action.Invoke(controller, actionParameters);
+
+            var response = this.PrepareResponse(actionResult);
+
+            foreach (var cookie in controller.Cookies)
+            {
+                response.AddCookie(cookie);
+            }
+
+            return response;
         }
 
-        private IHttpResponse PrepareResponse(Controller controller, MethodInfo action)
+        private object[] MapActionParameters(MethodInfo action, IHttpRequest request, Controller controller)
         {
-            IActionResult actionResult = (IActionResult)action.Invoke(controller, null);
+            var actionParameters = action.GetParameters();
+
+            var mappedActionParameters = new List<object>();
+
+            foreach (var actionParameter in actionParameters)
+            {
+                if (actionParameter.ParameterType.IsValueType ||
+                    actionParameter.ParameterType == typeof(string))
+                {
+                    mappedActionParameters.Add(ProcessPrimitiveParameters(actionParameter, request));
+                }
+                else
+                {
+                    var bindingModel = ProcessBindingModelParameters(actionParameter, request);
+
+                    controller.ModelState.IsValid = IsValidModel(bindingModel);
+                    mappedActionParameters.Add(bindingModel);
+                }
+            }
+
+            return mappedActionParameters.ToArray();
+        }
+
+        private object ProcessBindingModelParameters(ParameterInfo actionParameter, IHttpRequest request)
+        {
+            Type bindingModelType = actionParameter.ParameterType;
+
+            var bindingModelInstance = Activator.CreateInstance(bindingModelType);
+
+            var bindingModelProperties = bindingModelType.GetProperties();
+
+            foreach (var property in bindingModelProperties)
+            {
+                try
+                {
+                    object value = this.GetParametersFromRequestData(property.Name, request);
+                    property.SetValue(bindingModelInstance, Convert.ChangeType(value, property.PropertyType));
+                }
+                catch
+                {
+                    Console.WriteLine($"The {property.Name} field could not be mapped.");
+                }
+            }
+
+            return Convert.ChangeType(bindingModelInstance, bindingModelType);
+        }
+
+        private object ProcessPrimitiveParameters(ParameterInfo actionParameter, IHttpRequest request)
+        {
+            object value = GetParametersFromRequestData(actionParameter.Name, request);
+
+            return Convert.ChangeType(value, actionParameter.ParameterType);
+        }
+
+        private object GetParametersFromRequestData(string parameterName, IHttpRequest request)
+        {
+            string key = parameterName.ToLower();
+
+            if (request.QueryData.Any(x => x.Key.ToLower() == key))
+            {
+                return request.QueryData.First(x => x.Key.ToLower() == key).Value;
+            }
+            else if (request.FormData.Any(x => x.Key.ToLower() == key))
+            {
+                return request.FormData.First(x => x.Key.ToLower() == key).Value;
+            }
+
+            return null;
+        }
+
+        private IHttpResponse PrepareResponse(IActionResult actionResult)
+        {
             string invocationResult = actionResult.Invoke();
 
             if (actionResult is IViewable)
             {
                 return new HtmlResult(HTTP.Enums.HttpResponseStatusCode.Ok, invocationResult);
             }
-            else if (actionResult is IRenderable)
+            else if (actionResult is IRedirectable)
             {
                 return new RedirectResult(invocationResult);
             }
@@ -71,7 +155,7 @@ namespace SIS.Framework.Routers
 
         private MethodInfo GetAction(string requestMethod, Controller controller, string actionName)
         {
-            var actions = this.GetSuitableMethods(controller, actionName) .ToList();
+            var actions = this.GetSuitableMethods(controller, actionName).ToList();
 
             if (!actions.Any())
             {
@@ -120,15 +204,24 @@ namespace SIS.Framework.Routers
                 return null;
             }
 
-            var fullyQualifiedControllerName = string.Format("{0}.{1}.{2}, {0}",
+            var fullyQualifiedControllerName = string.Format("{0}.{1}.{2}{3}, {0}",
                 MvcContext.Get.AssemblyName,
                 MvcContext.Get.ControllersFolder,
-                controllerName);
+                controllerName,
+                MvcContext.Get.ControllerSuffix);
 
             var controllerType = Type.GetType(fullyQualifiedControllerName);
 
             var controller = (Controller)Activator.CreateInstance(controllerType);
             return controller;
+        }
+
+        private static bool IsValidModel(object obj)
+        {
+            var validationContext = new System.ComponentModel.DataAnnotations.ValidationContext(obj);
+            var validationResults = new List<ValidationResult>();
+
+            return System.ComponentModel.DataAnnotations.Validator.TryValidateObject(obj, validationContext, validationResults, true);
         }
     }
 }

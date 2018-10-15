@@ -14,8 +14,12 @@ namespace SIS.Framework
 
         public string ControllerSuffix { get; set; }
 
-        public string ViewFolder { get; set; }
+        public string ViewFolderFullPath { get; set; }
+
+        public string ErrorViewFolder { get; set; }
 
         public string ModelsFolder { get; set; }
+
+        public string HtmlFileExtention { get; set; } = "html";
     }
 }

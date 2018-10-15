@@ -1,16 +1,11 @@
 ﻿using CakeApp.Data.Models;
 using CakeApp.Services;
 using CakeApp.Services.Contracts;
+using CakeApp.ViewModels.Account;
 using SIS.Framework.ActionResult.Contracts;
+using SIS.Framework.Attributes;
 using SIS.HTTP.Cookies;
-using SIS.HTTP.Exceptions;
-using SIS.HTTP.Requests.Contracts;
-using SIS.HTTP.Responses.Contracts;
-using SIS.WebServer.Results;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace CakeApp.Controllers
 {
@@ -23,48 +18,41 @@ namespace CakeApp.Controllers
             this.hashService = new HashService();
         }
 
+        [HttpGet]
         public IActionResult Register()
         {
             return this.View();
         }
 
-        public IActionResult Login()
+        [HttpPost]
+        public IActionResult Register(RegisterViewModel model)
         {
-            return this.View();
-        }
+            if (string.IsNullOrWhiteSpace(model.Username) || model.Username.Length < 6)
+            {
+                return this.BadRequestError("Username should be 6 or more characters long!");
+            }
 
-        public IActionResult DoRegister()
-        {
-            string username = this.Request.FormData["username"].ToString();
-            string password = this.Request.FormData["password"].ToString();
-            string confirmPassword = this.Request.FormData["confirm-password"].ToString();
+            if (this.db.Users.Any(x => x.Username == model.Username))
+            {
+                return this.BadRequestError("Username already exist!");
+            }
 
-            //if (string.IsNullOrWhiteSpace(username) || username.Length < 6)
-            //{
-            //    return this.BadRequestError("Username should be 6 or more characters long!");
-            //}
+            if (model.Password != model.ConfirmPassword)
+            {
+                return this.BadRequestError("Confirm password does not match password!");
+            }
 
-            //if (this.db.Users.Any(x => x.Username == username))
-            //{
-            //    return this.BadRequestError("Username already exist!");
-            //}
+            if (string.IsNullOrWhiteSpace(model.Password) || model.Password.Length < 6)
+            {
+                return this.BadRequestError("Password should be 6 or more characters long!");
+            }
 
-            //if (password != confirmPassword)
-            //{
-            //    return this.BadRequestError("confirm password does not match password!");
-            //}
-
-            //if (string.IsNullOrWhiteSpace(password) || password.Length < 6)
-            //{
-            //    return this.BadRequestError("Password should be 6 or more characters long!");
-            //}
-
-            string hashedPassword = this.hashService.Hash(password);
+            string hashedPassword = this.hashService.Hash(model.Password);
 
             User user = new User
             {
-                Name = username,
-                Username = username,
+                Name = model.Username,
+                Username = model.Username,
                 Password = hashedPassword
             };
 
@@ -74,47 +62,49 @@ namespace CakeApp.Controllers
             return this.View("login");
         }
 
-        //public IActionResult Logout(IHttpRequest request)
-        //{
-        //    if (!request.Cookies.ContainsCookie(".auth-cakes"))
-        //    {
-        //        return new RedirectResult("/");
-        //    }
+        [HttpGet]
+        public IActionResult Login()
+        {
+            return this.View();
+        }
 
-        //    var cookie = request.Cookies.GetCookie(".auth-cakes");
-        //    cookie.Delete();
+        [HttpPost]
+        public IActionResult Login(LoginViewModel model)
+        {
+            if (string.IsNullOrWhiteSpace(model.Username) || string.IsNullOrWhiteSpace(model.Password))
+            {
+                return this.BadRequestError("Invalid username or password!");
+            }
 
-        //    var response = new RedirectResult("/");
-        //    response.Cookies.Add(cookie);
-        //    return response;
-        //}
+            var hashedPassword = this.hashService.Hash(model.Password);
 
-        //        public IActionResult DoLogin(IHttpRequest request)
-        //        {
-        //            string username = request.FormData["username"].ToString();
-        //            string password = request.FormData["password"].ToString();
+            User user = db.Users.FirstOrDefault(x => x.Username == model.Username && x.Password == hashedPassword);
 
-        //            if (string.IsNullOrWhiteSpace(username) || string.IsNullOrWhiteSpace(password))
-        //            {
-        //                return this.BadRequestError("Invalid username or password!");
-        //            }
+            if (user == null)
+            {
+                return this.BadRequestError("Invalid username or password!");
+            }
 
-        //            var hashedPassword = this.hashService.Hash(password);
+            var cookieContent = this.UserCookieService.GetUserCookie(user.Username);
+            this.Cookies.Add(new HttpCookie(AUTH_COOKIE_KEY, cookieContent));
 
-        //            User user = db.Users.FirstOrDefault(x => x.Username == username && x.Password == hashedPassword);
+            return this.RedirectToAction("/Home/Index");
+        }
 
-        //            if (user == null)
-        //            {
-        //                return this.BadRequestError("Invalid username or password!");
-        //            }
+        [HttpGet]
+        public IActionResult Logout()
+        {
+            if (!this.Request.Cookies.ContainsCookie(AUTH_COOKIE_KEY))
+            {
+                return this.RedirectToAction("/Home/Index");
+            }
 
-        //            var cookieContent = this.userCookieService.GetUserCookie(user.Username);
+            var cookie = this.Request.Cookies.GetCookie(AUTH_COOKIE_KEY);
+            cookie.Delete();
 
-        //            var response = new RedirectResult("/");
-        //            var cookie = new HttpCookie(".auth-cakes", cookieContent) { HttpOnly = true };
-        //            response.Cookies.Add(cookie);
-        //            return response;
-        //        }
-        //    }
+            this.Cookies.Add(cookie);
+
+            return this.RedirectToAction("/Home/Index");
+        }
     }
 }

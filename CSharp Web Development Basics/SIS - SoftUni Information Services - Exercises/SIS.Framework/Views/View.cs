@@ -1,8 +1,6 @@
 ﻿using SIS.Framework.ActionResult.Contracts;
-using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 
 namespace SIS.Framework.Views
 {
@@ -15,13 +13,13 @@ namespace SIS.Framework.Views
             this.fullyQualifiedTemplateName = fullyQualifiedTemplateName;
         }
 
-        public View(string fullyQualifiedTemplateName, Dictionary<string, string> viewBag) 
+        public View(string fullyQualifiedTemplateName, IDictionary<string, object> viewData) 
             : this(fullyQualifiedTemplateName)
         {
-            this.ViewBag = viewBag;
+            this.ViewData = viewData;
         }
 
-        public Dictionary<string, string> ViewBag { get; set; }
+        private IDictionary<string, object> ViewData { get; set; }
 
         private string ReadFile(string fullyQualifiedTemplateName)
         {
@@ -35,20 +33,24 @@ namespace SIS.Framework.Views
 
         public string Render()
         {
-            var fullHtml = ReadFile(this.fullyQualifiedTemplateName);
+            var bodyHtml = ReadFile(this.fullyQualifiedTemplateName);
+            this.ViewData["body"] = InsertViewParameters(bodyHtml);
 
-            return InsertViewParameters(fullHtml);
+            // TODO: Read layout path from const
+            var layoutHtml = ReadFile("../../../Views/_Layout.html"); 
+
+            return InsertViewParameters(layoutHtml);
         }
 
         protected string InsertViewParameters(string fileContent)
         {
-            foreach (var viewBagKey in ViewBag.Keys)
+            foreach (var viewDataKey in this.ViewData.Keys)
             {
-                string placeHolder = $"{{{{{viewBagKey}}}}}";
+                string placeHolder = $"{{{{{viewDataKey}}}}}";
 
-                if (fileContent.Contains(viewBagKey))
+                if (fileContent.Contains(viewDataKey))
                 {
-                    fileContent = fileContent.Replace(placeHolder, this.ViewBag[viewBagKey]);
+                    fileContent = fileContent.Replace(placeHolder, this.ViewData[viewDataKey].ToString());
                 }
             }
 

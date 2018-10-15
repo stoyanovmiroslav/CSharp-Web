@@ -12,8 +12,6 @@ namespace SIS.Framework.Utilities
                       .Replace(MvcContext.Get.ControllerSuffix, string.Empty);
 
         public static string GetFullQualifiedName(string controller, string action) =>
-            $"../../../{MvcContext.Get.ViewFolder}/{controller}/{action}.html";
-
-
+            $"{MvcContext.Get.ViewFolderFullPath}/{controller}/{action}.{MvcContext.Get.HtmlFileExtention}";
     }
 }

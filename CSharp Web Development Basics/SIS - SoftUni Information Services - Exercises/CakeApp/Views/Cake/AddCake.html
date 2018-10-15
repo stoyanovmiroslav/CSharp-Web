@@ -1,26 +1,13 @@
-﻿<!DOCTYPE html>
-
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <meta charset="utf-8" />
-    <title></title>
-</head>
-<body>
-    <a href="/">Back to home</a>
+﻿<form method="post", action="/cake/addcake">
+    <h1>Add Cake</h1>
+    <label for="name"><b>Name:</b></label>
+    <input type="text" placeholder="Name" name="name" required>
+    <br> <br>
+    <label for="price"><b>Price:</b></label>
+    <input type="number" placeholder="Price" name="price" required>
+    <br> <br>
+    <label for="url"><b>Picture URL:</b></label>
+    <input type="url" placeholder="Image Url" name="imageurl" required>
     <hr />
-    <form method="post" , action="/addcake">
-        <h1>Add Cake</h1>
-        <label for="name"><b>Name:</b></label>
-        <input type="text" placeholder="Name" name="name" required>
-        <br> <br>
-
-        <label for="price"><b>Price:</b></label>
-        <input type="number" placeholder="Price" name="price" required>
-        <br> <br>
-        <label for="url"><b>Picture URL:</b></label>
-        <input type="url" placeholder="Confirm Password" name="picture-url" required>
-        <hr />
-        <button type="submit" class="registerbtn">Add Cake</button>
-    </form>
-</body>
-</html>
+    <button type="submit" class="registerbtn">Add Cake</button>
+</form>

@@ -1,62 +1,59 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using CakeApp.Data.Models;
+using CakeApp.ViewModels.Cake;
+using SIS.Framework.ActionResult.Contracts;
+using SIS.Framework.Attributes;
+using System;
+using System.Linq;
 
 namespace CakeApp.Controllers
 {
-    public class CakeController
+    public class CakeController : BaseController
     {
-        //    public IActionResult AddCake(IHttpRequest request)
-        //    {
-        //        var usernameFromHash = this.GetUsername(request);
+        [HttpGet]
+        public IActionResult AddCake()
+        {
+            if (this.User == null)
+            {
+                return this.BadRequestError("You need to login first!");
+            }
 
-        //        if (usernameFromHash == null)
-        //        {
-        //            return this.BadRequestError("You need to login first!");
-        //        }
+            return this.View();
+        }
 
-        //        return this.View("addcake");
-        //    }
+        [HttpPost]
+        public IActionResult AddCake(AddCakeViewModel model)
+        {
+            if (this.User == null)
+            {
+                return this.BadRequestError("you need to login first!");
+            }
 
-        //    public IActionResult DoAddCake(IHttpRequest request)
-        //    {
-        //        var usernameFromHash = this.GetUsername(request);
+            var user = db.Users.FirstOrDefault(x => x.Username == this.User);
 
-        //        if (usernameFromHash == null)
-        //        {
-        //            return this.BadRequestError("You need to login first!");
-        //        }
+            if (this.User == null)
+            {
+                return this.BadRequestError("you need to login first!");
+            }
 
-        //        var user = db.Users.FirstOrDefault(x => x.Username == usernameFromHash);
+            Order order = new Order()
+            {
+                DateOfCreation = DateTime.UtcNow,
+                User = user
+            };
 
-        //        if (user == null)
-        //        {
-        //            return this.BadRequestError("You need to login first!");
-        //        }
+            Product product = new Product
+            {
+                ImageUrl = model.ImageUrl,
+                Name = model.Name,
+                Price = model.Price
+            };
 
-        //        string imageUrl = request.FormData["picture-url"].ToString();
-        //        string name = request.FormData["name"].ToString();
-        //        decimal price = decimal.Parse(request.FormData["price"].ToString());
+            OrderProduct orderproduct = new OrderProduct { Order = order, Product = product };
 
-        //        Order order = new Order()
-        //        {
-        //            DateOfCreation = DateTime.UtcNow,
-        //            User = user
-        //        };
+            this.db.OrderProducts.Add(orderproduct);
+            db.SaveChanges();
 
-        //        Product product = new Product
-        //        {
-        //            ImageUrl = imageUrl,
-        //            Name = name,
-        //            Price = price
-        //        };
-
-        //        OrderProduct orderProduct = new OrderProduct { Order = order, Product = product };
-
-        //        this.db.OrderProducts.Add(orderProduct);
-        //        db.SaveChanges();
-
-        //        return this.View("Index");
-        //    }
+            return this.RedirectToAction("/Home/Index");
+        }
     }
 }

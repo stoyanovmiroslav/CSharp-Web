@@ -1,43 +1,76 @@
 ﻿using SIS.Framework.ActionResult;
 using SIS.Framework.ActionResult.Contracts;
+using SIS.Framework.Models;
 using SIS.Framework.Services;
 using SIS.Framework.Utilities;
 using SIS.Framework.Views;
+using SIS.HTTP.Cookies;
+using SIS.HTTP.Cookies.Contracts;
 using SIS.HTTP.Requests.Contracts;
-using System;
-using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using System.Text;
 
 namespace SIS.Framework.Controlers
 {
     public class Controller
     {
-        protected const string AUTH_COOKIE_KEY = "IRunes_auth";
+        protected const string AUTH_COOKIE_KEY = ".auth_cake";
 
         public Controller()
         {
             this.UserCookieService = new UserCookieService();
-            this.ViewBag = new Dictionary<string, string>();
+            this.Model = new ViewModel();
+            this.Cookies = new HttpCookieCollection();
         }
 
         public IUserCookieService UserCookieService { get; set; }
 
         public IHttpRequest Request { get; set; }
 
-        protected Dictionary<string, string> ViewBag { get; set; }
+        public Model ModelState { get; } = new Model();
+
+        public ViewModel Model { get; set; }
+
+        public IHttpCookieCollection Cookies { get; set; }
 
         protected IViewable View([CallerMemberName] string caller = "")
         {
             var controllerName = ControllerUtilities.GetContorlerName(this);
-
             var fullQualifiedName = ControllerUtilities.GetFullQualifiedName(controllerName, caller);
 
-            var view = new View(fullQualifiedName, this.ViewBag);
+            SetViewBagParameters();
+
+            var view = new View(fullQualifiedName, this.Model.Data);
 
             return new ViewResult(view);
         }
 
+        protected IViewable BadRequestError(string massage = "Invalid Operation!", string viewName = "Error")
+        {
+            this.Model["errorMassage"] = massage;
+
+            SetViewBagParameters();
+
+            string errorHtmlPath = $"{MvcContext.Get.ViewFolderFullPath}/{MvcContext.Get.ErrorViewFolder}/{viewName}.{MvcContext.Get.HtmlFileExtention}";
+
+            var view = new View(errorHtmlPath, this.Model.Data);
+
+            return new ViewResult(view);
+        }
+
+        private void SetViewBagParameters()
+        {
+            this.Model["NonAuthenticated"] = "";
+            this.Model["Authenticated"] = "";
+
+            if (this.User == null)
+            {
+                this.Model["Authenticated"] = "d-none";
+            }
+            else
+            {
+                this.Model["NonAuthenticated"] = "d-none";
+            }
+        }
 
         protected IRedirectable RedirectToAction(string redirectUrl) 
             => new RedirectResult(redirectUrl);

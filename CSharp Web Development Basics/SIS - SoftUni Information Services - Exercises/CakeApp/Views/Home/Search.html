@@ -1,18 +1,6 @@
-﻿<!DOCTYPE html>
-
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
-<head>
-    <meta charset="utf-8" />
-    <title></title>
-</head>
-<body>
-    <a href="/">Back to home</a>
-    <form method="post" , action="/search">
-        <hr>
-        <label for="email"><b>Username</b></label>
-        <input type="text" name="search" required>
-        <button type="submit">Search</button>
-    </form>
-    <hr />
-</body>
-</html>
+﻿<form method="post", action="/home/search">
+    <label for="email"><b>Username</b></label>
+    <input type="text" name="search" required>
+    <button type="submit">Search</button>
+</form>
+{{searchConrent}}

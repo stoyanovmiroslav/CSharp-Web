@@ -1,11 +1,7 @@
-﻿using CakeApp.Data.Models;
+﻿using CakeApp.ViewModels.Home;
 using Microsoft.EntityFrameworkCore;
 using SIS.Framework.ActionResult.Contracts;
-using SIS.HTTP.Enums;
-using SIS.HTTP.Requests.Contracts;
-using SIS.HTTP.Responses.Contracts;
-using SIS.WebServer.Results;
-using System;
+using SIS.Framework.Attributes;
 using System.Linq;
 using System.Text;
 
@@ -15,75 +11,65 @@ namespace CakeApp.Controllers
     {
         public IActionResult Index()
         {
-            this.ViewBag["username"] = this.User;
+            this.Model["username"] = this.User;
 
             return this.View();
         }
 
-        //public IActionResult Index(IHttpRequest request)
-        //{
-        //    var user = this.GetUsername(request);
+        public IActionResult Profile()
+        {
+            if (this.User == null)
+            {
+                return this.BadRequestError("You need to login first!");
+            }
 
-        //    return this.View("Index", user);
-        //}
+            var user = db.Users.Where(x => x.Username == this.User)
+                                .Include(x => x.Orders)
+                                .FirstOrDefault();
 
-        //    public IActionResult Profile(IHttpRequest request)
-        //    {
-        //        var usernameFromHash = this.GetUsername(request);
+            if (user == null)
+            {
+                return this.BadRequestError("You need to login first!");
+            }
 
-        //        if (usernameFromHash == null)
-        //        {
-        //            return this.BadRequestError("You need to login first!");
-        //        }
+            this.Model["username"] = user.Username;
+            this.Model["registredOn"] = user.DateOfRegistration.ToString();
+            this.Model["ordersCount"] = user.Orders.Count.ToString();
 
-        //        var user = db.Users.Where(x => x.Username == usernameFromHash)
-        //                            .Include(x => x.Orders)
-        //                            .FirstOrDefault();
+            return this.View();
+        }
 
-        //        if (user == null)
-        //        {
-        //            return this.BadRequestError("You need to login first!");
-        //        }
+        public IActionResult AboutUs()
+        {
+            return this.View();
+        }
 
-        //        string username = user.Username;
-        //        string registredOn = user.DateOfRegistration.ToString();
-        //        string ordersCount = user.Orders.Count.ToString();
+        [HttpPost]
+        public IActionResult Search(SearchViewModel model)
+        {
+            return this.BadRequestError("This page is under maintenance!");
+        }
 
-        //        string content = $"<br/><b>My Profile</b><br/>Name: {username}<br/>Registered On: {registredOn}<br/>Orders Count: {ordersCount}";
+        [HttpGet]
+        public IActionResult Search()
+        {
+            var cakes = db.Products.ToArray();
 
-        //        return this.ViewParameters("/profile", content);
-        //    }
+            if (cakes.Length < 1)
+            {
+                return BadRequestError("Sorry you have to add some cakes first!");
+            }
 
+            StringBuilder sb = new StringBuilder();
 
-        //    public IActionResult AboutUs(IHttpRequest request)
-        //    {
-        //        return this.View("aboutus");
-        //    }
+            foreach (var cake in cakes)
+            {
+                sb.AppendLine($"<a href=\"{cake.ImageUrl}\">{cake.Name}</a> ${cake.Price}<br/>");
+            }
 
+            this.Model["searchConrent"] = sb.ToString();
 
-        //    public IActionResult DoSearch(IHttpRequest request)
-        //    {
-        //        return this.BadRequestError("This page is under maintenance!");
-        //    }
-
-
-        //    public IActionResult Search(IHttpRequest request)
-        //    {
-        //        var cakes = db.Products.ToArray();
-
-        //        if (cakes.Length < 1)
-        //        {
-        //            return BadRequestError("Sorry you have to add some cakes first!");
-        //        }
-
-        //        StringBuilder sb = new StringBuilder();
-
-        //        foreach (var cake in cakes)
-        //        {
-        //            sb.AppendLine($"<a href=\"{cake.ImageUrl}\">{cake.Name}</a></li> ${cake.Price}<br/>");
-        //        }
-
-        //        return this.ViewParameters("search", sb.ToString());
-        //    }
+            return this.View();
+        }
     }
 }

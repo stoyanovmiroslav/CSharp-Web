@@ -1,8 +1,6 @@
 ﻿using SIS.WebServer;
 using System;
-using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 
 namespace SIS.Framework
 {
@@ -14,6 +12,7 @@ namespace SIS.Framework
             RegisterControllersData();
             RegisterViewsData();
             RegisterModelsData();
+            RegisterErrorViewFolder();
 
             try
             {
@@ -25,6 +24,11 @@ namespace SIS.Framework
             }
         }
 
+        private static void RegisterErrorViewFolder()
+        {
+            MvcContext.Get.ErrorViewFolder = "Error";
+        }
+
         private static void RegisterModelsData()
         {
             MvcContext.Get.ModelsFolder = "Models";
@@ -32,7 +36,7 @@ namespace SIS.Framework
 
         private static void RegisterViewsData()
         {
-            MvcContext.Get.ViewFolder = "Views";
+            MvcContext.Get.ViewFolderFullPath = "../../../Views";
         }
 
         private static void RegisterAsemblyName()
