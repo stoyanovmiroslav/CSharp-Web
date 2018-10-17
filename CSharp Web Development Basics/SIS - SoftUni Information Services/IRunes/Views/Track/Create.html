@@ -1,7 +1,7 @@
 ﻿<div class="container w-50 container-botom-margin">
     <p class="form-title">Create Track</p>
     <hr class="my-1">
-    <form method="post", action="/track/create?albumId={{albumId}}">
+    <form method="post", action="/track/create?albumId=@Model.AlbumId">
         <div class="form-group">
             <label for="name">Name</label>
             <input type="text" class="form-control" name="name" aria-describedby="name" placeholder="Name">
@@ -25,7 +25,7 @@
                     <div><button type="submit" class="btn btn-success">Create</button></div>
                 </div>
                 <div class="col-sm-6">
-                    <a href="/album/details?id={{albumId}}" class="btn btn-success btn-center">Back To All</a>
+                    <a href="/album/details?id=@Model.AlbumId" class="btn btn-success btn-center">Back To All</a>
                 </div>
             </div>
         </div>

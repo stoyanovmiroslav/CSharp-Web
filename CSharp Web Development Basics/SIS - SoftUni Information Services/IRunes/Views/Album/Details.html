@@ -1,10 +1,12 @@
 ﻿<div class="form-row">
     <div class="col-md-5 mb-3 text-center">
-        {{album}}
+        <div class="img-margin-top"><img src="@Model.AlbumCover" width="250" height="250"></div>
+        <p class="text-center"><b>Album Name: @Model.AlbumName</b></p>
+        <p class="text-center"><b>Album Price: $@Model.TracksPriceAfterDiscount</b></p>
         <div class="container container-botom-margin">
             <div class="row">
                 <div class="col-sm-6">
-                    <a href="/track/create?albumId={{albumId}}" class="btn btn-success">Create Track</a>
+                    <a href="/track/create?albumId=@Model.AlbumId" class="btn btn-success">Create Track</a>
                 </div>
                 <div class="col-sm-6">
                     <a href="/album/all" class="btn btn-success">Back To All</a>
@@ -15,6 +17,14 @@
     <div class="col-md-1 mb-3"></div>
     <div class="col-md-6 mb-3">
         <h2><b>Tracks</b></h2>
-        {{tracks}}
+
+            @for (int i = 0; i < Model.Tracks.Count; i++)
+            {
+            <li>
+                @var count = i + 1;
+                <b>@count</b>.
+                <a href="/track/details?trackId=@Model.Tracks[i].Id&albumId=@Model.AlbumId">@Model.Tracks[i].Name</a>
+            </li>
+            }
     </div>
 </div>

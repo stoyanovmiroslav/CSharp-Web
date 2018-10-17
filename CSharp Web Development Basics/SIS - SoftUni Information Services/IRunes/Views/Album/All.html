@@ -2,4 +2,8 @@
 <hr class="my-1">
 <a href="/album/create" class="btn btn-success">Create Albums</a>
 <hr class="my-1">
-{{albums}}
+
+@foreach (var album in model)
+{
+<a href="/album/details?albumId=@album.Id">@album.Name</a><br />
+}

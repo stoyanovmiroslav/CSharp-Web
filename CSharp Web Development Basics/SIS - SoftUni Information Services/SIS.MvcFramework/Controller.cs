@@ -4,6 +4,9 @@ using SIS.HTTP.Requests.Contracts;
 using SIS.HTTP.Responses;
 using SIS.HTTP.Responses.Contracts;
 using SIS.MvcFramework.Services.Contracts;
+using SIS.MvcFramework.ViewEngine.Contracts;
+using SIS.MvcFramework.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
@@ -26,19 +29,19 @@ namespace SIS.MvcFramework
 
         public Controller()
         {
-            this.ViewBag = new Dictionary<string, string>();
             this.Response = new HttpResponse { StatusCode = HttpResponseStatusCode.Ok };
+            this.ViewEngine = new SIS.MvcFramework.ViewEngine.ViewEngine();
         }
+
+        private string GetCurrentControllerName => this.GetType().Name.Replace(DEFAULT_CONTROLER_NAME, string.Empty);
 
         public IHttpRequest Request { get; set; }
 
         public IHttpResponse Response { get; set; }
 
-        private string GetCurrentControllerName => this.GetType().Name.Replace(DEFAULT_CONTROLER_NAME, string.Empty);
+        public IUserCookieService UserCookieService { get; internal set; }
 
-        public IUserCookieService userCookieService { get; internal set; }
-
-        protected Dictionary<string, string> ViewBag { get; set; }
+        public IViewEngine ViewEngine { get; set; }
 
         protected string User
         {
@@ -51,22 +54,80 @@ namespace SIS.MvcFramework
 
                 var cookie = this.Request.Cookies.GetCookie(AUTH_COOKIE_KEY);
                 var cookieContent = cookie.Value;
-                var userName = this.userCookieService.GetUserData(cookieContent);
+                var userName = this.UserCookieService.GetUserData(cookieContent);
                 return userName;
             }
         }
 
         protected IHttpResponse View(string viewName = null)
         {
-            string bodyContent = InsertViewParameters(viewName);
-
-            this.SetViewBagParameters(bodyContent);
-
-            string fullViewContent = InsertViewParameters(LAYOUT);
-
-            PrepareHtmlResult(fullViewContent);
-
+            var allContent = this.GetViewContent(viewName, (object)null);
+            this.PrepareHtmlResult(allContent);
             return this.Response;
+        }
+
+        protected IHttpResponse View<T>(string viewName = null, T model = null)
+            where T : class
+        {
+            var allContent = this.GetViewContent(viewName, model);
+            this.PrepareHtmlResult(allContent);
+            return this.Response;
+        }
+
+        protected IHttpResponse View<T>(T model)
+            where T : class
+        {
+            var allContent = this.GetViewContent(null, model);
+            this.PrepareHtmlResult(allContent);
+            return this.Response;
+        }
+
+
+        private string GetViewContent<T>(string viewName, T model) 
+            where T : class
+        {
+            var bodyFileContent = ReadFile(viewName);
+            var bodyContent = this.ViewEngine.GetHtml("Body", bodyFileContent, model);
+
+            var layoutFileContent = ReadFile(LAYOUT);
+            var layoutContent = layoutFileContent.Replace("@RenderBody()", bodyContent);
+
+            var fullContent = this.ViewEngine.GetHtml(LAYOUT, layoutContent, model);
+
+            var result = SetViewForUserRole(fullContent);
+
+            return result;
+        }
+
+        protected string ReadFile(string viewName)
+        {
+            string controlerName = GetCurrentControllerName;
+            string actionName = new StackFrame(3).GetMethod().Name;
+
+            string fullPath = $"{VIEWS_FOLDER_PATH}/{viewName}{HTML_EXTENTION}";
+
+            if (viewName == null)
+            {
+                fullPath = $"{VIEWS_FOLDER_PATH}/{controlerName}/{actionName}{HTML_EXTENTION}";
+            }
+
+            return System.IO.File.ReadAllText(fullPath);
+        }
+
+        private string SetViewForUserRole(string viewHtml)
+        {
+            if (this.User == null)
+            {
+                viewHtml = viewHtml.Replace("{{Authenticated}}", "d-none");
+                viewHtml = viewHtml.Replace("{{NonAuthenticated}}", "");
+            }
+            else
+            {
+                viewHtml = viewHtml.Replace("{{NonAuthenticated}}", "d-none");
+                viewHtml = viewHtml.Replace("{{Authenticated}}", "");
+            }
+
+            return viewHtml;
         }
 
         private void PrepareHtmlResult(string fullViewContent)
@@ -99,64 +160,15 @@ namespace SIS.MvcFramework
 
         protected IHttpResponse BadRequestError(string massage = "Page Not Found", string currentViewPath = "Home/Index")
         {
-            this.ViewBag["errorMassage"] = massage;
+            var errorViewModel = new ErrorViewModel { Massage = massage };
 
-            StringBuilder bodyContent = new StringBuilder();
-            bodyContent.Append(InsertViewParameters(ERROR_VIEW_PATH));
-            bodyContent.Append(InsertViewParameters(currentViewPath));
-
-            this.SetViewBagParameters(bodyContent.ToString());
-
-            string fullViewContent = InsertViewParameters(LAYOUT);
+            var fullViewContent = GetViewContent(currentViewPath, errorViewModel);
 
             this.PrepareHtmlResult(fullViewContent);
-            
+
             this.Response.StatusCode = HttpResponseStatusCode.BadRequest;
 
             return this.Response;
         }
-
-        private void SetViewBagParameters(string bodyContent)
-        {
-            this.ViewBag["body"] = bodyContent;
-            this.ViewBag["NonAuthenticated"] = "";
-            this.ViewBag["Authenticated"] = "";
-
-            if (this.User == null)
-            {
-                this.ViewBag["Authenticated"] = "d-none";
-            }
-            else
-            {
-                this.ViewBag["NonAuthenticated"] = "d-none";
-            }
-        }
-
-        protected string InsertViewParameters(string viewName)
-        {
-            string controlerName = GetCurrentControllerName;
-            string actionName = new StackFrame(2).GetMethod().Name;
-
-            string fullPath = $"{VIEWS_FOLDER_PATH}/{viewName}{HTML_EXTENTION}";
-
-            if (viewName == null)
-            {
-                fullPath = $"{VIEWS_FOLDER_PATH}/{controlerName}/{actionName}{HTML_EXTENTION}";
-            }
-
-            var fileContent = System.IO.File.ReadAllText(fullPath);
-
-            foreach (var viewBagKey in ViewBag.Keys)
-            {
-                string placeHolder = $"{{{{{viewBagKey}}}}}";
-
-                if (fileContent.Contains(viewBagKey))
-                {
-                    fileContent = fileContent.Replace(placeHolder, this.ViewBag[viewBagKey]);
-                }
-            }
-
-            return fileContent;
-        }   
     }
 }

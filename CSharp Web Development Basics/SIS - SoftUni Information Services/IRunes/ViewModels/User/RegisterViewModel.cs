@@ -1,6 +1,6 @@
 ﻿namespace IRunes.ViewModels.User
 {
-    public class DoRegisterViewModel
+    public class RegisterViewModel
     {
         public string Username { get; set; }
 

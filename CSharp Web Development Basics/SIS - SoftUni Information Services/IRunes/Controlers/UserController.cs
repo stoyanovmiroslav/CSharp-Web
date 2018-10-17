@@ -30,7 +30,7 @@ namespace IRunes.Controlers
         }
 
         [HttpPost("/user/login")]
-        public IHttpResponse DoLogin(DoLoginViewModel model)
+        public IHttpResponse Login(LoginViewModel model)
         {
             string hashedPassword = this.hashService.Hash(model.Password);
 
@@ -43,7 +43,7 @@ namespace IRunes.Controlers
 
             this.Request.Session.AddParameter("username", model.Username);
 
-            var userCookieValue = this.userCookieService.GetUserCookie(model.Username);
+            var userCookieValue = this.UserCookieService.GetUserCookie(model.Username);
             this.Response.Cookies.Add(new HttpCookie(AUTH_COOKIE_KEY, userCookieValue));
 
             return this.Redirect("/");
@@ -72,7 +72,7 @@ namespace IRunes.Controlers
         }
 
         [HttpPost("/user/register")]
-        public IHttpResponse DoRegister(DoRegisterViewModel model)
+        public IHttpResponse DoRegister(RegisterViewModel model)
         {
             if (string.IsNullOrWhiteSpace(model.Username) || model.Username.Length < 6)
             {
@@ -106,7 +106,7 @@ namespace IRunes.Controlers
             db.Users.Add(user);
             db.SaveChanges();
 
-            var userCookieValue = this.userCookieService.GetUserCookie(model.Username);
+            var userCookieValue = this.UserCookieService.GetUserCookie(model.Username);
             this.Response.Cookies.Add(new HttpCookie(AUTH_COOKIE_KEY, userCookieValue));
 
             return this.Redirect("/");

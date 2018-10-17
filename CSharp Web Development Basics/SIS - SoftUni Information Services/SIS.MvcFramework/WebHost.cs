@@ -74,7 +74,7 @@ namespace SIS.MvcFramework
             }
 
             controllerInstance.Request = request;
-            controllerInstance.userCookieService = serviceCollection.CreateInstance<IUserCookieService>();
+            controllerInstance.UserCookieService = serviceCollection.CreateInstance<IUserCookieService>();
 
             var actionParameters = methodInfo.GetParameters();
             var actionParameterObjects = new List<object>();

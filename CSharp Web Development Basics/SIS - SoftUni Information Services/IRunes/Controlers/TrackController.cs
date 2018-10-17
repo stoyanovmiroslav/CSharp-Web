@@ -1,7 +1,7 @@
 ﻿using System.Linq;
-using System.Text;
 using System.Web;
 using IRunes.Models;
+using IRunes.ViewModels.Album;
 using IRunes.ViewModels.Track;
 using Microsoft.EntityFrameworkCore;
 using SIS.HTTP.Responses.Contracts;
@@ -19,13 +19,11 @@ namespace IRunes.Controlers
                 return this.Redirect("/user/login");
             }
 
-            this.ViewBag["albumId"] = model.AlbumId;
-
-            return this.View();
+            return this.View(model);
         }
 
         [HttpPost("/track/create")]
-        public IHttpResponse DoCreate(DoCreateTrackViewModel model)
+        public IHttpResponse Create(CreateTrackActionViewModel model)
         {
             if (this.User == null)
             {
@@ -42,46 +40,19 @@ namespace IRunes.Controlers
             album.Tracks.Add(new Track { Name = model.Name, Link = model.Link, Price = model.Price });
             db.SaveChanges();
 
-            string albumCover = HttpUtility.UrlDecode(album.Cover);
-
             var tracksPrice = album.Tracks.Sum(x => x.Price);
             var tracksPriceAfterDiscount = tracksPrice - (tracksPrice * 13 / 100);
 
-            string albumData = System.IO.File.ReadAllText(VIEWS_FOLDER_PATH + "/Parts/AlbumInfo" + HTML_EXTENTION);
-
-            albumData = albumData.Replace("{{tracksPriceAfterDiscount}}", tracksPriceAfterDiscount.ToString())
-                                 .Replace("{{albumName}}", album.Name)
-                                 .Replace("{{albumCover}}", albumCover);
-
-            var tracks = album.Tracks.ToArray();
-
-            var sbTracks = new StringBuilder();
-
-            this.ViewBag["tracks"] = "";
-
-            if (tracks.Length > 0)
+            AlbumDetailsViewModel albumModel = new AlbumDetailsViewModel
             {
-                string trackList = System.IO.File.ReadAllText(VIEWS_FOLDER_PATH + "/Parts/TrackList" + HTML_EXTENTION);
+                AlbumCover = HttpUtility.UrlDecode(album.Cover),
+                AlbumName = album.Name,
+                AlbumId = album.Id,
+                TracksPriceAfterDiscount = tracksPriceAfterDiscount,
+                Tracks = album.Tracks.ToList()
+            };
 
-                for (int i = 1; i <= tracks.Length; i++)
-                {
-                    var track = tracks[i - 1];
-
-                    string replacedTrackList = trackList.Replace("{{numeration}}", i.ToString())
-                                                        .Replace("{{trackId}}", track.Id)
-                                                        .Replace("{{albumId}}", model.AlbumId)
-                                                        .Replace("{{trackName}}", track.Name);
-
-                    sbTracks.Append(replacedTrackList);
-                }
-
-                this.ViewBag["tracks"] = sbTracks.ToString();
-            }
-
-            this.ViewBag["albumId"] = album.Id;
-            this.ViewBag["album"] = albumData.ToString();
-
-            return this.View("/album/details");
+            return this.View("/album/details", albumModel);
         }
 
         [HttpGet("/track/details")]
@@ -99,11 +70,11 @@ namespace IRunes.Controlers
             this.ViewBag["albumId"] = model.AlbumId;
 
             this.ViewBag["trackLink"] = trackLink;
-            this.ViewBag["trackVideo"] = this.InsertViewParameters("/Parts/Video");
+            this.ViewBag["trackVideo"] = this.ReadFile("/Parts/Video");
 
             this.ViewBag["trackName"] = track.Name;
             this.ViewBag["trackPrice"] = track.Price.ToString();
-            this.ViewBag["trackInfo"] = this.InsertViewParameters("/Parts/TrackInfo");
+            this.ViewBag["trackInfo"] = this.ReadFile("/Parts/TrackInfo");
 
             return this.View();
         }

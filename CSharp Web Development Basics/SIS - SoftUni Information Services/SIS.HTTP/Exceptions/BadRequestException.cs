@@ -6,10 +6,10 @@ namespace SIS.HTTP.Exceptions
 {
     public class BadRequestException : Exception
     {
-        public const string Message = "The Request was malformed or contains unsupported elements.";
+        public const string DEFAULT_MESSAGE = "The Request was malformed or contains unsupported elements.";
 
         public BadRequestException() 
-            : base(Message)
+            : base(DEFAULT_MESSAGE)
         {
         }
 

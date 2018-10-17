@@ -1,6 +1,6 @@
 ﻿namespace IRunes.ViewModels.Album
 {
-    public class DoCreateViewModel
+    public class CreateAlbumViewModel
     {
         public string Name { get; set; }
 
