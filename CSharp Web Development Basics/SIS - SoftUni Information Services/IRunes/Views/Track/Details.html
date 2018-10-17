@@ -1,11 +1,12 @@
 ﻿<div class="container w-50 container-botom-margin">
     <div class="text-center">
-        {{trackInfo}}
+        <b>Track Name: @Model.TrackName</b><br />
+        <b>Track Price: $@Model.TrackPrice</b><br />
         <hr class="my-2">
         <div class="embed-responsive embed-responsive-16by9">
-            {{trackVideo}}
+            <iframe class="embed-responsive-item" src="@Model.TrackLink"></iframe><br />
         </div>
-            <hr class="my-2">
-            <a href="/album/details?albumId={{albumId}}" class="btn btn-success">Back To Album</a>
-        </div>
+        <hr class="my-2">
+        <a href="/album/details?albumId=@Model.AlbumId" class="btn btn-success">Back To Album</a>
     </div>
+</div>

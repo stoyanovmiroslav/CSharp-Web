@@ -22,7 +22,6 @@ namespace IRunes.Controlers
         {
             if (this.User != null)
             {
-              // this.ViewBag["username"] = this.User;
                 return this.Redirect("/");
             }
 

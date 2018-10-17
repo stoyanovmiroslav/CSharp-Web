@@ -65,18 +65,11 @@ namespace IRunes.Controlers
 
             var track = this.db.Tracks.FirstOrDefault(x => x.Id == model.TrackId);
 
-            string trackLink = HttpUtility.UrlDecode(track.Link);
+            model.TrackLink = HttpUtility.UrlDecode(track.Link);
+            model.TrackName = track.Name;
+            model.TrackPrice = track.Price;
 
-            //this.ViewBag["albumId"] = model.AlbumId;
-
-            //this.ViewBag["trackLink"] = trackLink;
-            //this.ViewBag["trackVideo"] = this.ReadFile("/Parts/Video");
-
-            //this.ViewBag["trackName"] = track.Name;
-            //this.ViewBag["trackPrice"] = track.Price.ToString();
-            //this.ViewBag["trackInfo"] = this.ReadFile("/Parts/TrackInfo");
-
-            return this.View();
+            return this.View(model);
         }
     }
 }
