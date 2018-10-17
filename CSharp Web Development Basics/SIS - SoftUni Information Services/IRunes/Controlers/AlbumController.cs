@@ -79,8 +79,6 @@ namespace IRunes.Controlers
                 return this.Redirect("/user/login");
             }
 
-           // this.ViewBag["albums"] = "There are currently no albums.";
-
             var user = db.Users.Include(x => x.Albums).FirstOrDefault(x => x.Username == this.User);
 
             if (user == null)
@@ -88,10 +86,10 @@ namespace IRunes.Controlers
                 return this.Redirect("/user/login");
             }
 
-            var albums = user.Albums.ToArray();
+            var albums = user.Albums.ToList();
+            var model = new AllAlbumsViewModel { Albums = albums };
 
-            //TODO: Model
-            return this.View(albums);
+            return this.View(model);
         }
     }
 }

@@ -89,6 +89,14 @@ namespace SIS.MvcFramework
             var bodyFileContent = ReadFile(viewName);
             var bodyContent = this.ViewEngine.GetHtml("Body", bodyFileContent, model);
 
+            if (model is ErrorViewModel)
+            {
+                var errorFileContent = ReadFile(ERROR_VIEW_PATH);
+                var errorContent = this.ViewEngine.GetHtml("Error", errorFileContent, model);
+
+                bodyContent = string.Concat(errorContent, bodyContent);
+            }
+
             var layoutFileContent = ReadFile(LAYOUT);
             var layoutContent = layoutFileContent.Replace("@RenderBody()", bodyContent);
 
@@ -102,7 +110,7 @@ namespace SIS.MvcFramework
         protected string ReadFile(string viewName)
         {
             string controlerName = GetCurrentControllerName;
-            string actionName = new StackFrame(3).GetMethod().Name;
+            string actionName = new StackFrame(3).GetMethod().Name; //TODO: 
 
             string fullPath = $"{VIEWS_FOLDER_PATH}/{viewName}{HTML_EXTENTION}";
 
@@ -158,14 +166,12 @@ namespace SIS.MvcFramework
             return this.Response;
         }
 
-        protected IHttpResponse BadRequestError(string massage = "Page Not Found", string currentViewPath = "Home/Index")
+        protected IHttpResponse BadRequestError(string massage = "Invalid operation!", string currentViewPath = "Home/Index")
         {
             var errorViewModel = new ErrorViewModel { Massage = massage };
-
             var fullViewContent = GetViewContent(currentViewPath, errorViewModel);
 
             this.PrepareHtmlResult(fullViewContent);
-
             this.Response.StatusCode = HttpResponseStatusCode.BadRequest;
 
             return this.Response;

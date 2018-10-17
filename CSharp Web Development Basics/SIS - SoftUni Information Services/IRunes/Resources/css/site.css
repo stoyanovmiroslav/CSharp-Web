@@ -27,6 +27,11 @@ footer{
     text-align: center
 }
 
-.img-margin-top {
+.md-margin-top {
     margin-top: 15px;
+}
+
+.text-bold-center {
+    text-align: center;
+    font-weight: bold;
 }
