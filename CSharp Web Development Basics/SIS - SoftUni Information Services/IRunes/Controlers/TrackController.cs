@@ -67,14 +67,14 @@ namespace IRunes.Controlers
 
             string trackLink = HttpUtility.UrlDecode(track.Link);
 
-            this.ViewBag["albumId"] = model.AlbumId;
+            //this.ViewBag["albumId"] = model.AlbumId;
 
-            this.ViewBag["trackLink"] = trackLink;
-            this.ViewBag["trackVideo"] = this.ReadFile("/Parts/Video");
+            //this.ViewBag["trackLink"] = trackLink;
+            //this.ViewBag["trackVideo"] = this.ReadFile("/Parts/Video");
 
-            this.ViewBag["trackName"] = track.Name;
-            this.ViewBag["trackPrice"] = track.Price.ToString();
-            this.ViewBag["trackInfo"] = this.ReadFile("/Parts/TrackInfo");
+            //this.ViewBag["trackName"] = track.Name;
+            //this.ViewBag["trackPrice"] = track.Price.ToString();
+            //this.ViewBag["trackInfo"] = this.ReadFile("/Parts/TrackInfo");
 
             return this.View();
         }

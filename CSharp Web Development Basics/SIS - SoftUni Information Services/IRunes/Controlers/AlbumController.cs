@@ -79,7 +79,7 @@ namespace IRunes.Controlers
                 return this.Redirect("/user/login");
             }
 
-            this.ViewBag["albums"] = "There are currently no albums.";
+           // this.ViewBag["albums"] = "There are currently no albums.";
 
             var user = db.Users.Include(x => x.Albums).FirstOrDefault(x => x.Username == this.User);
 
