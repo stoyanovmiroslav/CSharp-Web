@@ -6,8 +6,6 @@ using SIS.HTTP.Responses.Contracts;
 using SIS.MvcFramework.Services.Contracts;
 using SIS.MvcFramework.ViewEngine.Contracts;
 using SIS.MvcFramework.ViewModels;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 
@@ -82,32 +80,29 @@ namespace SIS.MvcFramework
             return this.Response;
         }
 
-
         private string GetViewContent<T>(string viewName, T model) 
             where T : class
         {
-            var bodyFileContent = ReadFile(viewName);
+            var bodyFileContent = PrepareHtmlFile(viewName);
             var bodyContent = this.ViewEngine.GetHtml("Body", bodyFileContent, model);
 
             if (model is ErrorViewModel)
             {
-                var errorFileContent = ReadFile(ERROR_VIEW_PATH);
+                var errorFileContent = PrepareHtmlFile(ERROR_VIEW_PATH);
                 var errorContent = this.ViewEngine.GetHtml("Error", errorFileContent, model);
 
                 bodyContent = string.Concat(errorContent, bodyContent);
             }
 
-            var layoutFileContent = ReadFile(LAYOUT);
+            var layoutFileContent = PrepareHtmlFile(LAYOUT);
             var layoutContent = layoutFileContent.Replace("@RenderBody()", bodyContent);
 
             var fullContent = this.ViewEngine.GetHtml(LAYOUT, layoutContent, model);
 
-            var result = SetViewForUserRole(fullContent);
-
-            return result;
+            return fullContent;
         }
 
-        protected string ReadFile(string viewName)
+        protected string PrepareHtmlFile(string viewName)
         {
             string controlerName = GetCurrentControllerName;
             string actionName = new StackFrame(3).GetMethod().Name; //TODO: 
@@ -119,21 +114,14 @@ namespace SIS.MvcFramework
                 fullPath = $"{VIEWS_FOLDER_PATH}/{controlerName}/{actionName}{HTML_EXTENTION}";
             }
 
-            return System.IO.File.ReadAllText(fullPath);
+            var viewContent = System.IO.File.ReadAllText(fullPath);
+            return SetViewForUserRole(viewContent);
         }
 
         private string SetViewForUserRole(string viewHtml)
         {
-            if (this.User == null)
-            {
-                viewHtml = viewHtml.Replace("{{Authenticated}}", "d-none");
-                viewHtml = viewHtml.Replace("{{NonAuthenticated}}", "");
-            }
-            else
-            {
-                viewHtml = viewHtml.Replace("{{NonAuthenticated}}", "d-none");
-                viewHtml = viewHtml.Replace("{{Authenticated}}", "");
-            }
+            viewHtml = viewHtml.Replace("{{NonAuthenticated}}", this.User != null ? "d-none" : string.Empty);
+            viewHtml = viewHtml.Replace("{{Authenticated}}", this.User == null ? "d-none" : string.Empty);
 
             return viewHtml;
         }
@@ -166,9 +154,10 @@ namespace SIS.MvcFramework
             return this.Response;
         }
 
-        protected IHttpResponse BadRequestError(string massage = "Invalid operation!", string currentViewPath = "Home/Index")
+        protected IHttpResponse BadRequestError(string massage, string currentViewPath)
         {
             var errorViewModel = new ErrorViewModel { Massage = massage };
+
             var fullViewContent = GetViewContent(currentViewPath, errorViewModel);
 
             this.PrepareHtmlResult(fullViewContent);

@@ -75,12 +75,12 @@ namespace IRunes.Controlers
         {
             if (string.IsNullOrWhiteSpace(model.Username) || model.Username.Length < 6)
             {
-                return this.BadRequestError("Username should be 6 or more characters long!", "User/Register");
+                return this.BadRequestError("Username should be 6 or more characters long!", "/User/Register");
             }
 
             if (this.db.Users.Any(x => x.Username == model.Username))
             {
-                return this.BadRequestError("Username already exist!", "User/Register");
+                return this.BadRequestError("Username already exist!", "/User/Register");
             }
 
             if (model.Password != model.ConfirmPassword)

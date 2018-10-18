@@ -43,9 +43,16 @@ namespace SIS.WebServer
         }
 
         public async void Listen(Socket client)
-        { 
-            var connectionHandler = new ConnectionHandler(client, this.serverRoutingTable);
-            await connectionHandler.ProcessRequestAsync();
+        {
+            try
+            {
+                var connectionHandler = new ConnectionHandler(client, this.serverRoutingTable);
+                await connectionHandler.ProcessRequestAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine(ex.Message);
+            }
         }
     }
 }

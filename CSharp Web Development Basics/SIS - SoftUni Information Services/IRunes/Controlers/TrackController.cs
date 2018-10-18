@@ -4,6 +4,7 @@ using IRunes.Models;
 using IRunes.ViewModels.Album;
 using IRunes.ViewModels.Track;
 using Microsoft.EntityFrameworkCore;
+using SIS.HTTP.Extensions;
 using SIS.HTTP.Responses.Contracts;
 using SIS.MvcFramework.HttpAttributes;
 
@@ -32,7 +33,7 @@ namespace IRunes.Controlers
 
             if (string.IsNullOrWhiteSpace(model.Name) || string.IsNullOrWhiteSpace(model.Link) || model.Price == 0)
             {
-                return this.Redirect("/track/create");
+                return this.BadRequestError("Invalid data, please try again!", "/track/create");
             }
 
             var album = this.db.Albums.Include(x => x.Tracks).FirstOrDefault(x => x.Id == model.AlbumId);
@@ -45,7 +46,7 @@ namespace IRunes.Controlers
 
             AlbumDetailsViewModel albumModel = new AlbumDetailsViewModel
             {
-                AlbumCover = HttpUtility.UrlDecode(album.Cover),
+                AlbumCover = album.Cover.UrlDecode(),
                 AlbumName = album.Name,
                 AlbumId = album.Id,
                 TracksPriceAfterDiscount = tracksPriceAfterDiscount,
@@ -65,7 +66,7 @@ namespace IRunes.Controlers
 
             var track = this.db.Tracks.FirstOrDefault(x => x.Id == model.TrackId);
 
-            model.TrackLink = HttpUtility.UrlDecode(track.Link);
+            model.TrackLink = track.Link.UrlDecode();
             model.TrackName = track.Name;
             model.TrackPrice = track.Price;
 

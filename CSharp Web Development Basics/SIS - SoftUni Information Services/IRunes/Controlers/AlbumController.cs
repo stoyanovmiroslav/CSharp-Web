@@ -1,10 +1,9 @@
 ﻿using System.Linq;
-using System.Text;
 using System.Web;
 using IRunes.Models;
 using IRunes.ViewModels.Album;
-using IRunes.ViewModels.Home;
 using Microsoft.EntityFrameworkCore;
+using SIS.HTTP.Extensions;
 using SIS.HTTP.Responses.Contracts;
 using SIS.MvcFramework.HttpAttributes;
 
@@ -58,14 +57,13 @@ namespace IRunes.Controlers
             }
 
             var album = this.db.Albums.Include(x => x.Tracks).FirstOrDefault(x => x.Id == model.AlbumId);
-            string albumCover = HttpUtility.UrlDecode(album.Cover);
 
             var tracksPrice = album.Tracks.Sum(x => x.Price);
             var tracksPriceAfterDiscount = tracksPrice - (tracksPrice * 13 / 100);
 
             model.Tracks = album.Tracks.ToList();
             model.AlbumName = album.Name;
-            model.AlbumCover = album.Cover;
+            model.AlbumCover = album.Cover.UrlDecode();
             model.TracksPriceAfterDiscount = tracksPriceAfterDiscount;
 
             return this.View(model);
@@ -87,6 +85,7 @@ namespace IRunes.Controlers
             }
 
             var albums = user.Albums.ToList();
+
             var model = new AllAlbumsViewModel { Albums = albums };
 
             return this.View(model);
