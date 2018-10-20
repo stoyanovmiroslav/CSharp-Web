@@ -5,7 +5,7 @@ using SIS.HTTP.Responses;
 using SIS.HTTP.Responses.Contracts;
 using SIS.MvcFramework.Services.Contracts;
 using SIS.MvcFramework.ViewEngine.Contracts;
-using SIS.MvcFramework.ViewModels;
+using SIS.MvcFramework.ErrorViewModels;
 using System.Diagnostics;
 using System.Text;
 
@@ -14,21 +14,20 @@ namespace SIS.MvcFramework
     public abstract class Controller
     {
         protected const string VIEWS_FOLDER_PATH = "../../../Views";
-
         protected const string HTML_EXTENTION = ".html";
-
-        private const string DEFAULT_CONTROLER_NAME = "Controller";
-
-        private const string LAYOUT = "_Layout";
-
-        private const string ERROR_VIEW_PATH = "Error/Error";
-
         protected const string AUTH_COOKIE_KEY = "IRunes_auth";
+        private const string DEFAULT_CONTROLER_NAME = "Controller";
+        private const string LAYOUT = "_Layout";
+        private const string ERROR_VIEW_PATH = "Error/Error";
+        private const string ERROR_VIEW_NAME = "Error";
+        private const string BODY_PLACEHOLDER = "@RenderBody()";
+        private const string BODY_VIEW_NAME = "Body";
 
         public Controller()
         {
             this.Response = new HttpResponse { StatusCode = HttpResponseStatusCode.Ok };
             this.ViewEngine = new SIS.MvcFramework.ViewEngine.ViewEngine();
+            this.errorViewModel = new ErrorViewModel();
         }
 
         private string GetCurrentControllerName => this.GetType().Name.Replace(DEFAULT_CONTROLER_NAME, string.Empty);
@@ -40,6 +39,8 @@ namespace SIS.MvcFramework
         public IUserCookieService UserCookieService { get; internal set; }
 
         public IViewEngine ViewEngine { get; set; }
+
+        public ErrorViewModel errorViewModel { get; set; }
 
         protected string User
         {
@@ -80,24 +81,47 @@ namespace SIS.MvcFramework
             return this.Response;
         }
 
+        protected IHttpResponse BadRequestError<T>(string massage, string viewName, T viewModel)
+            where T : class
+        {
+            this.errorViewModel.Massage = massage;
+            var fullViewContent = GetViewContent(viewName, viewModel);
+
+            this.PrepareHtmlResult(fullViewContent);
+            this.Response.StatusCode = HttpResponseStatusCode.BadRequest;
+
+            return this.Response;
+        }
+
+        protected IHttpResponse BadRequestError(string massage, string viewName)
+        {
+            this.errorViewModel.Massage = massage;
+            var fullViewContent = GetViewContent(viewName, this.errorViewModel);
+
+            this.PrepareHtmlResult(fullViewContent);
+            this.Response.StatusCode = HttpResponseStatusCode.BadRequest;
+
+            return this.Response;
+        }
+
         private string GetViewContent<T>(string viewName, T model) 
             where T : class
         {
             var bodyFileContent = PrepareHtmlFile(viewName);
-            var bodyContent = this.ViewEngine.GetHtml("Body", bodyFileContent, model);
+            var bodyContent = this.ViewEngine.GetHtml(BODY_VIEW_NAME, bodyFileContent, model, this.User);
 
-            if (model is ErrorViewModel)
+            if (errorViewModel.Massage != null)
             {
                 var errorFileContent = PrepareHtmlFile(ERROR_VIEW_PATH);
-                var errorContent = this.ViewEngine.GetHtml("Error", errorFileContent, model);
+                var errorContent = this.ViewEngine.GetHtml(ERROR_VIEW_NAME, errorFileContent, errorViewModel, this.User);
 
                 bodyContent = string.Concat(errorContent, bodyContent);
             }
 
             var layoutFileContent = PrepareHtmlFile(LAYOUT);
-            var layoutContent = layoutFileContent.Replace("@RenderBody()", bodyContent);
+            var layoutContent = layoutFileContent.Replace(BODY_PLACEHOLDER, bodyContent);
 
-            var fullContent = this.ViewEngine.GetHtml(LAYOUT, layoutContent, model);
+            var fullContent = this.ViewEngine.GetHtml(LAYOUT, layoutContent, model, this.User);
 
             return fullContent;
         }
@@ -114,16 +138,7 @@ namespace SIS.MvcFramework
                 fullPath = $"{VIEWS_FOLDER_PATH}/{controlerName}/{actionName}{HTML_EXTENTION}";
             }
 
-            var viewContent = System.IO.File.ReadAllText(fullPath);
-            return SetViewForUserRole(viewContent);
-        }
-
-        private string SetViewForUserRole(string viewHtml)
-        {
-            viewHtml = viewHtml.Replace("{{NonAuthenticated}}", this.User != null ? "d-none" : string.Empty);
-            viewHtml = viewHtml.Replace("{{Authenticated}}", this.User == null ? "d-none" : string.Empty);
-
-            return viewHtml;
+            return System.IO.File.ReadAllText(fullPath);
         }
 
         private void PrepareHtmlResult(string fullViewContent)
@@ -151,18 +166,6 @@ namespace SIS.MvcFramework
         {
             this.Response.Headers.Add(new HttpHeader(HttpHeader.CONTENT_TYPE, "text/plain; charset=utf-8"));
             this.Response.Content = Encoding.UTF8.GetBytes(content);
-            return this.Response;
-        }
-
-        protected IHttpResponse BadRequestError(string massage, string currentViewPath)
-        {
-            var errorViewModel = new ErrorViewModel { Massage = massage };
-
-            var fullViewContent = GetViewContent(currentViewPath, errorViewModel);
-
-            this.PrepareHtmlResult(fullViewContent);
-            this.Response.StatusCode = HttpResponseStatusCode.BadRequest;
-
             return this.Response;
         }
     }

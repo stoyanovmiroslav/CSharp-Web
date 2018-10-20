@@ -3,7 +3,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using SIS.WebServer.Api.Contracts;
-using SIS.WebServer.Routing;
 
 namespace SIS.WebServer
 {
@@ -15,15 +14,15 @@ namespace SIS.WebServer
 
         private readonly TcpListener listener;
 
-        private readonly IHttpHandler httpHandler;
+        private readonly IHttpHandlingContext handlerContext;
 
         private bool isRunning;
 
-        public Server(int port, IHttpHandler httpHandler)
+        public Server(int port, IHttpHandlingContext handlerContext)
         {
             this.port = port;
             this.listener = new TcpListener(IPAddress.Parse(LocalhostIpAddress), port);
-            this.httpHandler = httpHandler;
+            this.handlerContext = handlerContext;
         }
 
         public void Run()
@@ -44,7 +43,7 @@ namespace SIS.WebServer
 
         public async void Listen(Socket client)
         { 
-            var connectionHandler = new ConnectionHandler(client, this.httpHandler);
+            var connectionHandler = new ConnectionHandler(client, this.handlerContext);
             await connectionHandler.ProcessRequestAsync();
         }
     }

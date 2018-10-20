@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using SIS.Framework.ActionResult.Contracts;
 using SIS.Framework.Attributes;
+using SIS.HTTP.Requests.Contracts;
 using System.Linq;
 using System.Text;
 

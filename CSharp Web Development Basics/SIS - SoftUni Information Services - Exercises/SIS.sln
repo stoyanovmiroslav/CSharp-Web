@@ -11,9 +11,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Apps", "Apps", "{27F6540E-2
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SIS.Framework", "SIS.Framework\SIS.Framework.csproj", "{51C435B5-B604-42E5-9F34-510EE8833C11}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CakeApp", "CakeApp\CakeApp.csproj", "{92CF4E62-1805-498D-8000-0C8CC237A642}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SIS.App", "SIS.App\SIS.App.csproj", "{884ED7A5-EEA2-4734-876D-47A3F191EBC6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CakeApp", "CakeApp\CakeApp.csproj", "{92CF4E62-1805-498D-8000-0C8CC237A642}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -37,17 +35,12 @@ Global
 		{92CF4E62-1805-498D-8000-0C8CC237A642}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{92CF4E62-1805-498D-8000-0C8CC237A642}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{92CF4E62-1805-498D-8000-0C8CC237A642}.Release|Any CPU.Build.0 = Release|Any CPU
-		{884ED7A5-EEA2-4734-876D-47A3F191EBC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{884ED7A5-EEA2-4734-876D-47A3F191EBC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{884ED7A5-EEA2-4734-876D-47A3F191EBC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{884ED7A5-EEA2-4734-876D-47A3F191EBC6}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(NestedProjects) = preSolution
 		{92CF4E62-1805-498D-8000-0C8CC237A642} = {27F6540E-2CFB-4884-B942-F1762AB135CF}
-		{884ED7A5-EEA2-4734-876D-47A3F191EBC6} = {27F6540E-2CFB-4884-B942-F1762AB135CF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9FB84BC9-E840-4027-B6FD-8E2AE6E3A99C}

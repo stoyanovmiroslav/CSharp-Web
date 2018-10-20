@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 
 namespace IRunes.Models
 {
@@ -15,7 +16,9 @@ namespace IRunes.Models
 
         public string Cover { get; set; }
 
-        public decimal Price { get; set; }
+        public decimal? Price => this.Tracks?.Sum(x => x.Price);
+
+        public decimal? PriceAfterDiscount => this.Price - (this.Price * 0.13M);
 
         public ICollection<Track> Tracks { get; set; }
     }

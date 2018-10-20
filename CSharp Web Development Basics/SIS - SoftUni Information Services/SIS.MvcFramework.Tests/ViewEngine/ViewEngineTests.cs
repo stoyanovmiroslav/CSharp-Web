@@ -16,12 +16,15 @@ namespace SIS.MvcFramework.Tests.ViewEngine
             var viewCode = File.ReadAllText($"TestViews/{testViewName}.html");
             var expectedResult = File.ReadAllText($"TestViews/{testViewName}.Result.html");
             IViewEngine viewEngine = new MvcFramework.ViewEngine.ViewEngine();
+
             var model = new TestModel
             {
                 String = "Username",
                 List = new List<string> { "Item1", "item2", "test", "123", "" }
             };
-            var result = viewEngine.GetHtml(testViewName, viewCode, model);
+            var user = "Pesho";
+            var result = viewEngine.GetHtml(testViewName, viewCode, model, user);
+
             Assert.Equal(expectedResult, result);
         }
 

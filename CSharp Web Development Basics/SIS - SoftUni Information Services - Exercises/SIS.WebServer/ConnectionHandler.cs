@@ -15,12 +15,12 @@ namespace SIS.WebServer
     {
         private readonly Socket client;
 
-        private readonly IHttpHandler httpHandler;
+        private readonly IHttpHandlingContext handlerContext;
 
-        public ConnectionHandler(Socket client, IHttpHandler httpHandler)
+        public ConnectionHandler(Socket client, IHttpHandlingContext handlerContext)
         {
             this.client = client;
-            this.httpHandler = httpHandler;
+            this.handlerContext = handlerContext;
         }
 
         private async Task<IHttpRequest> ReadRequest()
@@ -72,7 +72,7 @@ namespace SIS.WebServer
 
                 string sessionId = this.SetRequestSession(httpRequest);
 
-                var httpResponse = this.httpHandler.HandlerRequest(httpRequest);
+                var httpResponse = this.handlerContext.Handle(httpRequest);
 
                 this.SetResponseSession(httpResponse, sessionId, isNewSession);
 

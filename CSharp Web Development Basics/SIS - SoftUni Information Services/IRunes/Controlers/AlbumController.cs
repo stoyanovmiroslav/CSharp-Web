@@ -1,10 +1,9 @@
 ﻿using System.Linq;
-using System.Web;
 using IRunes.Models;
 using IRunes.ViewModels.Album;
 using Microsoft.EntityFrameworkCore;
-using SIS.HTTP.Extensions;
 using SIS.HTTP.Responses.Contracts;
+using SIS.MvcFramework;
 using SIS.MvcFramework.HttpAttributes;
 
 namespace IRunes.Controlers
@@ -16,7 +15,7 @@ namespace IRunes.Controlers
         {
             if (this.User == null)
             {
-                return this.Redirect("/user/login");
+                return this.BadRequestError("To create an album you have to login first!", "/user/login");
             }
 
             return this.View();
@@ -27,22 +26,24 @@ namespace IRunes.Controlers
         {
             if (this.User == null)
             {
-                return this.Redirect("/user/login");
+                return this.BadRequestError("To create an album you have to login first!", "/user/login");
             }
 
             if (string.IsNullOrWhiteSpace(model.Name) || string.IsNullOrWhiteSpace(model.Cover))
             {
-                return this.Redirect("/album/create");
+                return this.BadRequestError("Invalid data!", "/album/create");
             }
 
             var user = db.Users.FirstOrDefault(x => x.Username == this.User);
 
             if (user == null)
             {
-                return this.Redirect("/user/login");
+                return this.BadRequestError("Invalid Operation, you need to login again!", "/user/login");
             }
 
-            user.Albums.Add(new Album { Name = model.Name, Cover = model.Cover });
+            var album = model.To<Album>();
+
+            user.Albums.Add(album);
             db.SaveChanges();
 
             return this.Redirect("/album/all");
@@ -53,20 +54,17 @@ namespace IRunes.Controlers
         {
             if (this.User == null)
             {
-                return this.Redirect("/user/login");
+                return this.BadRequestError("To see your album details you have to login first!", "/user/login");
             }
 
             var album = this.db.Albums.Include(x => x.Tracks).FirstOrDefault(x => x.Id == model.AlbumId);
 
-            var tracksPrice = album.Tracks.Sum(x => x.Price);
-            var tracksPriceAfterDiscount = tracksPrice - (tracksPrice * 13 / 100);
+            if (album == null)
+            {
+                return this.BadRequestError("To see your album details you have to login first!", "/user/login", model);
+            }
 
-            model.Tracks = album.Tracks.ToList();
-            model.AlbumName = album.Name;
-            model.AlbumCover = album.Cover.UrlDecode();
-            model.TracksPriceAfterDiscount = tracksPriceAfterDiscount;
-
-            return this.View(model);
+            return this.View(album);
         }
 
         [HttpGet("/album/all")]
@@ -74,21 +72,17 @@ namespace IRunes.Controlers
         {
             if (this.User == null)
             {
-                return this.Redirect("/user/login");
+                return this.BadRequestError("To see your Аlbums you have to login first!", "/user/login");
             }
 
             var user = db.Users.Include(x => x.Albums).FirstOrDefault(x => x.Username == this.User);
 
             if (user == null)
             {
-                return this.Redirect("/user/login");
+                return this.BadRequestError("Invalid Operation, you need to login again!", "/user/login");
             }
 
-            var albums = user.Albums.ToList();
-
-            var model = new AllAlbumsViewModel { Albums = albums };
-
-            return this.View(model);
+            return this.View(user.Albums.ToArray());
         }
     }
 }

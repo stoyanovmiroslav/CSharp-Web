@@ -1,9 +1,9 @@
 ﻿using SIS.Framework.ActionResult.Contracts;
 using SIS.Framework.Attributes;
 using SIS.Framework.Controlers;
+using SIS.HTTP.Enums;
 using SIS.HTTP.Extensions;
 using SIS.HTTP.Requests.Contracts;
-using SIS.HTTP.Responses;
 using SIS.HTTP.Responses.Contracts;
 using SIS.WebServer.Api.Contracts;
 using SIS.WebServer.Results;
@@ -44,10 +44,8 @@ namespace SIS.Framework.Routers
 
             if (controller == null || action == null)
             {
-                return new HttpResponse(HTTP.Enums.HttpResponseStatusCode.NotFound);
+                return new TextResult(HttpResponseStatusCode.NotFound, $"Invalid route ...{controllerName}/{actionName}");
             }
-
-            controller.Request = request;
 
             object[] actionParameters = this.MapActionParameters(action, request, controller);
 
@@ -212,7 +210,14 @@ namespace SIS.Framework.Routers
 
             var controllerType = Type.GetType(fullyQualifiedControllerName);
 
+            if (controllerType == null)
+            {
+                return null;
+            }
+
             var controller = (Controller)Activator.CreateInstance(controllerType);
+            controller.Request = request;
+
             return controller;
         }
 

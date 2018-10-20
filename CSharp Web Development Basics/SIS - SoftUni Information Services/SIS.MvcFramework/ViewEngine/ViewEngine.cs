@@ -13,10 +13,10 @@ namespace SIS.MvcFramework.ViewEngine
 {
     public class ViewEngine : IViewEngine
     {
-        public string GetHtml<T>(string viewName, string viewCode, T model)
+        public string GetHtml<T>(string viewName, string viewCode, T model, string user = null)
         {
             var viewTypeName = viewName + "View";
-            var csharpMethodBody = this.GenerateCSharpMethodBody(viewCode);
+            var cSharpMethodBody = this.GenerateCSharpMethodBody(viewCode);
             string typeNamespace = typeof(T).Namespace;
             string typeFullName = typeof(T).FullName.Replace("+", ".");
 
@@ -37,7 +37,7 @@ namespace SIS.MvcFramework.ViewEngine
 
             var instanceOfViewClass = this.GetInstance(viewCodeAsCSharpCode, "MyAppViews." 
                                                                     + viewTypeName, typeof(T)) as IView<T>;
-            var html = instanceOfViewClass.GetHtml(model);
+            var html = instanceOfViewClass.GetHtml(model, user);
             return html;
         }
 
@@ -89,7 +89,13 @@ namespace SIS.MvcFramework.ViewEngine
 
             foreach (var line in lines)
             {
-                if (cSharpStartSymbols.Any(x => line.Trim().StartsWith(x)))
+                if (line.Trim().StartsWith("{") && line.Trim().EndsWith("}"))
+                {
+                    var cSharpLine = line.Trim();
+                    cSharpLine = cSharpLine.Substring(1, cSharpLine.Length - 2);
+                    stringBuilder.AppendLine(cSharpLine);
+                }
+                else if (cSharpStartSymbols.Any(x => line.Trim().StartsWith(x)))
                 {
                     stringBuilder.AppendLine(line.Replace("@", string.Empty));
                 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SIS.MvcFramework.ViewModels
+namespace SIS.MvcFramework.ErrorViewModels
 {
     public class ErrorViewModel
     {

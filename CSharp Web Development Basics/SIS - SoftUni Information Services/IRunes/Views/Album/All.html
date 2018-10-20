@@ -3,12 +3,12 @@
 <a href="/album/create" class="btn btn-success">Create Albums</a>
 <hr class="my-1">
 
-@foreach (var album in model.Albums)
+@foreach (var album in model)
 {
-<a href="/album/details?albumId=@album.Id">@album.Name</a><br />
+    <a href="/album/details?albumId=@album.Id">@album.Name</a><br />
 }
 
-@if(model.Albums.Count == 0)
+@if(model.Count() == 0)
 {
-<p>@Model.MessageForNoAnyAlbums</p>
+    <p>There are currently no albums.</p>
 }

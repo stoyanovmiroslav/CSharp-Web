@@ -6,10 +6,10 @@ namespace SIS.HTTP.Exceptions
 {
     public class InternalServerErrorException : Exception
     {
-        public const string Message = "The Server has encountered an error.";
+        private const string MESSAGE = "The Server has encountered an error.";
 
         public InternalServerErrorException()
-            : base(Message)
+            : base(MESSAGE)
         {
         }
     }

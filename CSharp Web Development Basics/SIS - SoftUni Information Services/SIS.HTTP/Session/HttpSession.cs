@@ -1,9 +1,6 @@
 ﻿using SIS.HTTP.Exceptions;
 using SIS.HTTP.Session.Contracts;
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Text;
 
 namespace SIS.HTTP.Session
 {

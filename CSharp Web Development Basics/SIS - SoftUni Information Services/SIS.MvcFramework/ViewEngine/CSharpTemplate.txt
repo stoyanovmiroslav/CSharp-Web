@@ -9,7 +9,7 @@ namespace MyAppViews
 {
     public class @ViewTypeName : IView<@TypeFullName>
     {
-        public string GetHtml(@TypeFullName model)
+        public string GetHtml(@TypeFullName model, string user)
         {
             StringBuilder html = new StringBuilder();
             var Model = model;

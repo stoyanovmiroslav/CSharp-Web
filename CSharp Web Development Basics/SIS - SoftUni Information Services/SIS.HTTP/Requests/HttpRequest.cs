@@ -123,13 +123,30 @@ namespace SIS.HTTP.Requests
             {
                 string[] splitParameters = queryParameter.Split(new[] { "=" }, StringSplitOptions.RemoveEmptyEntries);
 
-                if (splitParameters.Length != 2)
-                {
-                    throw new BadRequestException();
-                }
+                //TODO:
+                string key = string.Empty;
+                string value = string.Empty;
 
-                string key = splitParameters[0];
-                string value = splitParameters[1];
+                if (splitParameters.Length == 1)
+                {
+                    if (queryParameter.StartsWith("="))
+                    {
+                        value = splitParameters[0];
+                    }
+                    else
+                    {
+                        key = splitParameters[0];
+                    }
+                }
+                else if(splitParameters.Length == 2)
+                {
+                     key = splitParameters[0];
+                     value = splitParameters[1];
+                }
+                else
+                {
+                    throw new ArgumentException("Invalid request data parameters!");
+                }
 
                 dictRequestData.Add(key, value);
             }

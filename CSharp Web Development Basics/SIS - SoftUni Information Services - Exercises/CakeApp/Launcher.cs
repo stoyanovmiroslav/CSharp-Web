@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Reflection;
+using CakeApp.Controllers;
 using SIS.Framework;
 using SIS.Framework.Routers;
 using SIS.HTTP.Enums;
 using SIS.WebServer;
-using SIS.WebServer.Routing;
+using SIS.WebServer.Api.Contracts;
 
 namespace CakeApp
 {
@@ -12,7 +12,12 @@ namespace CakeApp
     {
         static void Main(string[] args)
         {
-            Server server = new Server(80, new ControllerRouter());
+            IHttpHandler controllerRouter = new ControllerRouter();
+            IHttpHandler resourceHandler = new ResourceRouter();
+
+            var handlerContext = new HttpRouteHandlingContext(controllerRouter, resourceHandler);
+
+            Server server = new Server(80, handlerContext);
 
             MvcEngine.Run(server);
         }

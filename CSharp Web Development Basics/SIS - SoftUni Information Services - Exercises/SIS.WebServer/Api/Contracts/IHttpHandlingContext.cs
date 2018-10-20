@@ -3,8 +3,8 @@ using SIS.HTTP.Responses.Contracts;
 
 namespace SIS.WebServer.Api.Contracts
 {
-    public interface IHttpHandler
+    public interface IHttpHandlingContext
     {
-        IHttpResponse HandlerRequest(IHttpRequest httpRequest);
+        IHttpResponse Handle(IHttpRequest request);
     }
 }

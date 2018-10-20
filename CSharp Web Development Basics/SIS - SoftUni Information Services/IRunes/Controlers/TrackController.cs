@@ -1,11 +1,10 @@
 ﻿using System.Linq;
-using System.Web;
 using IRunes.Models;
-using IRunes.ViewModels.Album;
 using IRunes.ViewModels.Track;
 using Microsoft.EntityFrameworkCore;
 using SIS.HTTP.Extensions;
 using SIS.HTTP.Responses.Contracts;
+using SIS.MvcFramework;
 using SIS.MvcFramework.HttpAttributes;
 
 namespace IRunes.Controlers
@@ -17,7 +16,7 @@ namespace IRunes.Controlers
         {
             if (this.User == null)
             {
-                return this.Redirect("/user/login");
+                return this.BadRequestError("To create an album you have to login first!", "/user/login");
             }
 
             return this.View(model);
@@ -28,32 +27,30 @@ namespace IRunes.Controlers
         {
             if (this.User == null)
             {
-                return this.Redirect("/user/login");
+                return this.BadRequestError("To create an album you have to login first!", "/user/login");
             }
 
             if (string.IsNullOrWhiteSpace(model.Name) || string.IsNullOrWhiteSpace(model.Link) || model.Price == 0)
             {
-                return this.BadRequestError("Invalid data, please try again!", "/track/create");
+                return this.BadRequestError("Invalid data, please try again!", "/track/create", model);
             }
 
             var album = this.db.Albums.Include(x => x.Tracks).FirstOrDefault(x => x.Id == model.AlbumId);
 
-            album.Tracks.Add(new Track { Name = model.Name, Link = model.Link, Price = model.Price });
+            if (album == null)
+            {
+                return this.BadRequestError("Invalid album, please try again!", "/track/create", model);
+            }
+
+            model.Link = model.Link.Replace("youtube.com/watch?v=",
+                                                 "youtube.com/embed/");
+
+            var track = model.To<Track>();
+
+            album.Tracks.Add(track);
             db.SaveChanges();
 
-            var tracksPrice = album.Tracks.Sum(x => x.Price);
-            var tracksPriceAfterDiscount = tracksPrice - (tracksPrice * 13 / 100);
-
-            AlbumDetailsViewModel albumModel = new AlbumDetailsViewModel
-            {
-                AlbumCover = album.Cover.UrlDecode(),
-                AlbumName = album.Name,
-                AlbumId = album.Id,
-                TracksPriceAfterDiscount = tracksPriceAfterDiscount,
-                Tracks = album.Tracks.ToList()
-            };
-
-            return this.View("/album/details", albumModel);
+            return this.View("/album/details", album);
         }
 
         [HttpGet("/track/details")]
@@ -61,10 +58,15 @@ namespace IRunes.Controlers
         {
             if (this.User == null)
             {
-                return this.Redirect("/user/login");
+                return this.BadRequestError("To see track details you have to login first!", "/user/login");
             }
 
             var track = this.db.Tracks.FirstOrDefault(x => x.Id == model.TrackId);
+
+            if (track == null)
+            {
+                return this.BadRequestError("Invalid data, please try again!", "/track/create");
+            }
 
             model.TrackLink = track.Link.UrlDecode();
             model.TrackName = track.Name;

@@ -1,7 +1,7 @@
 ﻿using SIS.Framework;
 using SIS.Framework.Routers;
 using SIS.WebServer;
-using System;
+using SIS.WebServer.Api.Contracts;
 
 namespace SIS.App
 {
@@ -9,7 +9,12 @@ namespace SIS.App
     {
         static void Main(string[] args)
         {
-            Server server = new Server(80, new ControllerRouter());
+            IHttpHandler controllerRouter = new ControllerRouter();
+            IHttpHandler resourceHandler = new ResourceRouter();
+
+            var handlerContext = new HttpRouteHandlingContext(controllerRouter, resourceHandler);
+
+            Server server = new Server(80, handlerContext);
 
             MvcEngine.Run(server);
         }

@@ -3,14 +3,16 @@ using IRunes.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace IRunes.Migrations
 {
     [DbContext(typeof(IRunesDbContext))]
-    partial class IRunesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181020131418_AddPriceAlbumModel")]
+    partial class AddPriceAlbumModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

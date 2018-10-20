@@ -11,15 +11,15 @@ using System.Runtime.CompilerServices;
 
 namespace SIS.Framework.Controlers
 {
-    public class Controller
+    public abstract class Controller
     {
         protected const string AUTH_COOKIE_KEY = ".auth_cake";
 
         public Controller()
         {
-            this.UserCookieService = new UserCookieService();
             this.Model = new ViewModel();
             this.Cookies = new HttpCookieCollection();
+            this.UserCookieService = new UserCookieService();
         }
 
         public IUserCookieService UserCookieService { get; set; }

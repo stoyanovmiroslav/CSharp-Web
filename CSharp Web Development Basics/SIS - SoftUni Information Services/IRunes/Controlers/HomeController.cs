@@ -1,5 +1,4 @@
-﻿using IRunes.ViewModels.Home;
-using SIS.HTTP.Responses.Contracts;
+﻿using SIS.HTTP.Responses.Contracts;
 using SIS.MvcFramework.HttpAttributes;
 
 namespace IRunes.Controlers
@@ -9,9 +8,7 @@ namespace IRunes.Controlers
         [HttpGet("/")]
         public IHttpResponse Index()
         {
-            IndexViewModel model = new IndexViewModel { Username = this.User };
-
-            return this.View(model);
+            return this.View();
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Reflection;
 
 namespace SIS.Framework
 {
@@ -8,18 +8,18 @@ namespace SIS.Framework
 
         public static MvcContext Get => Instance == null ? Instance = new MvcContext() : Instance;
 
-        public string AssemblyName { get; set; }
+        public string AssemblyName => Assembly.GetEntryAssembly().GetName().Name;
 
-        public string ControllersFolder { get; set; }
+        public string ControllersFolder => "Controllers";
 
-        public string ControllerSuffix { get; set; }
+        public string ControllerSuffix => "Controller";
 
-        public string ViewFolderFullPath { get; set; }
+        public string ViewFolderFullPath => "../../../Views";
 
-        public string ErrorViewFolder { get; set; }
+        public string ErrorViewFolder => "Error";
 
-        public string ModelsFolder { get; set; }
+        public string ModelsFolder => "Models";
 
-        public string HtmlFileExtention { get; set; } = "html";
+        public string HtmlFileExtention => "html";
     }
 }
