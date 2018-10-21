@@ -1,6 +1,20 @@
 ﻿<form method="post", action="/home/search">
-    <label for="email"><b>Username</b></label>
-    <input type="text" name="search" required>
-    <button type="submit">Search</button>
+    <div>
+        <label for="cakeName"><b>Cake Name</b></label>
+        <input type="text" name="search" style="margin-bottom:10px" required>
+        <button class="btn btn-primary" type="submit">Search</button>
+    </div>
 </form>
-{{searchConrent}}
+<table class="table">
+    <thead>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Name</th>
+            <th scope="col">Price</th>
+            <th scope="col"></th>
+        </tr>
+    </thead>
+    <tbody>
+        {{searchConrent}}
+    </tbody>
+</table>

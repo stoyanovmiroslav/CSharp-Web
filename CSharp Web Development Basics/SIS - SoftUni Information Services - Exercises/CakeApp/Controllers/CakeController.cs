@@ -4,6 +4,7 @@ using SIS.Framework.ActionResult.Contracts;
 using SIS.Framework.Attributes;
 using System;
 using System.Linq;
+using System.Net;
 
 namespace CakeApp.Controllers
 {
@@ -43,7 +44,7 @@ namespace CakeApp.Controllers
 
             Product product = new Product
             {
-                ImageUrl = model.ImageUrl,
+                ImageUrl = WebUtility.UrlDecode(model.ImageUrl),
                 Name = model.Name,
                 Price = model.Price
             };
@@ -54,6 +55,18 @@ namespace CakeApp.Controllers
             db.SaveChanges();
 
             return this.RedirectToAction("/Home/Index");
+        }
+
+        [HttpGet]
+        public IActionResult CakeDetails(int id)
+        {
+            var cake = db.Products.FirstOrDefault(x => x.Id == id);
+
+            this.Model["Name"] = cake.Name; 
+            this.Model["Price"] = cake.Price; 
+            this.Model["Url"] = cake.ImageUrl;
+
+            return this.View();
         }
     }
 }

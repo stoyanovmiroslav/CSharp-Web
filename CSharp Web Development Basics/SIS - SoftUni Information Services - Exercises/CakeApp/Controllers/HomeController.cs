@@ -2,7 +2,6 @@
 using Microsoft.EntityFrameworkCore;
 using SIS.Framework.ActionResult.Contracts;
 using SIS.Framework.Attributes;
-using SIS.HTTP.Requests.Contracts;
 using System.Linq;
 using System.Text;
 
@@ -48,7 +47,29 @@ namespace CakeApp.Controllers
         [HttpPost]
         public IActionResult Search(SearchViewModel model)
         {
-            return this.BadRequestError("This page is under maintenance!");
+            var cakes = db.Products.Where(x => x.Name == model.Search).ToArray();
+
+            StringBuilder sb = new StringBuilder();
+
+            int count = 1;
+            foreach (var cake in cakes)
+            {
+                sb.AppendLine($"<tr><th scope =\"row\">{count++}</th>" +
+                                $"<td><a href=\"/cake/cakeDetails?Id={cake.Id}\">{cake.Name}</a></td>" +
+                                $"<td>${cake.Price}</td>" +
+                                $"<td><button class=\"btn btn-primary\" type=\"submit\">Order</button></td></tr>");
+
+                //sb.AppendLine($"<a href=\"/cake/cakeDetails?Id={cake.Id}\">{cake.Name}</a> ${cake.Price}<br/>");
+            }
+
+            if (cakes.Length == 0)
+            {
+                sb.AppendLine("<tr><th>-</th><th>Not found any cakes!</tr></th>");
+            }
+
+            this.Model["searchConrent"] = sb.ToString();
+
+            return this.View();
         }
 
         [HttpGet]
@@ -63,9 +84,20 @@ namespace CakeApp.Controllers
 
             StringBuilder sb = new StringBuilder();
 
+            int count = 1;
             foreach (var cake in cakes)
             {
-                sb.AppendLine($"<a href=\"{cake.ImageUrl}\">{cake.Name}</a> ${cake.Price}<br/>");
+                sb.AppendLine($"<tr><th scope =\"row\">{count++}</th>" +
+                                  $"<td><a href=\"/cake/cakeDetails?Id={cake.Id}\">{cake.Name}</a></td>" +
+                                  $"<td>${cake.Price}</td>" +
+                                  $"<td><button class=\"btn btn-primary\" type=\"submit\">Order</button></td></tr>");
+
+               // sb.AppendLine($"<a href=\"/cake/cakeDetails?Id={cake.Id}\">{cake.Name}</a> ${cake.Price}<br/>");
+            }
+
+            if (cakes.Length == 0)
+            {
+                sb.AppendLine("<tr><th>-</th><th>Not found any cakes!</tr></th>");
             }
 
             this.Model["searchConrent"] = sb.ToString();

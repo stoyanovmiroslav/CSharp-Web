@@ -6,5 +6,6 @@ namespace CakeApp.ViewModels.Home
 {
     public class SearchViewModel
     {
+        public string Search { get; set; }
     }
 }
