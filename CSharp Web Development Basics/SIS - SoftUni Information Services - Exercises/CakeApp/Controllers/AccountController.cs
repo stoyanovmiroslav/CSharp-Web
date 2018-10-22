@@ -1,9 +1,8 @@
 ﻿using CakeApp.Data.Models;
-using CakeApp.Services;
-using CakeApp.Services.Contracts;
 using CakeApp.ViewModels.Account;
 using SIS.Framework.ActionResult.Contracts;
 using SIS.Framework.Attributes;
+using SIS.Framework.Services.Contracts;
 using SIS.HTTP.Cookies;
 using System.Linq;
 
@@ -13,9 +12,9 @@ namespace CakeApp.Controllers
     {
         IHashService hashService;
 
-        public AccountController()
+        public AccountController(IHashService hashService)
         {
-            this.hashService = new HashService();
+            this.hashService = hashService;
         }
 
         [HttpGet]

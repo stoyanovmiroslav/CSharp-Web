@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace SIS.Framework.Services
+namespace SIS.Framework.Services.Contracts
 {
     public interface IHashService
     {

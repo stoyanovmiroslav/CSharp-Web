@@ -1,6 +1,7 @@
 ﻿using SIS.Framework.ActionResult.Contracts;
 using SIS.Framework.Attributes;
 using SIS.Framework.Controlers;
+using SIS.Framework.Services.Contracts;
 using SIS.HTTP.Enums;
 using SIS.HTTP.Extensions;
 using SIS.HTTP.Requests.Contracts;
@@ -17,6 +18,13 @@ namespace SIS.Framework.Routers
 {
     public class ControllerRouter : IHttpHandler
     {
+        IServiceCollection serviceCollection;
+
+        public ControllerRouter(IServiceCollection serviceCollection)
+        {
+            this.serviceCollection = serviceCollection;
+        }
+
         public IHttpResponse HandlerRequest(IHttpRequest request)
         {
             var controllerName = string.Empty;
@@ -215,7 +223,8 @@ namespace SIS.Framework.Routers
                 return null;
             }
 
-            var controller = (Controller)Activator.CreateInstance(controllerType);
+            var controller = (Controller)serviceCollection.CreateInstance(controllerType);
+
             controller.Request = request;
 
             return controller;

@@ -1,5 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using SIS.Framework.Services.Contracts;
+using System;
 using System.Security.Cryptography;
 using System.Text;
 
