@@ -16,7 +16,7 @@ namespace SIS.Framework
 
         public string ViewFolderFullPath => "../../../Views";
 
-        public string ErrorViewFolder => "Error";
+        public string ErrorViewFolder => "Errors";
 
         public string ModelsFolder => "Models";
 

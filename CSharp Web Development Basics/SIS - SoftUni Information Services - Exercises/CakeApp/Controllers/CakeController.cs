@@ -10,6 +10,7 @@ namespace CakeApp.Controllers
 {
     public class CakeController : BaseController
     {
+        [Authorize]
         [HttpGet]
         public IActionResult AddCake()
         {
@@ -21,6 +22,7 @@ namespace CakeApp.Controllers
             return this.View();
         }
 
+        [Authorize]
         [HttpPost]
         public IActionResult AddCake(AddCakeViewModel model)
         {
@@ -57,6 +59,7 @@ namespace CakeApp.Controllers
             return this.RedirectToAction("/Home/Index");
         }
 
+        [Authorize]
         [HttpGet]
         public IActionResult CakeDetails(int id)
         {

@@ -16,6 +16,7 @@ namespace CakeApp.Controllers
             return this.View();
         }
 
+        [Authorize]
         public IActionResult Profile()
         {
             if (this.User == null)
@@ -39,11 +40,13 @@ namespace CakeApp.Controllers
             return this.View();
         }
 
+        [Authorize]
         public IActionResult AboutUs()
         {
             return this.View();
         }
 
+        [Authorize]
         [HttpPost]
         public IActionResult Search(SearchViewModel model)
         {
@@ -58,8 +61,6 @@ namespace CakeApp.Controllers
                                 $"<td><a href=\"/cake/cakeDetails?Id={cake.Id}\">{cake.Name}</a></td>" +
                                 $"<td>${cake.Price}</td>" +
                                 $"<td><button class=\"btn btn-primary\" type=\"submit\">Order</button></td></tr>");
-
-                //sb.AppendLine($"<a href=\"/cake/cakeDetails?Id={cake.Id}\">{cake.Name}</a> ${cake.Price}<br/>");
             }
 
             if (cakes.Length == 0)
@@ -72,6 +73,7 @@ namespace CakeApp.Controllers
             return this.View();
         }
 
+        [Authorize]
         [HttpGet]
         public IActionResult Search()
         {
@@ -91,8 +93,6 @@ namespace CakeApp.Controllers
                                   $"<td><a href=\"/cake/cakeDetails?Id={cake.Id}\">{cake.Name}</a></td>" +
                                   $"<td>${cake.Price}</td>" +
                                   $"<td><button class=\"btn btn-primary\" type=\"submit\">Order</button></td></tr>");
-
-               // sb.AppendLine($"<a href=\"/cake/cakeDetails?Id={cake.Id}\">{cake.Name}</a> ${cake.Price}<br/>");
             }
 
             if (cakes.Length == 0)

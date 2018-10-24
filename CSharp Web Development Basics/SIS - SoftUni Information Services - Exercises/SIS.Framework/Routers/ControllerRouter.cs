@@ -59,6 +59,13 @@ namespace SIS.Framework.Routers
 
             IActionResult actionResult = (IActionResult)action.Invoke(controller, actionParameters);
 
+            var isAuthorized = this.Authorize(controller, action);
+
+            if (!isAuthorized)
+            {
+                return new UnauthorizedResult();
+            }
+
             var response = this.PrepareResponse(actionResult);
 
             foreach (var cookie in controller.Cookies)
@@ -67,6 +74,20 @@ namespace SIS.Framework.Routers
             }
 
             return response;
+        }
+
+        private bool Authorize(Controller controller, MethodInfo action)
+        {
+            if (action
+                .GetCustomAttributes()
+                .Where(ca => ca is AuthorizeAttribute)
+                .Cast<AuthorizeAttribute>()
+                .Any(a => !a.IsAuthenticated(controller.Identity())))
+            {
+                return false;
+            }
+
+            return true;
         }
 
         private object[] MapActionParameters(MethodInfo action, IHttpRequest request, Controller controller)

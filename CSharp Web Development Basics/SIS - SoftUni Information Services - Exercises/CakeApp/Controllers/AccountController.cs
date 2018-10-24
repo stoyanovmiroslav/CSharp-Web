@@ -2,6 +2,7 @@
 using CakeApp.ViewModels.Account;
 using SIS.Framework.ActionResult.Contracts;
 using SIS.Framework.Attributes;
+using SIS.Framework.Security;
 using SIS.Framework.Services.Contracts;
 using SIS.HTTP.Cookies;
 using System.Linq;
@@ -84,6 +85,8 @@ namespace CakeApp.Controllers
                 return this.BadRequestError("Invalid username or password!");
             }
 
+            this.SingIn(new IdentityUser { Username = model.Username, Password = model.Password });
+
             var cookieContent = this.UserCookieService.GetUserCookie(user.Username);
             this.Cookies.Add(new HttpCookie(AUTH_COOKIE_KEY, cookieContent));
 
@@ -103,7 +106,9 @@ namespace CakeApp.Controllers
 
             this.Cookies.Add(cookie);
 
-            return this.RedirectToAction("/Home/Index");
+            this.SingOut(this.Identity());
+
+            return this.RedirectToAction("/home/index");
         }
     }
 }

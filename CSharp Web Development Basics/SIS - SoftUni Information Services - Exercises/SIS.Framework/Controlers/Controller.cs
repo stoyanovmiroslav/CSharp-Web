@@ -1,6 +1,7 @@
 ﻿using SIS.Framework.ActionResult;
 using SIS.Framework.ActionResult.Contracts;
 using SIS.Framework.Models;
+using SIS.Framework.Security.Contracts;
 using SIS.Framework.Services;
 using SIS.Framework.Utilities;
 using SIS.Framework.Views;
@@ -31,6 +32,26 @@ namespace SIS.Framework.Controlers
         public ViewModel Model { get; set; }
 
         public IHttpCookieCollection Cookies { get; set; }
+
+        public IIdentity Identity()
+        {
+            if (this.Request.Session.ContainsParameter(AUTH_COOKIE_KEY))
+            {
+                return (IIdentity)this.Request.Session.GetParameter(AUTH_COOKIE_KEY);
+            }
+
+            return null;
+        }
+
+        protected void SingIn(IIdentity identity)
+        {
+            this.Request.Session.AddParameter(AUTH_COOKIE_KEY, identity);
+        }
+
+        protected void SingOut(IIdentity identity)
+        {
+            this.Request.Session.ClearParameters();
+        }
 
         protected IViewable View([CallerMemberName] string caller = "")
         {
