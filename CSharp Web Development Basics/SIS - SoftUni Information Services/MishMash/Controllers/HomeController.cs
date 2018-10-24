@@ -1,4 +1,5 @@
-﻿using MishMash.ViewModels.Chanel;
+﻿using Microsoft.EntityFrameworkCore;
+using MishMash.ViewModels.Chanel;
 using MishMash.ViewModels.Home;
 using SIS.HTTP.Responses;
 using SIS.HTTP.Responses.Contracts;
@@ -28,16 +29,22 @@ namespace MishMash.Controllers
                                                          FollowersCount = x.Followers.Count()
                                                      } ).ToList();
 
-            var yourChannels = db.Channels.Where(x => x.Followers.Any(f => f.User.Username == this.User))
-                                         .Select(x => new DetailsChanelViewModel
+            var yourChannels = db.Channels.Include(x => x.Tags)
+                                          .Where(x => x.Followers.Any(f => f.User.Username == this.User))
+                                          .Select(x => new DetailsChanelViewModel
                                                      {
                                                          Id = x.ChannelId,
                                                          Name = x.Name,
                                                          Type = x.Type.ToString(),
-                                                         FollowersCount = x.Followers.Count()
+                                                         FollowersCount = x.Followers.Count(),
+                                                         TagsId = x.Tags.Select(t => t.Id).ToList()
                                                      }).ToList();
 
-            var suggestedChannels = db.Channels.Where(x => x.Followers.Any(f => f.User.Username == this.User))
+            var yourChannelTags = yourChannels.SelectMany(x => x.TagsId).ToList();
+
+
+            var suggestedChannels = db.Channels.Where(x => !x.Tags.Any(t => yourChannelTags.Contains(t.Id)))
+                                                  // && !yourChannels.Any(c => c.Id == x.ChannelId))
                                          .Select(x => new DetailsChanelViewModel
                                          {
                                              Id = x.ChannelId,
