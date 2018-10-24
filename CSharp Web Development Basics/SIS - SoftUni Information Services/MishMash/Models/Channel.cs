@@ -7,7 +7,7 @@ namespace MishMash.Models
     {
         public Channel()
         {
-            this.Tags = new HashSet<Tag>();
+            this.Tags = new HashSet<ChanelTag>();
             this.Followers = new HashSet<UserChanel>();
         }
 
@@ -19,7 +19,7 @@ namespace MishMash.Models
 
         public Type Type { get; set; }
 
-        public ICollection<Tag> Tags { get; set; }
+        public ICollection<ChanelTag> Tags { get; set; }
 
         public ICollection<UserChanel> Followers { get; set; }
     }

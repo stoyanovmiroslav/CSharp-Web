@@ -32,7 +32,7 @@ namespace MishMash.Controllers
                 Channel = chanel
             };
 
-            db.UserChanels.Add(userChanel);       
+            db.UserChanels.Add(userChanel);
             db.SaveChanges();
 
             return this.Redirect("/");
@@ -72,29 +72,35 @@ namespace MishMash.Controllers
                                                     FollowersCount = x.Channel.Followers.Count(),
                                                     Type = x.Channel.Type.ToString()
                                                 }).ToArray();
-                                          
+
             return this.View(followedChanels);
         }
 
         [HttpGet("/channel/details")]
         public IHttpResponse Details(int id)
         {
-            var chanel = db.Channels.Include(x => x.Tags)
-                                    .Include(x => x.Followers)
-                                    .FirstOrDefault(x => x.ChannelId == id);
+            var channelViewModel = this.db.Channels.Where(x => x.ChannelId == id)
+                .Select(x => new DetailsChanelViewModel
+                {
+                    Type = x.Type.ToString(),
+                    Name = x.Name,
+                    Tags = x.Tags.Select(t => t.Tag.Name).ToArray(),
+                    Description = x.Description,
+                    FollowersCount = x.Followers.Count(),
+                }).FirstOrDefault();
 
-            if (chanel == null)
+            if (channelViewModel == null)
             {
                 return this.BadRequestError("Invalid Chanel!", "/Home/Index-guest");
             }
-            
-            return this.View(chanel);
+
+            return this.View(channelViewModel);
         }
 
         [HttpGet("/channel/create")]
         public IHttpResponse Create()
         {
-           return this.View();
+            return this.View();
         }
 
         [HttpPost("/channel/create")]
@@ -109,7 +115,9 @@ namespace MishMash.Controllers
                                          .Select(x => x.Trim())
                                          .Where(x => !string.IsNullOrWhiteSpace(x))
                                          .ToArray();
-            var tags = new List<Tag>();
+
+            var tags = new List<ChanelTag>();
+            var channel = new Channel();
 
             foreach (var tagAsString in tagsAsString)
             {
@@ -120,21 +128,26 @@ namespace MishMash.Controllers
                     tag = new Tag { Name = tagAsString };
                 }
 
-                tags.Add(tag);
+                var chanelTag = new ChanelTag
+                {
+                    Tag = tag,
+                    Channel = channel
+                };
+
+                tags.Add(chanelTag);
             }
 
-            var channel = new Channel
-            {
-                Name = model.Name,
-                Description = model.Description,
-                Tags = tags,
-                Type = type,
-            };
+
+            channel.Name = model.Name;
+            channel.Description = model.Description;
+            channel.Tags = tags;
+            channel.Type = type;
+
 
             db.Channels.Add(channel);
             db.SaveChanges();
 
-            return this.View();
+            return this.Redirect("/");
         }
     }
 }

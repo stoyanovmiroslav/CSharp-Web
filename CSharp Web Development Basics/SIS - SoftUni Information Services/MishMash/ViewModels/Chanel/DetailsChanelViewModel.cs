@@ -14,7 +14,7 @@ namespace MishMash.ViewModels.Chanel
 
         public string Type { get; set; }
 
-        public string Tags { get; set; }
+        public string[] Tags { get; set; }
 
         public int FollowersCount { get; set; }
 

@@ -47,7 +47,7 @@ namespace MishMash.Controllers
 
             if (this.db.Users.Any(x => x.Username == model.Username))
             {
-                return this.BadRequestError("Username already exist!", "user/register");
+                return this.BadRequestError("Username already exist!", "account/register");
             }
 
             if (model.Password != model.ConfirmPassword)

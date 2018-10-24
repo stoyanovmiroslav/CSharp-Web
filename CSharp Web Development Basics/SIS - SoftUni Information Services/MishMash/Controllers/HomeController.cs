@@ -37,14 +37,13 @@ namespace MishMash.Controllers
                                                          Name = x.Name,
                                                          Type = x.Type.ToString(),
                                                          FollowersCount = x.Followers.Count(),
-                                                         TagsId = x.Tags.Select(t => t.Id).ToList()
+                                                         TagsId = x.Tags.Select(t => t.TagId).ToList()
                                                      }).ToList();
 
             var yourChannelTags = yourChannels.SelectMany(x => x.TagsId).ToList();
 
-
-            var suggestedChannels = db.Channels.Where(x => !x.Tags.Any(t => yourChannelTags.Contains(t.Id)))
-                                                  // && !yourChannels.Any(c => c.Id == x.ChannelId))
+            var suggestedChannels = db.Channels.Where(x => x.Tags.Any(t => yourChannelTags.Contains(t.TagId))
+                                                  && !yourChannels.Any(c => c.Id == x.ChannelId))
                                          .Select(x => new DetailsChanelViewModel
                                          {
                                              Id = x.ChannelId,
@@ -53,7 +52,8 @@ namespace MishMash.Controllers
                                              FollowersCount = x.Followers.Count()
                                          }).ToList();
 
-            var otherChannels = db.Channels.Where(x => x.Followers.Any(f => f.User.Username == this.User))
+            var otherChannels = db.Channels.Where(x => !suggestedChannels.Any(a => a.Id == x.ChannelId)
+                                            && !yourChannels.Any(a => a.Id == x.ChannelId))
                                        .Select(x => new DetailsChanelViewModel
                                        {
                                            Id = x.ChannelId,
@@ -61,7 +61,6 @@ namespace MishMash.Controllers
                                            Type = x.Type.ToString(),
                                            FollowersCount = x.Followers.Count()
                                        }).ToList();
-
 
             var model = new HomeChanelsViewModel
             {

@@ -2,15 +2,17 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using MishMash.Data;
 
 namespace MishMash.Migrations
 {
     [DbContext(typeof(MishMashDbContext))]
-    partial class MishMashDbContextModelSnapshot : ModelSnapshot
+    [Migration("20181024203022_AddedChanelTagModel")]
+    partial class AddedChanelTagModel
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
