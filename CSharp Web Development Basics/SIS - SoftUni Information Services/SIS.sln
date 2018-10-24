@@ -15,7 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IRunes", "IRunes\IRunes.csp
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SIS.MvcFramework", "SIS.MvcFramework\SIS.MvcFramework.csproj", "{792BC331-D9D6-4B82-8ADD-D34970BEA82E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SIS.MvcFramework.Tests", "SIS.MvcFramework.Tests\SIS.MvcFramework.Tests.csproj", "{F8009EA6-CA5A-4404-91E5-DB9C073A3A2A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SIS.MvcFramework.Tests", "SIS.MvcFramework.Tests\SIS.MvcFramework.Tests.csproj", "{F8009EA6-CA5A-4404-91E5-DB9C073A3A2A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MishMash", "MishMash\MishMash.csproj", "{91B36401-094B-4A86-B12B-547A6F7E271A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,6 +49,10 @@ Global
 		{F8009EA6-CA5A-4404-91E5-DB9C073A3A2A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{F8009EA6-CA5A-4404-91E5-DB9C073A3A2A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F8009EA6-CA5A-4404-91E5-DB9C073A3A2A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{91B36401-094B-4A86-B12B-547A6F7E271A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{91B36401-094B-4A86-B12B-547A6F7E271A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{91B36401-094B-4A86-B12B-547A6F7E271A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{91B36401-094B-4A86-B12B-547A6F7E271A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -54,6 +60,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{CB5A7F81-89FC-4FFB-94A6-B49456001522} = {27F6540E-2CFB-4884-B942-F1762AB135CF}
 		{BB117B52-597D-4890-99DD-FF2442B7D4A5} = {27F6540E-2CFB-4884-B942-F1762AB135CF}
+		{91B36401-094B-4A86-B12B-547A6F7E271A} = {27F6540E-2CFB-4884-B942-F1762AB135CF}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9FB84BC9-E840-4027-B6FD-8E2AE6E3A99C}

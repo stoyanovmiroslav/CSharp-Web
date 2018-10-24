@@ -1,0 +1,32 @@
+﻿<main class="mt-3 mb-5">
+    <h1 class="text-center text-mishmash">Following</h1>
+    <hr class="hr-2 bg-mishmash" />
+    <table class="table w-75 mx-auto table-hover">
+        <thead>
+            <tr class="row">
+                <th class="col-md-1">#</th>
+                <th class="col-md-5">Channel</th>
+                <th class="col-md-1">Type</th>
+                <th class="col-md-2">Followers</th>
+                <th class="col-md-2">Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach(var item in Model)
+            {
+            <tr class="row">
+                <th class="col-md-1">@item.Id</th>
+                <td class="col-md-5">@item.Name</td>
+                <td class="col-md-1">@item.Type</td>
+                <td class="col-md-2">@item.FollowersCount</td>
+                <td class="col-md-2">
+                    <div class="button-holder d-flex justify-content-between">
+                        <a href="/channel/unfollow?id=@item.Id" class="btn bg-mishmash text-white">Unfollow</a>
+                        <a href="/channel/details?id=@item.Id" class="btn bg-mishmash text-white">Details</a>
+                    </div>
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+</main>
