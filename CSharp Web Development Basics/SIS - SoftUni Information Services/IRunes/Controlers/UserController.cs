@@ -66,7 +66,7 @@ namespace IRunes.Controlers
             db.Users.Add(user);
             db.SaveChanges();
 
-            SetSession(user);
+            SetSession(user, user.Username);
             AddCookieAuthentication(model.Username);
 
             return this.Redirect("/");
@@ -100,7 +100,7 @@ namespace IRunes.Controlers
                 return this.BadRequestError("Invalid username or password!", "user/login");
             }
 
-            SetSession(user);
+            SetSession(user, user.Username);
             AddCookieAuthentication(model.Username);
 
             return this.Redirect("/");
@@ -130,10 +130,10 @@ namespace IRunes.Controlers
             this.Response.Cookies.Add(new HttpCookie(AUTH_COOKIE_KEY, userCookieValue));
         }
 
-        private void SetSession(User user)
+        private void SetSession(User user, string username)
         {
             var userModel = new UserModel { Name = user.Username, Exist = true };
-            this.Request.Session.AddParameter(SESSION_KEY, userModel);
+            this.Request.Session.AddParameter(username, userModel);
         }
     }
 }

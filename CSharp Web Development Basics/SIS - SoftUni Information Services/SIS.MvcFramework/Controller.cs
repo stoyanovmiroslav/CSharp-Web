@@ -49,8 +49,7 @@ namespace SIS.MvcFramework
         {
             get
             {
-                if (!this.Request.Session.ContainsParameter(SESSION_KEY)
-                    || !this.Request.Cookies.ContainsCookie(AUTH_COOKIE_KEY))
+                if (!this.Request.Cookies.ContainsCookie(AUTH_COOKIE_KEY))
                 {
                     return new UserModel();
                 }
@@ -59,7 +58,12 @@ namespace SIS.MvcFramework
                 var cookieContent = cookie.Value;
                 var userName = this.UserCookieService.GetUserData(cookieContent);
 
-                UserModel userModel = (UserModel)Request.Session.GetParameter(SESSION_KEY);
+                if (!this.Request.Session.ContainsParameter(userName))
+                {
+                    return new UserModel();
+                }
+
+                UserModel userModel = (UserModel)Request.Session.GetParameter(userName);
 
                 return userModel;
             }

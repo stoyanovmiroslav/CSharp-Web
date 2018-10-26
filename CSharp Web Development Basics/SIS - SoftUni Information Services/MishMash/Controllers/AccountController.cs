@@ -72,7 +72,7 @@ namespace MishMash.Controllers
             db.Users.Add(user);
             db.SaveChanges();
 
-            SetSession(user);
+            SetSession(user, user.Username);
             AddCookieAuthentication(model.Username);
 
             return this.Redirect("/");
@@ -106,7 +106,7 @@ namespace MishMash.Controllers
                 return this.BadRequestError("Invalid username or password!", "account/login");
             }
 
-            SetSession(user);
+            SetSession(user, user.Username);
 
             AddCookieAuthentication(model.Username);
 
@@ -137,10 +137,10 @@ namespace MishMash.Controllers
             this.Response.Cookies.Add(new HttpCookie(AUTH_COOKIE_KEY, userCookieValue));
         }
 
-        private void SetSession(User user)
+        private void SetSession(User user, string username)
         {
             var userModel = new UserModel { Name = user.Username, Role = user.Role.ToString(), Exist = true };
-            this.Request.Session.AddParameter(SESSION_KEY, userModel);
+            this.Request.Session.AddParameter(username, userModel);
         }
     }
 }
