@@ -1,13 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MishMash.ViewModels.Chanel;
 using MishMash.ViewModels.Home;
-using SIS.HTTP.Responses;
 using SIS.HTTP.Responses.Contracts;
 using SIS.MvcFramework.HttpAttributes;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace MishMash.Controllers
 {
@@ -16,22 +12,21 @@ namespace MishMash.Controllers
         [HttpGet("/")]
         public IHttpResponse Index()
         {
-            if (this.User == null)
+            if (!this.User.Exist)
             {
                 return this.View("/Home/Index-guest");
             }
 
-            var allChannels = db.Channels.Select(x => new DetailsChanelViewModel
-                                                     {
-                                                         Id = x.ChannelId,
-                                                         Name = x.Name,
-                                                         Type = x.Type.ToString(),
-                                                         FollowersCount = x.Followers.Count()
-                                                     } ).ToList();
+            var user = db.Users.FirstOrDefault(x => x.Username == this.User.Name);
+
+            if (user == null)
+            {
+                return this.BadRequestError("Invaid user!");
+            }
 
             var yourChannels = db.Channels.Include(x => x.Tags)
-                                          .Where(x => x.Followers.Any(f => f.User.Username == this.User))
-                                          .Select(x => new DetailsChanelViewModel
+                                          .Where(x => x.Followers.Any(f => f.User.Username == this.User.Name))
+                                          .Select(x => new BasicChanelViewModel
                                                      {
                                                          Id = x.ChannelId,
                                                          Name = x.Name,
@@ -44,7 +39,7 @@ namespace MishMash.Controllers
 
             var suggestedChannels = db.Channels.Where(x => x.Tags.Any(t => yourChannelTags.Contains(t.TagId))
                                                   && !yourChannels.Any(c => c.Id == x.ChannelId))
-                                         .Select(x => new DetailsChanelViewModel
+                                         .Select(x => new BasicChanelViewModel
                                          {
                                              Id = x.ChannelId,
                                              Name = x.Name,
@@ -54,7 +49,7 @@ namespace MishMash.Controllers
 
             var otherChannels = db.Channels.Where(x => !suggestedChannels.Any(a => a.Id == x.ChannelId)
                                             && !yourChannels.Any(a => a.Id == x.ChannelId))
-                                       .Select(x => new DetailsChanelViewModel
+                                       .Select(x => new BasicChanelViewModel
                                        {
                                            Id = x.ChannelId,
                                            Name = x.Name,
@@ -64,7 +59,6 @@ namespace MishMash.Controllers
 
             var model = new HomeChanelsViewModel
             {
-                 AllChannels = allChannels,
                  YourChannels = yourChannels,
                  SuggestedChannels = suggestedChannels,
                  OtherChannels = otherChannels

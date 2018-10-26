@@ -13,7 +13,7 @@ namespace IRunes.Controlers
         [HttpGet("/album/create")]
         public IHttpResponse Create()
         {
-            if (this.User == null)
+            if (!this.User.Exist)
             {
                 return this.BadRequestError("To create an album you have to login first!", "/user/login");
             }
@@ -24,7 +24,7 @@ namespace IRunes.Controlers
         [HttpPost("/album/create")]
         public IHttpResponse Create(CreateAlbumViewModel model)
         {
-            if (this.User == null)
+            if (!this.User.Exist)
             {
                 return this.BadRequestError("To create an album you have to login first!", "/user/login");
             }
@@ -34,7 +34,7 @@ namespace IRunes.Controlers
                 return this.BadRequestError("Invalid data!", "/album/create");
             }
 
-            var user = db.Users.FirstOrDefault(x => x.Username == this.User);
+            var user = db.Users.FirstOrDefault(x => x.Username == this.User.Name);
 
             if (user == null)
             {
@@ -52,7 +52,7 @@ namespace IRunes.Controlers
         [HttpGet("/album/details")]
         public IHttpResponse Details(AlbumDetailsViewModel model)
         {
-            if (this.User == null)
+            if (!this.User.Exist)
             {
                 return this.BadRequestError("To see your album details you have to login first!", "/user/login");
             }
@@ -70,12 +70,12 @@ namespace IRunes.Controlers
         [HttpGet("/album/all")]
         public IHttpResponse All()
         {
-            if (this.User == null)
+            if (!this.User.Exist)
             {
                 return this.BadRequestError("To see your Аlbums you have to login first!", "/user/login");
             }
 
-            var user = db.Users.Include(x => x.Albums).FirstOrDefault(x => x.Username == this.User);
+            var user = db.Users.Include(x => x.Albums).FirstOrDefault(x => x.Username == this.User.Name);
 
             if (user == null)
             {

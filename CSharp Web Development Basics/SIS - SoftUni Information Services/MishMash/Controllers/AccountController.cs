@@ -4,17 +4,15 @@ using SIS.HTTP.Cookies;
 using SIS.HTTP.Responses.Contracts;
 using SIS.MvcFramework;
 using SIS.MvcFramework.HttpAttributes;
+using SIS.MvcFramework.ViewEngine;
 using SIS.MvcFramework.Services.Contracts;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace MishMash.Controllers
 {
     public class AccountController : BaseController
     {
-        IHashService hashService;
+        private readonly IHashService hashService;
 
         public AccountController(IHashService hashService)
         {
@@ -24,9 +22,9 @@ namespace MishMash.Controllers
         [HttpGet("/account/register")]
         public IHttpResponse Register()
         {
-            if (this.User != null)
+            if (this.User.Exist)
             {
-                return this.BadRequestError("You have to logout first!", "/home/index");
+                return this.BadRequestError("You have to logout first!");
             }
 
             return this.View();
@@ -35,9 +33,9 @@ namespace MishMash.Controllers
         [HttpPost("/account/register")]
         public IHttpResponse Register(RegisterViewModel model)
         {
-            if (this.User != null)
+            if (this.User.Exist)
             {
-                return this.BadRequestError("You have to logout first!", "/home/index");
+                return this.BadRequestError("You have to logout first!");
             }
 
             if (string.IsNullOrWhiteSpace(model.Username) || model.Username.Length < 6)
@@ -67,7 +65,6 @@ namespace MishMash.Controllers
                 model.Role = Models.Enums.Role.Admin;
             }
 
-            //Hash Password
             model.Password = this.hashService.Hash(model.Password);
 
             var user = model.To<User>();
@@ -75,7 +72,7 @@ namespace MishMash.Controllers
             db.Users.Add(user);
             db.SaveChanges();
 
-            this.Request.Session.AddParameter("username", model.Username);
+            SetSession(user);
             AddCookieAuthentication(model.Username);
 
             return this.Redirect("/");
@@ -84,9 +81,9 @@ namespace MishMash.Controllers
         [HttpGet("/account/login")]
         public IHttpResponse Login()
         {
-            if (this.User != null)
+            if (this.User.Exist)
             {
-                return this.BadRequestError("You are already login!", "/home/index");
+                return this.BadRequestError("You are already login!");
             }
 
             return this.View();
@@ -95,9 +92,9 @@ namespace MishMash.Controllers
         [HttpPost("/account/login")]
         public IHttpResponse Login(LoginViewModel model)
         {
-            if (this.User != null)
+            if (this.User.Exist)
             {
-                return this.BadRequestError("You are already login!", "/home/index");
+                return this.BadRequestError("You are already login!");
             }
 
             string hashedPassword = this.hashService.Hash(model.Password);
@@ -109,7 +106,8 @@ namespace MishMash.Controllers
                 return this.BadRequestError("Invalid username or password!", "account/login");
             }
 
-            this.Request.Session.AddParameter("username", model.Username);
+            SetSession(user);
+
             AddCookieAuthentication(model.Username);
 
             return this.Redirect("/");
@@ -118,10 +116,12 @@ namespace MishMash.Controllers
         [HttpGet("/account/logout")]
         public IHttpResponse Logout()
         {
-            if (this.User == null)
+            if (!this.User.Exist)
             {
                 return this.BadRequestError("You are already logout!", "/home/index-guest");
             }
+
+            this.Request.Session.ClearParameters();
 
             var cookie = this.Request.Cookies.GetCookie(AUTH_COOKIE_KEY);
             cookie.Delete();
@@ -135,6 +135,12 @@ namespace MishMash.Controllers
         {
             var userCookieValue = this.UserCookieService.GetUserCookie(username);
             this.Response.Cookies.Add(new HttpCookie(AUTH_COOKIE_KEY, userCookieValue));
+        }
+
+        private void SetSession(User user)
+        {
+            var userModel = new UserModel { Name = user.Username, Role = user.Role.ToString(), Exist = true };
+            this.Request.Session.AddParameter(SESSION_KEY, userModel);
         }
     }
 }

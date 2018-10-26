@@ -66,13 +66,13 @@ namespace SIS.WebServer
             if (!this.serverRoutingTable.Routes.ContainsKey(httpRequest.RequestMethod) ||
                !this.serverRoutingTable.Routes[httpRequest.RequestMethod].ContainsKey(httpRequest.Path))
             {
-                return returnIfResource(httpRequest.Path);
+                return ReturnIfResource(httpRequest.Path);
             }
 
             return this.serverRoutingTable.Routes[httpRequest.RequestMethod][httpRequest.Path].Invoke(httpRequest);
         }
 
-        private IHttpResponse returnIfResource(string path)
+        private IHttpResponse ReturnIfResource(string path)
         {
             int indexOfLastDot = path.LastIndexOf('.');
             int indexOflastSlash = path.LastIndexOf('/');

@@ -1,4 +1,4 @@
-﻿@if(user == null)
+﻿@if(!user.Exist)
 {
     <div class="jumbotron bg-success">
         <h2 class="display-7 text-light">Welcome to IRunes</h2>
@@ -10,7 +10,7 @@
 @else
 {
     <div class="jumbotron bg-success">
-        <h2 class="display-7 text-light">Welcome, @user</h2>
+        <h2 class="display-7 text-light">Welcome, @user.Name</h2>
         <hr class="my-1 hr-white">
         <p class="lead text-light">IRunes wishes you a fun experience.</p>
     </div>

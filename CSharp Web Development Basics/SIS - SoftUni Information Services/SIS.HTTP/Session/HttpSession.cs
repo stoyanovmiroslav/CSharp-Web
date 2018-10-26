@@ -6,7 +6,7 @@ namespace SIS.HTTP.Session
 {
     public class HttpSession : IHttpSession
     {
-        private IDictionary<string, object> parameters;
+        private readonly IDictionary<string, object> parameters;
 
         public HttpSession(string id)
         {

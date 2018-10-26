@@ -1,13 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using MishMash.Models;
-using MishMash.Models.Enums;
 using MishMash.ViewModels.Chanel;
 using SIS.HTTP.Responses.Contracts;
 using SIS.MvcFramework.HttpAttributes;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
 namespace MishMash.Controllers
 {
@@ -17,13 +15,13 @@ namespace MishMash.Controllers
         public IHttpResponse Follow(int id)
         {
             var user = db.Users.Include(x => x.Channels)
-                              .FirstOrDefault(x => x.Username == this.User);
+                              .FirstOrDefault(x => x.Username == this.User.Name);
 
             var chanel = db.Channels.FirstOrDefault(x => x.ChannelId == id);
 
             if (user == null || chanel == null)
             {
-                return this.BadRequestError("Invalid operation", "/home/index");
+                return this.BadRequestError("Invalid request!");
             }
 
             var userChanel = new UserChanel
@@ -42,13 +40,13 @@ namespace MishMash.Controllers
         public IHttpResponse Unfollow(int id)
         {
             var user = db.Users.Include(x => x.Channels)
-                              .FirstOrDefault(x => x.Username == this.User);
+                              .FirstOrDefault(x => x.Username == this.User.Name);
 
             var chanel = user.Channels.FirstOrDefault(x => x.ChannelId == id);
 
             if (user == null || chanel == null)
             {
-                return this.BadRequestError("Invalid operation", "/home/index");
+                return this.BadRequestError("Invalid operation");
             }
 
             db.UserChanels.Remove(chanel);
@@ -61,11 +59,11 @@ namespace MishMash.Controllers
         public IHttpResponse Followed()
         {
             var user = db.Users.Include(x => x.Channels)
-                               .FirstOrDefault(x => x.Username == this.User);
+                               .FirstOrDefault(x => x.Username == this.User.Name);
 
             var followedChanels = db.UserChanels.Include(x => x.Channel)
                                                 .Where(x => x.UserId == user.UserId)
-                                                .Select(x => new DetailsChanelViewModel
+                                                .Select(x => new BasicChanelViewModel
                                                 {
                                                     Id = x.Channel.ChannelId,
                                                     Name = x.Channel.Name,
@@ -80,7 +78,7 @@ namespace MishMash.Controllers
         public IHttpResponse Details(int id)
         {
             var channelViewModel = this.db.Channels.Where(x => x.ChannelId == id)
-                .Select(x => new DetailsChanelViewModel
+                .Select(x => new BasicChanelViewModel
                 {
                     Type = x.Type.ToString(),
                     Name = x.Name,

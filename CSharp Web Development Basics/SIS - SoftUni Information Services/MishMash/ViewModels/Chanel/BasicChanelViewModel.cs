@@ -1,10 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Collections.Generic;
 
 namespace MishMash.ViewModels.Chanel
 {
-    public class DetailsChanelViewModel
+    public class BasicChanelViewModel
     {
         public int Id { get; set; }
 

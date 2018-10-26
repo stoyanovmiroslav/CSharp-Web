@@ -14,7 +14,7 @@ namespace IRunes.Controlers
         [HttpGet("/track/create")]
         public IHttpResponse Create(CreateTrackViewModel model)
         {
-            if (this.User == null)
+            if (!this.User.Exist)
             {
                 return this.BadRequestError("To create an album you have to login first!", "/user/login");
             }
@@ -25,7 +25,7 @@ namespace IRunes.Controlers
         [HttpPost("/track/create")]
         public IHttpResponse Create(CreateTrackActionViewModel model)
         {
-            if (this.User == null)
+            if (!this.User.Exist)
             {
                 return this.BadRequestError("To create an album you have to login first!", "/user/login");
             }
@@ -50,13 +50,13 @@ namespace IRunes.Controlers
             album.Tracks.Add(track);
             db.SaveChanges();
 
-            return this.View("/album/details", album);
+            return this.View(album, "/album/details");
         }
 
         [HttpGet("/track/details")]
         public IHttpResponse Details(DetailsTrackViewModel model)
         {
-            if (this.User == null)
+            if (!this.User.Exist)
             {
                 return this.BadRequestError("To see track details you have to login first!", "/user/login");
             }

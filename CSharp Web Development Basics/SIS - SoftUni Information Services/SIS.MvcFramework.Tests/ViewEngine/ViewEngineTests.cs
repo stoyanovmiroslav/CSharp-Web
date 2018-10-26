@@ -1,4 +1,5 @@
-﻿using SIS.MvcFramework.ViewEngine.Contracts;
+﻿using SIS.MvcFramework.ViewEngine;
+using SIS.MvcFramework.ViewEngine.Contracts;
 using System.Collections.Generic;
 using System.IO;
 using Xunit;
@@ -22,7 +23,9 @@ namespace SIS.MvcFramework.Tests.ViewEngine
                 String = "Username",
                 List = new List<string> { "Item1", "item2", "test", "123", "" }
             };
-            var user = "Pesho";
+
+            var user = new UserModel { Name = "Pesho" };
+            
             var result = viewEngine.GetHtml(testViewName, viewCode, model, user);
 
             Assert.Equal(expectedResult, result);

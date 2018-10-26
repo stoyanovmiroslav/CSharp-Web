@@ -3,19 +3,21 @@ using SIS.HTTP.Headers;
 using SIS.HTTP.Requests.Contracts;
 using SIS.HTTP.Responses;
 using SIS.HTTP.Responses.Contracts;
+using SIS.MvcFramework.ViewEngine;
 using SIS.MvcFramework.Services.Contracts;
 using SIS.MvcFramework.ViewEngine.Contracts;
-using SIS.MvcFramework.ErrorViewModels;
-using System.Diagnostics;
 using System.Text;
+using System.Runtime.CompilerServices;
+using System;
 
 namespace SIS.MvcFramework
 {
     public abstract class Controller
     {
+        protected const string SESSION_KEY = "username";
         protected const string VIEWS_FOLDER_PATH = "../../../Views";
         protected const string HTML_EXTENTION = ".html";
-        protected const string AUTH_COOKIE_KEY = "IRunes_auth";
+        protected const string AUTH_COOKIE_KEY = "_auth";
         private const string DEFAULT_CONTROLER_NAME = "Controller";
         private const string LAYOUT = "_Layout";
         private const string ERROR_VIEW_PATH = "Error/Error";
@@ -27,10 +29,11 @@ namespace SIS.MvcFramework
         {
             this.Response = new HttpResponse { StatusCode = HttpResponseStatusCode.Ok };
             this.ViewEngine = new SIS.MvcFramework.ViewEngine.ViewEngine();
-            this.errorViewModel = new ErrorViewModel();
+            this.ErrorViewModel = new ErrorViewModel();
         }
 
-        private string GetCurrentControllerName => this.GetType().Name.Replace(DEFAULT_CONTROLER_NAME, string.Empty);
+        private string GetCallingControllerName => this.GetType().Name.Replace(DEFAULT_CONTROLER_NAME, string.Empty);
+        private Type GetCallingControllerType => this.GetType();
 
         public IHttpRequest Request { get; set; }
 
@@ -40,32 +43,36 @@ namespace SIS.MvcFramework
 
         public IViewEngine ViewEngine { get; set; }
 
-        public ErrorViewModel errorViewModel { get; set; }
+        public ErrorViewModel ErrorViewModel { get; set; }
 
-        protected string User
+        protected UserModel User
         {
             get
             {
-                if (!this.Request.Cookies.ContainsCookie(AUTH_COOKIE_KEY))
+                if (!this.Request.Session.ContainsParameter(SESSION_KEY)
+                    || !this.Request.Cookies.ContainsCookie(AUTH_COOKIE_KEY))
                 {
-                    return null;
+                    return new UserModel();
                 }
 
                 var cookie = this.Request.Cookies.GetCookie(AUTH_COOKIE_KEY);
                 var cookieContent = cookie.Value;
                 var userName = this.UserCookieService.GetUserData(cookieContent);
-                return userName;
+
+                UserModel userModel = (UserModel)Request.Session.GetParameter(SESSION_KEY);
+
+                return userModel;
             }
         }
 
-        protected IHttpResponse View(string viewName = null)
+        protected IHttpResponse View([CallerMemberName] string viewName = "")
         {
             var allContent = this.GetViewContent(viewName, (object)null);
             this.PrepareHtmlResult(allContent);
             return this.Response;
         }
 
-        protected IHttpResponse View<T>(string viewName = null, T model = null)
+        protected IHttpResponse View<T>(T model = null, [CallerMemberName] string viewName = "")
             where T : class
         {
             var allContent = this.GetViewContent(viewName, model);
@@ -73,18 +80,10 @@ namespace SIS.MvcFramework
             return this.Response;
         }
 
-        protected IHttpResponse View<T>(T model)
-            where T : class
-        {
-            var allContent = this.GetViewContent(null, model);
-            this.PrepareHtmlResult(allContent);
-            return this.Response;
-        }
-
         protected IHttpResponse BadRequestError<T>(string massage, string viewName, T viewModel)
             where T : class
         {
-            this.errorViewModel.Massage = massage;
+            this.ErrorViewModel.Massage = massage;
             var fullViewContent = GetViewContent(viewName, viewModel);
 
             this.PrepareHtmlResult(fullViewContent);
@@ -93,10 +92,10 @@ namespace SIS.MvcFramework
             return this.Response;
         }
 
-        protected IHttpResponse BadRequestError(string massage, string viewName)
+        protected IHttpResponse BadRequestError(string massage, string viewName = "/error/basicerror")
         {
-            this.errorViewModel.Massage = massage;
-            var fullViewContent = GetViewContent(viewName, this.errorViewModel);
+            this.ErrorViewModel.Massage = massage;
+            var fullViewContent = GetViewContent(viewName, this.ErrorViewModel);
 
             this.PrepareHtmlResult(fullViewContent);
             this.Response.StatusCode = HttpResponseStatusCode.BadRequest;
@@ -104,16 +103,16 @@ namespace SIS.MvcFramework
             return this.Response;
         }
 
-        private string GetViewContent<T>(string viewName, T model) 
+        private string GetViewContent<T>(string viewName, T model)
             where T : class
         {
             var bodyFileContent = PrepareHtmlFile(viewName);
             var bodyContent = this.ViewEngine.GetHtml(BODY_VIEW_NAME, bodyFileContent, model, this.User);
 
-            if (errorViewModel.Massage != null)
+            if (ErrorViewModel.Massage != null)
             {
                 var errorFileContent = PrepareHtmlFile(ERROR_VIEW_PATH);
-                var errorContent = this.ViewEngine.GetHtml(ERROR_VIEW_NAME, errorFileContent, errorViewModel, this.User);
+                var errorContent = this.ViewEngine.GetHtml(ERROR_VIEW_NAME, errorFileContent, ErrorViewModel, this.User);
 
                 bodyContent = string.Concat(errorContent, bodyContent);
             }
@@ -128,14 +127,16 @@ namespace SIS.MvcFramework
 
         protected string PrepareHtmlFile(string viewName)
         {
-            string controlerName = GetCurrentControllerName;
-            string actionName = new StackFrame(3).GetMethod().Name; //TODO: 
+            if (viewName.StartsWith("/"))
+            {
+                viewName = viewName.Substring(1);
+            }
 
             string fullPath = $"{VIEWS_FOLDER_PATH}/{viewName}{HTML_EXTENTION}";
 
-            if (viewName == null)
+            if (!viewName.Contains("/") && !viewName.Contains(LAYOUT))
             {
-                fullPath = $"{VIEWS_FOLDER_PATH}/{controlerName}/{actionName}{HTML_EXTENTION}";
+                fullPath = $"{VIEWS_FOLDER_PATH}/{GetCallingControllerName}/{viewName}{HTML_EXTENTION}";
             }
 
             return System.IO.File.ReadAllText(fullPath);

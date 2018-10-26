@@ -22,7 +22,7 @@
                         <li class="nav-item">
                             <a class="nav-link nav-link-white active" href="/">Home</a>
                         </li>
-                        @if(user == null)
+                        @if(!user.Exist)
                         {
                         <li class="nav-item">
                             <a class="nav-link nav-link-white active" href="/account/login">Login</a>
@@ -31,13 +31,22 @@
                             <a class="nav-link nav-link-white active" href="/account/register">Register</a>
                         </li>
                         }
+                        @else if(user.Role == "Admin")
+                        {
+                        <li class="nav-item">
+                            <a class="nav-link nav-link-white active" href="/channel/create">Create Chanel</a>
+                        </li>
+                          <li class="nav-item">
+                            <a class="nav-link nav-link-white active" href="/channel/followed">My Chanels</a>
+                        </li>
+                        <li class="nav-item">
+                              <a class="nav-link nav-link-white active" href="/account/logout">Logout</a>
+                        </li>
+                        }
                         @else
                         {
                         <li class="nav-item">
                             <a class="nav-link nav-link-white active" href="/channel/followed">My Chanels</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link nav-link-white active" href="/channel/create">Create Chanel</a>
                         </li>
                         <li class="nav-item">
                             <a class="nav-link nav-link-white active" href="/account/logout">Logout</a>
@@ -47,7 +56,6 @@
                 </div>
             </nav>
         </header>
-
         @RenderBody()
         <br />
         <br />

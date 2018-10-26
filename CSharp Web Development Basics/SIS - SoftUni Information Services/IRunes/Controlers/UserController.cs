@@ -5,13 +5,14 @@ using SIS.HTTP.Cookies;
 using SIS.HTTP.Responses.Contracts;
 using SIS.MvcFramework;
 using SIS.MvcFramework.HttpAttributes;
+using SIS.MvcFramework.ViewEngine;
 using SIS.MvcFramework.Services.Contracts;
 
 namespace IRunes.Controlers
 {
     public class UserController : BaseController
     {
-        IHashService hashService;
+        private readonly IHashService hashService;
 
         public UserController(IHashService hashService)
         {
@@ -21,7 +22,7 @@ namespace IRunes.Controlers
         [HttpGet("/user/register")]
         public IHttpResponse Register()
         {
-            if (this.User != null)
+            if (this.User.Exist)
             {
                 return this.BadRequestError("You have to logout first!", "/home/index");
             }
@@ -32,7 +33,7 @@ namespace IRunes.Controlers
         [HttpPost("/user/register")]
         public IHttpResponse Register(RegisterViewModel model)
         {
-            if (this.User != null)
+            if (this.User.Exist)
             {
                 return this.BadRequestError("You have to logout first!", "/home/index");
             }
@@ -65,7 +66,7 @@ namespace IRunes.Controlers
             db.Users.Add(user);
             db.SaveChanges();
 
-            this.Request.Session.AddParameter("username", model.Username);
+            SetSession(user);
             AddCookieAuthentication(model.Username);
 
             return this.Redirect("/");
@@ -74,7 +75,7 @@ namespace IRunes.Controlers
         [HttpGet("/user/login")]
         public IHttpResponse Login()
         {
-            if (this.User != null)
+            if (this.User.Exist)
             {
                 return this.BadRequestError("You are already login!", "/home/index");
             }
@@ -85,7 +86,7 @@ namespace IRunes.Controlers
         [HttpPost("/user/login")]
         public IHttpResponse Login(LoginViewModel model)
         {
-            if (this.User != null)
+            if (this.User.Exist)
             {
                 return this.BadRequestError("You are already login!", "/home/index");
             }
@@ -99,7 +100,7 @@ namespace IRunes.Controlers
                 return this.BadRequestError("Invalid username or password!", "user/login");
             }
 
-            this.Request.Session.AddParameter("username", model.Username);
+            SetSession(user);
             AddCookieAuthentication(model.Username);
 
             return this.Redirect("/");
@@ -108,11 +109,13 @@ namespace IRunes.Controlers
         [HttpGet("/user/logout")]
         public IHttpResponse Logout()
         {
-            if (this.User == null)
+            if (!this.User.Exist)
             {
                 return this.BadRequestError("You are already logout!", "/home/index");
             }
 
+
+            this.Request.Session.ClearParameters();
             var cookie = this.Request.Cookies.GetCookie(AUTH_COOKIE_KEY);
             cookie.Delete();
 
@@ -125,6 +128,12 @@ namespace IRunes.Controlers
         {
             var userCookieValue = this.UserCookieService.GetUserCookie(username);
             this.Response.Cookies.Add(new HttpCookie(AUTH_COOKIE_KEY, userCookieValue));
+        }
+
+        private void SetSession(User user)
+        {
+            var userModel = new UserModel { Name = user.Username, Exist = true };
+            this.Request.Session.AddParameter(SESSION_KEY, userModel);
         }
     }
 }

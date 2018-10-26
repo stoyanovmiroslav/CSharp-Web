@@ -15,7 +15,7 @@
                 <span class="navbar-toggler-icon"></span>
             </button>
             <div class="collapse navbar-collapse" id="navbarNav">
-                @if(user == null)
+                @if(!user.Exist)
                 {
                     <div class="container nav-links-mr-pd">
                         <ul class="navbar-nav">

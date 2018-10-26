@@ -1,4 +1,11 @@
-﻿<h2 class="text-center text-mishmash">Welcome @user</h2>
+﻿@if(user.Role == "Admin")
+{
+     <h2 class="text-center text-mishmash">Welcome, Admin-@user.Name!</h2>
+}
+@else if(user.Role == "User")
+{
+     <h2 class="text-center text-mishmash">Welcome, @user.Name!</h2>
+}
 
 <!--YOUR CHANNELS-->
 <h2 class="text-mishmash">Your Channels</h2>
@@ -8,38 +15,38 @@
 
         @for(var i = 0; i < Model.YourChannels.Count(); i++)
         {
-        @if(i % 5 == 0 && i != 0)
-        {
-        <div class="w-100"></div>
-        }
+            @if(i % 5 == 0 && i != 0)
+            {
+                <div class="w-100"></div>
+            }
 
-        <div class="col-md-2 bg-mishmash col-md-offset-1 mt-3">
-            <div class="nav-link-white text-center mt-2">@Model.YourChannels[i].Name</div>
-            <hr class="bg-white hr-2" />
-            <div class="nav-link-white text-center">@Model.YourChannels[i].Type</div>
-            <hr class="bg-white hr-2" />
-            <div class="nav-link-white text-center">@Model.YourChannels[i].FollowersCount</div>
-            <hr class="bg-white hr-2" />
-            <div class="nav-link-white text-center mb-2">Following</div>
-        </div>
+            <div class="col-md-2 bg-mishmash col-md-offset-1 mt-3">
+                <div class="nav-link-white text-center mt-2">@Model.YourChannels[i].Name</div>
+                <hr class="bg-white hr-2" />
+                <div class="nav-link-white text-center">@Model.YourChannels[i].Type</div>
+                <hr class="bg-white hr-2" />
+                <div class="nav-link-white text-center">@Model.YourChannels[i].FollowersCount</div>
+                <hr class="bg-white hr-2" />
+                <div class="nav-link-white text-center mb-2">Following</div>
+            </div>
 
-        @if(i == Model.YourChannels.Count() - 1)
-        {
-        {int rowConteiners = Model.YourChannels.Count() % 5;}
-        {rowConteiners = rowConteiners == 0 ? 5 : rowConteiners;}
-        {int neededConteiners = 5 - rowConteiners;}
+            @if(i == Model.YourChannels.Count() - 1)
+            {
+                {int rowConteiners = Model.YourChannels.Count() % 5;}
+                {rowConteiners = rowConteiners == 0 ? 5 : rowConteiners;}
+                {int neededConteiners = 5 - rowConteiners;}
 
-        @for(var j = 0; j < neededConteiners; j++)
-        {
-        <div class="col-md-2 col-md-offset-1"></div>
-        }
-        }
+                @for(var j = 0; j < neededConteiners; j++)
+                {
+                    <div class="col-md-2 col-md-offset-1"></div>
+                }
+            }
         }
     </div>
 </div>
     @if(Model.YourChannels.Count() == 0)
     {
-<h3 class="text-center">No any Channels!</h3>
+        <h3 class="text-center">No any Channels!</h3>
     }
 
 <!--SUGGESTED CHANNELS-->
@@ -50,42 +57,42 @@
 
         @for(var i = 0; i < Model.SuggestedChannels.Count(); i++)
         {
-        @if(i % 5 == 0 && i != 0)
-        {
-        <div class="w-100"></div>
-        }
+            @if(i % 5 == 0 && i != 0)
+            {
+                <div class="w-100"></div>
+            }
 
-        <div class="col-md-2 bg-mishmash col-md-offset-1 mt-3">
-            <div class="nav-link-white text-center mt-2">@Model.SuggestedChannels[i].Name</div>
-            <hr class="bg-white hr-2" />
-            <div class="nav-link-white text-center">@Model.SuggestedChannels[i].Type</div>
-            <hr class="bg-white hr-2" />
-            <div class="nav-link-white text-center">@Model.SuggestedChannels[i].FollowersCount</div>
-            <hr class="bg-white hr-2" />
-            <div class="text-center row justify-content-around mb-2">
-                <a href="/channel/follow?id=@Model.SuggestedChannels[i].Id" class="nav-link-white">Follow</a>
-                <a href="/channel/details?id=@Model.SuggestedChannels[i].Id" class="nav-link-white">Details</a>
+            <div class="col-md-2 bg-mishmash col-md-offset-1 mt-3">
+                <div class="nav-link-white text-center mt-2">@Model.SuggestedChannels[i].Name</div>
+                <hr class="bg-white hr-2" />
+                <div class="nav-link-white text-center">@Model.SuggestedChannels[i].Type</div>
+                <hr class="bg-white hr-2" />
+                <div class="nav-link-white text-center">@Model.SuggestedChannels[i].FollowersCount</div>
+                <hr class="bg-white hr-2" />
+                <div class="text-center row justify-content-around mb-2">
+                    <a href="/channel/follow?id=@Model.SuggestedChannels[i].Id" class="nav-link-white">Follow</a>
+                    <a href="/channel/details?id=@Model.SuggestedChannels[i].Id" class="nav-link-white">Details</a>
+                </div>
             </div>
-        </div>
 
-        @if(i == Model.SuggestedChannels.Count() - 1)
-        {
-        {int rowConteiners = Model.SuggestedChannels.Count() % 5;}
-        {rowConteiners = rowConteiners == 0 ? 5 : rowConteiners;}
-        {int neededConteiners = 5 - rowConteiners;}
+            @if(i == Model.SuggestedChannels.Count() - 1)
+            {
+                {int rowConteiners = Model.SuggestedChannels.Count() % 5;}
+                {rowConteiners = rowConteiners == 0 ? 5 : rowConteiners;}
+                {int neededConteiners = 5 - rowConteiners;}
 
-        @for(var j = 0; j < neededConteiners; j++)
-        {
-        <div class="col-md-2 col-md-offset-1"></div>
-        }
-        }
+                 @for(var j = 0; j < neededConteiners; j++)
+                 {
+                     <div class="col-md-2 col-md-offset-1"></div>
+                 }
+            }
         }
     </div>
 </div>
-    @if(Model.SuggestedChannels.Count() == 0)
-    {
-<h3 class="text-center">No any Channels!</h3>
-    }
+        @if(Model.SuggestedChannels.Count() == 0)
+        {
+            <h3 class="text-center">No any Channels!</h3>
+        }
 
 <!--OTHER CHANNELS-->
 <h2 class="text-mishmash mt-2">See Other</h2>
@@ -95,10 +102,10 @@
 
         @for(var i = 0; i < Model.OtherChannels.Count(); i++)
         {
-        @if(i % 5 == 0 && i != 0)
-        {
-        <div class="w-100"></div>
-        }
+            @if(i % 5 == 0 && i != 0)
+            {
+                <div class="w-100"></div>
+            }
 
         <div class="col-md-2 bg-mishmash col-md-offset-1 mt-3">
             <div class="nav-link-white text-center mt-2">@Model.OtherChannels[i].Name</div>
@@ -115,67 +122,19 @@
 
         @if(i == Model.OtherChannels.Count() - 1)
         {
-        {int rowConteiners = Model.OtherChannels.Count() % 5;}
-        {rowConteiners = rowConteiners == 0 ? 5 : rowConteiners;}
-        {int neededConteiners = 5 - rowConteiners;}
+            {int rowConteiners = Model.OtherChannels.Count() % 5;}
+            {rowConteiners = rowConteiners == 0 ? 5 : rowConteiners;}
+            {int neededConteiners = 5 - rowConteiners;}
 
-            @for(var j = 0; j < neededConteiners; j++)
-            {
+        @for(var j = 0; j < neededConteiners; j++)
+        {
             <div class="col-md-2 col-md-offset-1"></div>
-            }
+        }
         }
         }
     </div>
 </div>
         @if(Model.OtherChannels.Count() == 0)
         {
-<h3 class="text-center">No any Channels!</h3>
+            <h3 class="text-center">No any Channels!</h3>
         }
-
-
-
-
-<!--ALL CHANNELS-->
-<h2 class="text-mishmash">All Channels</h2>
-<hr class="bg-mishmash hr-2" />
-<div>
-    <div class="row justify-content-around">
-
-        @for(var i = 0; i < Model.AllChannels.Count(); i++)
-        {
-        @if(i % 5 == 0 && i != 0)
-        {
-        <div class="w-100"></div>
-        }
-
-        <div class="col-md-2 bg-mishmash col-md-offset-1 mt-3">
-            <div class="nav-link-white text-center mt-2">@Model.AllChannels[i].Name</div>
-            <hr class="bg-white hr-2" />
-            <div class="nav-link-white text-center">@Model.AllChannels[i].Type</div>
-            <hr class="bg-white hr-2" />
-            <div class="nav-link-white text-center">@Model.AllChannels[i].FollowersCount</div>
-            <hr class="bg-white hr-2" />
-            <div class="text-center row justify-content-around mb-2">
-                <a href="/channel/follow?id=@Model.AllChannels[i].Id" class="nav-link-white">Follow</a>
-                <a href="/channel/details?id=@Model.AllChannels[i].Id" class="nav-link-white">Details</a>
-            </div>
-        </div>
-
-        @if(i == Model.AllChannels.Count() - 1)
-        {
-        {int rowConteiners = Model.AllChannels.Count() % 5;}
-        {rowConteiners = rowConteiners == 0 ? 5 : rowConteiners;}
-        {int neededConteiners = 5 - rowConteiners;}
-
-        @for(var j = 0; j < neededConteiners; j++)
-        {
-        <div class="col-md-2 col-md-offset-1"></div>
-        }
-        }
-        }
-    </div>
-</div>
-    @if(Model.AllChannels.Count() == 0)
-    {
-<h3 class="text-center">No any Channels!</h3>
-    }

@@ -13,7 +13,7 @@ namespace SIS.MvcFramework.ViewEngine
 {
     public class ViewEngine : IViewEngine
     {
-        public string GetHtml<T>(string viewName, string viewCode, T model, string user = null)
+        public string GetHtml<T>(string viewName, string viewCode, T model, UserModel user = null)
         {
             var viewTypeName = viewName + "View";
             var cSharpMethodBody = this.GenerateCSharpMethodBody(viewCode);
@@ -105,7 +105,7 @@ namespace SIS.MvcFramework.ViewEngine
                     while (htmlLine.Contains("@"))
                     {
                         var specialSymbolIndex = htmlLine.IndexOf("@", StringComparison.InvariantCulture);
-                        var endOfCode = new Regex(@"[\s&<\\]+").Match(htmlLine, specialSymbolIndex).Index;
+                        var endOfCode = new Regex(@"[\s&<\\!]+").Match(htmlLine, specialSymbolIndex).Index;
 
                         string expression = null;
                         if (endOfCode == 0 || endOfCode == -1)
