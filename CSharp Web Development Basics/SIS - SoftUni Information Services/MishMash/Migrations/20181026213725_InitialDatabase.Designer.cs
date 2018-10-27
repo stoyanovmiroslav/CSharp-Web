@@ -9,8 +9,8 @@ using MishMash.Data;
 namespace MishMash.Migrations
 {
     [DbContext(typeof(MishMashDbContext))]
-    [Migration("20181024203022_AddedChanelTagModel")]
-    partial class AddedChanelTagModel
+    [Migration("20181026213725_InitialDatabase")]
+    partial class InitialDatabase
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -68,6 +68,8 @@ namespace MishMash.Migrations
                     b.Property<int>("UserId")
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+                    b.Property<string>("Email");
 
                     b.Property<string>("Password");
 

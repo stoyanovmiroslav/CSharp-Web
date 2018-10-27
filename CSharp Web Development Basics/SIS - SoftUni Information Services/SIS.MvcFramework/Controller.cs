@@ -14,7 +14,7 @@ namespace SIS.MvcFramework
 {
     public abstract class Controller
     {
-        protected const string SESSION_KEY = "username";
+        protected const string SESSION_KEY_INFO = "userInfo";
         protected const string VIEWS_FOLDER_PATH = "../../../Views";
         protected const string HTML_EXTENTION = ".html";
         protected const string AUTH_COOKIE_KEY = "_auth";
@@ -49,21 +49,12 @@ namespace SIS.MvcFramework
         {
             get
             {
-                if (!this.Request.Cookies.ContainsCookie(AUTH_COOKIE_KEY))
+                if (!this.Request.Session.ContainsParameter(SESSION_KEY_INFO))
                 {
                     return new UserModel();
                 }
 
-                var cookie = this.Request.Cookies.GetCookie(AUTH_COOKIE_KEY);
-                var cookieContent = cookie.Value;
-                var userName = this.UserCookieService.GetUserData(cookieContent);
-
-                if (!this.Request.Session.ContainsParameter(userName))
-                {
-                    return new UserModel();
-                }
-
-                UserModel userModel = (UserModel)Request.Session.GetParameter(userName);
+                UserModel userModel = (UserModel)Request.Session.GetParameter(SESSION_KEY_INFO);
 
                 return userModel;
             }

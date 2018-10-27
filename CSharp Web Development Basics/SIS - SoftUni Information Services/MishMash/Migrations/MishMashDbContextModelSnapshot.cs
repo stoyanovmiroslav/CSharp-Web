@@ -67,6 +67,8 @@ namespace MishMash.Migrations
                         .ValueGeneratedOnAdd()
                         .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
 
+                    b.Property<string>("Email");
+
                     b.Property<string>("Password");
 
                     b.Property<int>("Role");

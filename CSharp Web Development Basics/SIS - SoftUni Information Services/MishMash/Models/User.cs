@@ -13,6 +13,8 @@ namespace MishMash.Models
 
         public string Password { get; set; }
 
+        public string Email { get; set; }
+
         public ICollection<UserChanel> Channels { get; set; }
 
         public Role Role { get; set; }

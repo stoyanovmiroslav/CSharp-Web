@@ -1,6 +1,5 @@
 ﻿using MishMash.Models;
 using MishMash.ViewModels.Account;
-using SIS.HTTP.Cookies;
 using SIS.HTTP.Responses.Contracts;
 using SIS.MvcFramework;
 using SIS.MvcFramework.HttpAttributes;
@@ -72,8 +71,7 @@ namespace MishMash.Controllers
             db.Users.Add(user);
             db.SaveChanges();
 
-            SetSession(user, user.Username);
-            AddCookieAuthentication(model.Username);
+            CreateSession(user);
 
             return this.Redirect("/");
         }
@@ -106,9 +104,7 @@ namespace MishMash.Controllers
                 return this.BadRequestError("Invalid username or password!", "account/login");
             }
 
-            SetSession(user, user.Username);
-
-            AddCookieAuthentication(model.Username);
+            CreateSession(user);
 
             return this.Redirect("/");
         }
@@ -121,26 +117,20 @@ namespace MishMash.Controllers
                 return this.BadRequestError("You are already logout!", "/home/index-guest");
             }
 
-            this.Request.Session.ClearParameters();
-
-            var cookie = this.Request.Cookies.GetCookie(AUTH_COOKIE_KEY);
-            cookie.Delete();
-
-            this.Response.Cookies.Add(cookie);
+            ClearSession();
 
             return this.Redirect("/");
         }
 
-        private void AddCookieAuthentication(string username)
+        private void ClearSession()
         {
-            var userCookieValue = this.UserCookieService.GetUserCookie(username);
-            this.Response.Cookies.Add(new HttpCookie(AUTH_COOKIE_KEY, userCookieValue));
+            this.Request.Session.ClearParameters();
         }
 
-        private void SetSession(User user, string username)
+        private void CreateSession(User user)
         {
-            var userModel = new UserModel { Name = user.Username, Role = user.Role.ToString(), Exist = true };
-            this.Request.Session.AddParameter(username, userModel);
+            var userModel = new UserModel { Name = user.Username, Role = user.Role.ToString(), Email = user.Email };
+            this.Request.Session.AddParameter(SESSION_KEY_INFO, userModel);
         }
     }
 }

@@ -23,6 +23,19 @@ namespace MishMash.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "Tags",
+                columns: table => new
+                {
+                    Id = table.Column<int>(nullable: false)
+                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    Name = table.Column<string>(nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Tags", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
@@ -30,6 +43,7 @@ namespace MishMash.Migrations
                         .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
                     Username = table.Column<string>(nullable: true),
                     Password = table.Column<string>(nullable: true),
+                    Email = table.Column<string>(nullable: true),
                     Role = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
@@ -38,23 +52,27 @@ namespace MishMash.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Tags",
+                name: "ChanelTags",
                 columns: table => new
                 {
-                    Id = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
-                    Name = table.Column<string>(nullable: true),
-                    ChannelId = table.Column<int>(nullable: true)
+                    TagId = table.Column<int>(nullable: false),
+                    ChannelId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Tags", x => x.Id);
+                    table.PrimaryKey("PK_ChanelTags", x => new { x.ChannelId, x.TagId });
                     table.ForeignKey(
-                        name: "FK_Tags_Channels_ChannelId",
+                        name: "FK_ChanelTags_Channels_ChannelId",
                         column: x => x.ChannelId,
                         principalTable: "Channels",
                         principalColumn: "ChannelId",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_ChanelTags_Tags_TagId",
+                        column: x => x.TagId,
+                        principalTable: "Tags",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -82,9 +100,9 @@ namespace MishMash.Migrations
                 });
 
             migrationBuilder.CreateIndex(
-                name: "IX_Tags_ChannelId",
-                table: "Tags",
-                column: "ChannelId");
+                name: "IX_ChanelTags_TagId",
+                table: "ChanelTags",
+                column: "TagId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserChanels_UserId",
@@ -95,10 +113,13 @@ namespace MishMash.Migrations
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Tags");
+                name: "ChanelTags");
 
             migrationBuilder.DropTable(
                 name: "UserChanels");
+
+            migrationBuilder.DropTable(
+                name: "Tags");
 
             migrationBuilder.DropTable(
                 name: "Channels");
