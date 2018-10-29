@@ -14,12 +14,18 @@ namespace SIS.Framework
 
         public string ControllerSuffix => "Controller";
 
-        public string ViewFolderFullPath => "../../../Views";
+        public string ViewFolderFullPath => "Views";
 
         public string ErrorViewFolder => "Errors";
 
         public string ModelsFolder => "Models";
 
         public string HtmlFileExtention => "html";
+
+        public string RootDirectoryRelativePath { get; set; } = "../../..";
+
+        public string SharedViewsFolderName { get; set; } = "Shared";
+
+        public string LayoutViewName { get; set; } = "_Layout";
     }
 }

@@ -11,7 +11,7 @@ namespace CakeApp.Controllers
 {
     public class AccountController : BaseController
     {
-        IHashService hashService;
+        readonly IHashService hashService;
 
         public AccountController(IHashService hashService)
         {
@@ -29,22 +29,22 @@ namespace CakeApp.Controllers
         {
             if (string.IsNullOrWhiteSpace(model.Username) || model.Username.Length < 6)
             {
-                return this.BadRequestError("Username should be 6 or more characters long!");
+                return this.BadRequestError("Username should be 6 or more characters long!", "Account/Register");
             }
 
             if (this.db.Users.Any(x => x.Username == model.Username))
             {
-                return this.BadRequestError("Username already exist!");
+                return this.BadRequestError("Username already exist!", "Account/Register");
             }
 
             if (model.Password != model.ConfirmPassword)
             {
-                return this.BadRequestError("Confirm password does not match password!");
+                return this.BadRequestError("Confirm password does not match password!", "Account/Register");
             }
 
             if (string.IsNullOrWhiteSpace(model.Password) || model.Password.Length < 6)
             {
-                return this.BadRequestError("Password should be 6 or more characters long!");
+                return this.BadRequestError("Password should be 6 or more characters long!", "Account/Register");
             }
 
             string hashedPassword = this.hashService.Hash(model.Password);
@@ -59,7 +59,7 @@ namespace CakeApp.Controllers
             db.Users.Add(user);
             db.SaveChanges();
 
-            return this.View("login");
+            return this.View("Login");
         }
 
         [HttpGet]
@@ -73,7 +73,7 @@ namespace CakeApp.Controllers
         {
             if (string.IsNullOrWhiteSpace(model.Username) || string.IsNullOrWhiteSpace(model.Password))
             {
-                return this.BadRequestError("Invalid username or password!");
+                return this.BadRequestError("Invalid username or password!", "Account/Login");
             }
 
             var hashedPassword = this.hashService.Hash(model.Password);
@@ -82,7 +82,7 @@ namespace CakeApp.Controllers
 
             if (user == null)
             {
-                return this.BadRequestError("Invalid username or password!");
+                return this.BadRequestError("Invalid username or password!", "Account/Login");
             }
 
             this.SingIn(new IdentityUser { Username = model.Username, Password = model.Password });
@@ -108,7 +108,7 @@ namespace CakeApp.Controllers
 
             this.SingOut(this.Identity());
 
-            return this.RedirectToAction("/home/index");
+            return this.RedirectToAction("/Home/Index");
         }
     }
 }

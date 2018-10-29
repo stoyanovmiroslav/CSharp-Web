@@ -6,7 +6,7 @@ namespace SIS.Framework.Utilities
 {
     public class ControllerUtilities
     {
-        public static string GetContorlerName(object controller) => 
+        public static string GetContorllerName(object controller) => 
             controller.GetType()
                       .Name
                       .Replace(MvcContext.Get.ControllerSuffix, string.Empty);

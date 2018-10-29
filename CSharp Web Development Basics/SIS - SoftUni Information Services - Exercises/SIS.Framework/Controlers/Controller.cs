@@ -8,6 +8,7 @@ using SIS.Framework.Views;
 using SIS.HTTP.Cookies;
 using SIS.HTTP.Cookies.Contracts;
 using SIS.HTTP.Requests.Contracts;
+using System;
 using System.Runtime.CompilerServices;
 
 namespace SIS.Framework.Controlers
@@ -22,6 +23,8 @@ namespace SIS.Framework.Controlers
             this.Cookies = new HttpCookieCollection();
             this.UserCookieService = new UserCookieService();
         }
+
+        private ViewEngine ViewEngine { get; } = new ViewEngine();
 
         public IUserCookieService UserCookieService { get; set; }
 
@@ -53,48 +56,50 @@ namespace SIS.Framework.Controlers
             this.Request.Session.ClearParameters();
         }
 
-        protected IViewable View([CallerMemberName] string caller = "")
+        protected IViewable View([CallerMemberName] string viewName = "")
         {
-            var controllerName = ControllerUtilities.GetContorlerName(this);
-            var fullQualifiedName = ControllerUtilities.GetFullQualifiedName(controllerName, caller);
+            var controllerName = ControllerUtilities.GetContorllerName(this);
+            string viewContent = null;
+            SetDisplayTags();
 
-            SetViewBagParameters();
+            try
+            {
+                viewContent = this.ViewEngine.GetViewContent(controllerName, viewName);
+            }
+            catch (Exception e)
+            {
+                this.Model.Data["errorMassage"] = e.Message;
 
-            var view = new View(fullQualifiedName, this.Model.Data);
+                viewContent = this.ViewEngine.GetErrorContent();
+            }
+
+            string renderedHtml = this.ViewEngine.RenderHtml(viewContent, this.Model.Data);
+            var view = new View(renderedHtml);
 
             return new ViewResult(view);
         }
 
-        protected IViewable BadRequestError(string massage = "Invalid Operation!", string viewName = "Error")
+        protected IRedirectable RedirectToAction(string redirectUrl) => new RedirectResult(redirectUrl);
+
+        protected IViewable BadRequestError(string massage = "Invalid Operation!", string viewBodyPath = null)
         {
             this.Model["errorMassage"] = massage;
 
-            SetViewBagParameters();
+            SetDisplayTags();
 
-            string errorHtmlPath = $"{MvcContext.Get.ViewFolderFullPath}/{MvcContext.Get.ErrorViewFolder}/{viewName}.{MvcContext.Get.HtmlFileExtention}";
+            var viewContent = this.ViewEngine.GetErrorContent(viewBodyPath);
 
-            var view = new View(errorHtmlPath, this.Model.Data);
+            string renderedHtml = this.ViewEngine.RenderHtml(viewContent, this.Model.Data);
+            var view = new View(renderedHtml);
 
             return new ViewResult(view);
         }
 
-        private void SetViewBagParameters()
+        private void SetDisplayTags()
         {
-            this.Model["NonAuthenticated"] = "";
-            this.Model["Authenticated"] = "";
-
-            if (this.User == null)
-            {
-                this.Model["Authenticated"] = "d-none";
-            }
-            else
-            {
-                this.Model["NonAuthenticated"] = "d-none";
-            }
+            this.Model["NonAuthenticated"] = this.User != null ? "d-none" : "";
+            this.Model["Authenticated"] = this.User == null ? "d-none" : "";
         }
-
-        protected IRedirectable RedirectToAction(string redirectUrl) 
-            => new RedirectResult(redirectUrl);
 
         protected string User
         {

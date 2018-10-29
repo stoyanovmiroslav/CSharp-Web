@@ -6,55 +6,67 @@ namespace SIS.Framework.Views
 {
     public class View : IRenderable
     {
-        private readonly string fullyQualifiedTemplateName;
+        private const string RenderBodyConstant = "@RenderBody()";
 
-        public View(string fullyQualifiedTemplateName)
+        private readonly string fullHtmlContent;
+
+        public View(string fullHtmlContent)
         {
-            this.fullyQualifiedTemplateName = fullyQualifiedTemplateName;
+            this.fullHtmlContent = fullHtmlContent;
         }
 
-        public View(string fullyQualifiedTemplateName, IDictionary<string, object> viewData) 
-            : this(fullyQualifiedTemplateName)
-        {
-            this.ViewData = viewData;
-        }
+        public string Render() => this.fullHtmlContent;
 
-        private IDictionary<string, object> ViewData { get; set; }
 
-        private string ReadFile(string fullyQualifiedTemplateName)
-        {
-            if (!File.Exists(fullyQualifiedTemplateName))
-            {
-                throw new FileNotFoundException();
-            }
+        //private readonly string fullyQualifiedTemplateName;
 
-            return File.ReadAllText(fullyQualifiedTemplateName);
-        }
+        //public View(string fullyQualifiedTemplateName)
+        //{
+        //    this.fullyQualifiedTemplateName = fullyQualifiedTemplateName;
+        //}
 
-        public string Render()
-        {
-            var bodyHtml = ReadFile(this.fullyQualifiedTemplateName);
-            this.ViewData["body"] = InsertViewParameters(bodyHtml);
+        //public View(string fullyQualifiedTemplateName, IDictionary<string, object> viewData) 
+        //    : this(fullyQualifiedTemplateName)
+        //{
+        //    this.ViewData = viewData;
+        //}
 
-            // TODO: Read layout path from const
-            var layoutHtml = ReadFile("../../../Views/_Layout.html"); 
+        //private IDictionary<string, object> ViewData { get; set; }
 
-            return InsertViewParameters(layoutHtml);
-        }
+        //private string ReadFile(string fullyQualifiedTemplateName)
+        //{
+        //    if (!File.Exists(fullyQualifiedTemplateName))
+        //    {
+        //        throw new FileNotFoundException();
+        //    }
 
-        protected string InsertViewParameters(string fileContent)
-        {
-            foreach (var viewDataKey in this.ViewData.Keys)
-            {
-                string placeHolder = $"{{{{{viewDataKey}}}}}";
+        //    return File.ReadAllText(fullyQualifiedTemplateName);
+        //}
 
-                if (fileContent.Contains(viewDataKey))
-                {
-                    fileContent = fileContent.Replace(placeHolder, this.ViewData[viewDataKey].ToString());
-                }
-            }
+        //public string Render()
+        //{
+        //    var bodyHtml = ReadFile(this.fullyQualifiedTemplateName);
+        //    this.ViewData["body"] = InsertViewParameters(bodyHtml);
 
-            return fileContent;
-        }
+        //    // TODO: Read layout path from const
+        //    var layoutHtml = ReadFile("../../../Views/_Layout.html"); 
+
+        //    return InsertViewParameters(layoutHtml);
+        //}
+
+        //protected string InsertViewParameters(string fileContent)
+        //{
+        //    foreach (var viewDataKey in this.ViewData.Keys)
+        //    {
+        //        string placeHolder = $"{{{{{viewDataKey}}}}}";
+
+        //        if (fileContent.Contains(viewDataKey))
+        //        {
+        //            fileContent = fileContent.Replace(placeHolder, this.ViewData[viewDataKey].ToString());
+        //        }
+        //    }
+
+        //    return fileContent;
+        //}
     }
 }
