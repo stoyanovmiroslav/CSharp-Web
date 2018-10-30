@@ -15,7 +15,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SIS.MvcFramework.Tests", "S
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MeTube", "Apps\MeTube\MeTube.csproj", "{EC5DC5EB-1DD3-476E-8A3B-077CD88F34D8}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Torshia", "Apps\Torshia\Torshia.csproj", "{D0916BD6-768D-4FD7-A506-45FA0F8ED417}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Torshia", "Apps\Torshia\Torshia.csproj", "{D0916BD6-768D-4FD7-A506-45FA0F8ED417}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "FluffyCats", "Apps\FluffyCats\FluffyCats.csproj", "{D65983CB-3581-4DA5-A99C-98EA7B2239FC}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -47,6 +49,10 @@ Global
 		{D0916BD6-768D-4FD7-A506-45FA0F8ED417}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D0916BD6-768D-4FD7-A506-45FA0F8ED417}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D0916BD6-768D-4FD7-A506-45FA0F8ED417}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D65983CB-3581-4DA5-A99C-98EA7B2239FC}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D65983CB-3581-4DA5-A99C-98EA7B2239FC}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D65983CB-3581-4DA5-A99C-98EA7B2239FC}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D65983CB-3581-4DA5-A99C-98EA7B2239FC}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -54,6 +60,7 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{EC5DC5EB-1DD3-476E-8A3B-077CD88F34D8} = {18A044AE-91C4-48B0-AD7A-BCAC2FB995F6}
 		{D0916BD6-768D-4FD7-A506-45FA0F8ED417} = {18A044AE-91C4-48B0-AD7A-BCAC2FB995F6}
+		{D65983CB-3581-4DA5-A99C-98EA7B2239FC} = {18A044AE-91C4-48B0-AD7A-BCAC2FB995F6}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7DDABD09-DCFC-4DD2-996C-EDD241D1D1F0}

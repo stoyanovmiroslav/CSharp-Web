@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>FDMC</title>
+    <link rel="stylesheet" type="text/css" href="/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="/js/bootstrap.min.js">
+</head>
+<body>
+    <div class="container-fluid">
+        <nav class="navbar navbar-toggleable-md navbar-light bg-faded">
+            <button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse"
+                    data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false"
+                    aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <a class="navbar-brand" href="/">FDMC</a>
+
+            <div class="collapse navbar-collapse justify-content-end row" id="navbarSupportedContent">
+                <ul class="navbar-nav ml-auto">
+
+                    @if(@User.IsLoggedIn)
+                    {
+                    <li class="nav-item navbar-right">
+                        <a class="nav-link" href="/">Home</a>
+                    </li>
+                    <li class="nav-item navbar-right">
+                        <a class="nav-link" href="/Kitten/Add">Add Kitten</a>
+                    </li>
+                    <li class="nav-item navbar-right">
+                        <a class="nav-link" href="/Kitten/All">All Kittens</a>
+                    </li>
+                    <li class="nav-item navbar-right">
+                        <a class="nav-link" href="/Account/Logout">Logout</a>
+                    </li>
+                    }
+                    @else
+                    {
+                    <li class="nav-item navbar-right">
+                        <a class="nav-link" href="/Account/Login">Login</a>
+                    </li>
+                    <li class="nav-item navbar-right">
+                        <a class="nav-link" href="/Account/Register">Register</a>
+                    </li>
+                    }
+                </ul>
+            </div>
+        </nav>
+        @RenderBody()
+        <footer class="footer">
+            <div class="container-fluid">
+                <div class="text-muted container-fluid text-center">
+                    &copy; CopyRight Sanity Web Design Studios 2018. All rights
+                    reserved.
+                </div>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>
