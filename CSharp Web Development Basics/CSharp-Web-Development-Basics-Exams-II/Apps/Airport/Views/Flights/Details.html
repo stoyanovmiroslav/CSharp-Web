@@ -1,0 +1,51 @@
+﻿<section class="ticket-area">
+    <div class="ticket-area-left">
+        <img src="@Model.Image" alt="">
+    </div>
+    <div class="ticket-area-right">
+        <h3>@Model.Destination</h3>
+        <div>from @Model.Origin</div>
+        <div class="data-and-time">
+            {var date = Model.Date.ToString("dd MMM HH:mm", CultureInfo.InvariantCulture); }
+            @date
+            @if(User.Role == "Admin")
+            {
+            <a href="/Flights/Edit?id=@Model.Id" class="edit-flight-detail"></a>
+               @if(@Model.PulicFlag == false)
+               {
+                    <a href="/Flights/Publish?id=@Model.Id">Publish Flight</a>
+
+               }
+            }
+        </div>
+    </div>
+</section>
+@if(User.Role == "Admin")
+{
+<section class="seat-info">
+    <form action="/Tickets/Add?id=@Model.Id" method="post" class="seat-form">
+        <input type="hidden" name="flightId" value="@Model.Id" />
+        <input type="number" step="0.01" min="0" name="price" placeholder="Price">
+        <input type="text" name="class" placeholder="Type">
+        <input type="number" name="count" min="1" max="99" placeholder="Tickets Counter">
+        <input type="submit" class="create-seat" value="Create Seat">
+    </form>
+</section>
+}
+
+<section class="flight-details">
+    @foreach (var ticket in Model.Tickets)
+    {
+    <div>
+        <form action="" class="seat-form">
+            <span>$@ticket.Price</span><span>@ticket.Class</span>
+            <input type="number" max="10" min="0" placeholder="Add Number">
+            <input type="submit" class="create-seat" value="Add to Cart">
+            @if(User.Role == "Admin")
+            {
+            <a href="/Tickets/Delete?ticketClass=@ticket.Class&flightId=@Model.Id" class="delete">X</a>
+            }
+        </form>
+    </div>
+    }
+</section>

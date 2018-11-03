@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cart</title>
+    <link rel="stylesheet" href="static/css/style.css">
+</head>
+<body>
+<nav>
+    <div class="left-container">
+        <ul>
+            <li><a href="">Flights</a></li>
+            <li><a href="">My Tickets</a></li>
+        </ul>
+    </div>
+    <div class="right-container">
+        <span>Welcome, {name} |</span>
+        <a href="" class="log-out">Logout</a>
+        <a href=""><img src="static/img/cart.png" alt="" class="cart"></a>
+    </div>
+</nav>
+<main>
+    <section class="single-ticket">
+        <div class="left-ticket-container">
+            <img src="static/img/Venice.jpg" alt="" class="destination-img">
+            <div class="flight-parameters">
+                <span class="ticket-price">Price: 300$</span>
+                <span class="ticket-class">Class: Economy</span>
+            </div>
+        </div>
+        <div class="right-ticket-container">
+            <h2>CLUJ-NAPOCA</h2>
+            <p>from Sheffield</p>
+            <p>15 January</p>
+            <p>14:00</p>
+            <div>
+            <span class="number-of-tickets">2</span>
+                <a href="" class="remove">REMOVE</a>
+            </div>
+        </div>
+    </section>
+    <section class="ticket-checkout">
+        <div class="total">Sub total: 600$</div>
+        <a href="" class="checkout">Checkout</a>
+    </section>
+    <footer>SoftUni Airlines</footer>
+</main>
+</body>
+</html>

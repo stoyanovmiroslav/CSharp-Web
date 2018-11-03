@@ -1,0 +1,48 @@
+﻿<main class="mt-3">
+    @if(user.Role == "User")
+    {
+    <h4 class="text-torshia text-center">Welcome, @user.Username!</h4>
+    <h4 class="text-torshia text-center">Have a nice tasking experience!</h4>
+    }
+    @else if(user.Role == "Admin")
+    {
+    <h4 class="text-torshia text-center">Welcome, Admin-@user.Username!</h4>
+    <h4 class="text-torshia text-center">Enjoy your work!</h4>
+    }
+    <hr class="hr-2 bg-torshia">
+    <div class="tasks-holder">
+        <div class="tasks-row row">
+
+            @for(var i = 0; i < Model.Count(); i++)
+            {
+            @if(i % 5 == 0 && i != 0)
+            {
+            <div class="w-100"></div>
+            }
+
+            <div class="task col mx-3 bg-torshia rounded py-3 mt-3">
+                <h6 class="task-title text-white text-center my-3">@Model[i].Title</h6>
+                <hr class="bg-white hr-2 w-75">
+                <h6 class="task-title text-white text-center my-4">Level: @Model[i].AffectedSectors.Count</h6>
+                <hr class="bg-white hr-2 w-75">
+                <div class="follow-button-holder d-flex justify-content-between w-50 mx-auto mt-4">
+                    <a href="/Report/Create?id=@Model[i].Id"><h6 class="text-center text-white">Report</h6></a>
+                    <a href="/Task/Details?id=@Model[i].Id"><h6 class="text-center text-white">Details</h6></a>
+                </div>
+            </div>
+
+            @if(i == Model.Count() - 1)
+            {
+            {int rowConteiners = Model.Count() % 5;}
+            {rowConteiners = rowConteiners == 0 ? 5 : rowConteiners;}
+            {int neededConteiners = 5 - rowConteiners;}
+
+            @for(var j = 0; j < neededConteiners; j++)
+            {
+            <div class="task col mx-3 bg-white rounded py-3"></div>
+            }
+            }
+            }
+        </div>
+    </div>
+</main>
