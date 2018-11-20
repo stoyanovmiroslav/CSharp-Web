@@ -1,0 +1,39 @@
+﻿@{
+    ViewData["Title"] = "All";
+}
+
+@model OrderViewModel[];
+
+<h1 class="text-center text-torshia">All Orders</h1>
+<hr class="chushka-color-black hr-2" />
+<table class="table w-75 mx-auto">
+    <thead>
+        <tr class="row">
+            <th class="col-md-1">#</th>
+            <th class="col-md-2">Order ID</th>
+            <th class="col-md-4">Customer</th>
+            <th class="col-md-3">Product</th>
+            <th class="col-md-2">Ordered On</th>
+        </tr>
+    </thead>
+    <tbody>
+        @for (var i = 0; i < Model.Length; i++)
+        {
+            var color = "";
+            @if (i % 2 == 0)
+            {
+                 color = "chushka-bg-color"; 
+            }
+
+            int count = i + 1;
+
+            <tr class="row @color">
+                <th class="col-md-1">@count</th>
+                <td class="col-md-2">@Model[i].Id</td>
+                <td class="col-md-4">@Model[i].Client</td>
+                <td class="col-md-3">@Model[i].Product</td>
+                <td class="col-md-2">@Model[i].OrderedOn</td>
+            </tr>
+        }
+    </tbody>
+</table>

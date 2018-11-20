@@ -1,0 +1,18 @@
+@inject SignInManager<ChushkaUser> SignInManager
+@inject UserManager<ChushkaUser> UserManager
+
+@if (SignInManager.IsSignedIn(User))
+{
+    <ul class="nav navbar-nav navbar-right">
+        <li>
+            <a class="nav-link nav-link-white" asp-area="Identity" asp-page="/Account/Logout">Logout</a>
+        </li>
+    </ul>
+}
+else
+{
+    <ul class="navbar-nav right-side">
+        <li><a class="nav-link nav-link-white" asp-area="Identity" asp-page="/Account/Register">Register</a></li>
+        <li><a class="nav-link nav-link-white" asp-area="Identity" asp-page="/Account/Login">Login</a></li>
+    </ul>
+}

@@ -1,0 +1,19 @@
+﻿@{
+    ViewData["Title"] = "Edit";
+}
+
+@model ProductViewModel
+
+<h1 class="text-center">Delete</h1>
+<hr class="bg-secondary half-width" />
+
+<form class="mx-auto half-width" asp-controller="Products" asp-action="DeleteAction" asp-route-id="@Model.Id" method="post">
+
+    <partial name="_InputProductPartial" />
+
+    <partial name="_TypeRadioPartial" />
+
+    <div class="button-holder d-flex justify-content-center">
+        <button type="submit" class="btn chushka-bg-color">Delete</button>
+    </div>
+</form>

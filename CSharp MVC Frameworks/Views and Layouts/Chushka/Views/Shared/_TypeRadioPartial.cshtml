@@ -1,0 +1,17 @@
+@model ProductViewModel
+
+<h4 class="text-center"></h4>
+<hr class="bg-secondary half-width" />
+<div class="row d-flex justify-content-around">
+    @{var types = new[] { "Food", "Domestic", "Health", "Cosmetic", "Other" };}
+
+    @foreach (var type in types)
+    {
+        <div class="col-md-2">
+            <input id="@type" type="radio" disabled="@Model?.DisableValue" name="productType" value="@type"
+                   checked="@(Model?.ProductType.ToString() == type ? "checked" : null)" />
+            <label for="@type">@type</label>
+        </div>
+    }
+</div>
+<hr class="bg-secondary half-width" />

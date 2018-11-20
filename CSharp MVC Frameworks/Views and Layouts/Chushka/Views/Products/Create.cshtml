@@ -1,0 +1,19 @@
+﻿@{
+    ViewData["Title"] = "Create";
+}
+
+@model ProductViewModel
+
+<h1 class="text-center">Create Product</h1>
+<hr class="bg-secondary half-width" />
+
+<form class="mx-auto half-width" asp-controller="Products" asp-action="Create" method="post">
+
+    <partial name="_InputProductPartial" />
+
+    <partial name="_TypeRadioPartial" />
+
+    <div class="button-holder d-flex justify-content-center">
+        <button type="submit" class="btn chushka-bg-color">Create</button>
+    </div>
+</form>
