@@ -1,7 +1,7 @@
-﻿using Models.ViewModels.Products;
+﻿using Chushka.Models.ViewModels.Products;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Services.Contracts;
+using Chushka.Services.Contracts;
 
 namespace Chushka.Controllers
 {

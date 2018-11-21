@@ -6,10 +6,10 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Services;
-using Services.Contracts;
-using Data;
-using Models;
+using Chushka.Services;
+using Chushka.Services.Contracts;
+using Chushka.Data;
+using Chushka.Models;
 
 namespace Chushka
 {

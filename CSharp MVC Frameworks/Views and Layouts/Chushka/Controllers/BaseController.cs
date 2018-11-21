@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Data;
+using Chushka.Data;
 
 namespace Chushka.Controllers
 {

@@ -12,9 +12,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Data\Data.csproj" />
-    <ProjectReference Include="..\Models\Models.csproj" />
-    <ProjectReference Include="..\Services\Services.csproj" />
+    <ProjectReference Include="..\Chushka.Data\Chushka.Data.csproj" />
+    <ProjectReference Include="..\Chushka.Models\Chushka.Models.csproj" />
+    <ProjectReference Include="..\Chushka.Services\Chushka.Services.csproj" />
   </ItemGroup>
 
   <ItemGroup>

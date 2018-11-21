@@ -1,8 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using System.Linq;
-using Services.Contracts;
-using Models.ViewModels.Orders;
+using Chushka.Services.Contracts;
+using Chushka.Models.ViewModels.Orders;
 
 namespace Chushka.Controllers
 {

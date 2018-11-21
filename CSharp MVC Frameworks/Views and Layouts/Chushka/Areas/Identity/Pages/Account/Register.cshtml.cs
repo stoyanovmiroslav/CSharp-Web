@@ -10,8 +10,8 @@ using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.Logging;
-using Models;
-using Models.Enums;
+using Chushka.Models;
+using Chushka.Models.Enums;
 
 namespace Chushka.Areas.Identity.Pages.Account
 {
@@ -93,7 +93,7 @@ namespace Chushka.Areas.Identity.Pages.Account
                         protocol: Request.Scheme);
 
                     //Add Admin Role on first registered user!
-                    if (!_userManager.Users.Any())
+                    if (_userManager.Users.Count() == 1)
                     {
                         await _roleManager.CreateAsync(new IdentityRole("Admin"));
 

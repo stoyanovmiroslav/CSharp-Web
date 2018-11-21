@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 VisualStudioVersion = 15.0.28010.2046
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chushka", "Chushka\Chushka.csproj", "{FA385E4C-3E44-43F8-8433-9F82A3FCC93B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Chushka", "Chushka\Chushka.csproj", "{FA385E4C-3E44-43F8-8433-9F82A3FCC93B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Data", "Data\Data.csproj", "{96EFD7D4-C7A6-48D8-B426-DFE15CD5F472}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chushka.Data", "Chushka.Data\Chushka.Data.csproj", "{F974D53C-6769-4711-979C-88E195775DDD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Models", "Models\Models.csproj", "{7FABC25D-6CD9-46CB-86D7-E38B38386065}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chushka.Models", "Chushka.Models\Chushka.Models.csproj", "{B182031C-38F4-441F-9E3C-DB4FD8A45405}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Services", "Services\Services.csproj", "{F556ABBD-D12F-4964-AB5D-5BEB6E076EF3}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Chushka.Services", "Chushka.Services\Chushka.Services.csproj", "{052F5049-585D-457B-9618-CAF300BB36B1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -21,18 +21,18 @@ Global
 		{FA385E4C-3E44-43F8-8433-9F82A3FCC93B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FA385E4C-3E44-43F8-8433-9F82A3FCC93B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FA385E4C-3E44-43F8-8433-9F82A3FCC93B}.Release|Any CPU.Build.0 = Release|Any CPU
-		{96EFD7D4-C7A6-48D8-B426-DFE15CD5F472}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{96EFD7D4-C7A6-48D8-B426-DFE15CD5F472}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{96EFD7D4-C7A6-48D8-B426-DFE15CD5F472}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{96EFD7D4-C7A6-48D8-B426-DFE15CD5F472}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7FABC25D-6CD9-46CB-86D7-E38B38386065}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7FABC25D-6CD9-46CB-86D7-E38B38386065}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7FABC25D-6CD9-46CB-86D7-E38B38386065}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7FABC25D-6CD9-46CB-86D7-E38B38386065}.Release|Any CPU.Build.0 = Release|Any CPU
-		{F556ABBD-D12F-4964-AB5D-5BEB6E076EF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{F556ABBD-D12F-4964-AB5D-5BEB6E076EF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{F556ABBD-D12F-4964-AB5D-5BEB6E076EF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{F556ABBD-D12F-4964-AB5D-5BEB6E076EF3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F974D53C-6769-4711-979C-88E195775DDD}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F974D53C-6769-4711-979C-88E195775DDD}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F974D53C-6769-4711-979C-88E195775DDD}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F974D53C-6769-4711-979C-88E195775DDD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B182031C-38F4-441F-9E3C-DB4FD8A45405}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B182031C-38F4-441F-9E3C-DB4FD8A45405}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B182031C-38F4-441F-9E3C-DB4FD8A45405}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B182031C-38F4-441F-9E3C-DB4FD8A45405}.Release|Any CPU.Build.0 = Release|Any CPU
+		{052F5049-585D-457B-9618-CAF300BB36B1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{052F5049-585D-457B-9618-CAF300BB36B1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{052F5049-585D-457B-9618-CAF300BB36B1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{052F5049-585D-457B-9618-CAF300BB36B1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

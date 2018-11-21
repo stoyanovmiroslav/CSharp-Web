@@ -1,9 +1,9 @@
 ﻿using System.Diagnostics;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
-using Models;
-using Models.ViewModels.Home;
-using Services.Contracts;
+using Chushka.Models;
+using Chushka.Models.ViewModels.Home;
+using Chushka.Services.Contracts;
 
 namespace Chushka.Controllers
 {
