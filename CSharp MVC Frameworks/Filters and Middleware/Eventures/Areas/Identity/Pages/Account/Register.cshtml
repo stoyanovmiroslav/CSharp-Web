@@ -1,0 +1,61 @@
+﻿@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Register";
+}
+
+<div class="mx-auto w-50 text-center">
+    <h2>@ViewData["Title"]</h2>
+    <hr class="hr-eventures" />
+    <form asp-route-returnUrl="@Model.ReturnUrl" method="post">
+        <div asp-validation-summary="All" class="text-danger"></div>
+        <div class="d-flex justify-content-between">
+            <div class="form-group w-47">
+                <label asp-for="Input.Username"></label>
+                <input asp-for="Input.Username" class="form-control" placeholder="Username..." />
+                <span asp-validation-for="Input.Username" class="text-danger"></span>
+            </div>
+
+            <div class="form-group w-47">
+                <label asp-for="Input.Email"></label>
+                <input asp-for="Input.Email" class="form-control" placeholder="Email..." />
+                <span asp-validation-for="Input.Email" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="d-flex justify-content-between">
+            <div class="form-group w-47">
+                <label asp-for="Input.Password"></label>
+                <input asp-for="Input.Password" class="form-control" placeholder="Password..." />
+                <span asp-validation-for="Input.Password" class="text-danger"></span>
+            </div>
+            <div class="form-group w-47">
+                <label asp-for="Input.ConfirmPassword"></label>
+                <input asp-for="Input.ConfirmPassword" class="form-control" placeholder="ConfirmPassword..."/>
+                <span asp-validation-for="Input.ConfirmPassword" class="text-danger"></span>
+            </div>
+        </div>
+        <hr class="hr-eventures" />
+        <div class="d-flex justify-content-between">
+            <div class="form-group w-47">
+                <label asp-for="Input.FirstName"></label>
+                <input asp-for="Input.FirstName" class="form-control" placeholder="First Name..." />
+                <span asp-validation-for="Input.FirstName" class="text-danger"></span>
+            </div>
+            <div class="form-group w-47">
+                <label asp-for="Input.LastName"></label>
+                <input asp-for="Input.LastName" class="form-control" placeholder="Last Name..."/>
+                <span asp-validation-for="Input.LastName" class="text-danger"></span>
+            </div>
+        </div>
+        <div class="form-group">
+            <label asp-for="Input.UniqueCitizenNumber"></label>
+            <input asp-for="Input.UniqueCitizenNumber" class="form-control" placeholder="Universal Citizen Number..." />
+            <span asp-validation-for="Input.UniqueCitizenNumber" class="text-danger"></span>
+        </div>
+        <button type="submit" class="btn btn-default">Register</button>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

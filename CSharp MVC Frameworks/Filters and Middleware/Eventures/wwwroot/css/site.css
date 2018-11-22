@@ -1,0 +1,37 @@
+﻿.eventures-color {
+    background: #AFEEEE;
+}
+
+.nav.navbar-nav li a {
+        color: black;
+}
+
+a.navbar-brand {
+    color: black;
+}
+
+.eventures-color-black {
+    color: black;
+}
+
+.footer {
+    position: fixed;
+    left: 0;
+    bottom: 0;
+    width: 100%;
+    text-align: center;
+}
+
+.hr-eventures {
+    height: 2px;
+    background-color: #AFEEEE;
+}
+
+.hr-eventures-black {
+    height: 2px;
+    background-color: black;
+}
+
+.w-47{
+    width: 47%;
+}

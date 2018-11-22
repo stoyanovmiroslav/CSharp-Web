@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Eventures</title>
+    <link rel="stylesheet" type="text/css" href="~/css/reset-css.css">
+    <link rel="stylesheet" type="text/css" href="~/css/bootstrap.min.css">
+    <link rel="stylesheet" type="text/css" href="~/css/site.css">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg eventures-color">
+        <div class="container">
+            <a class="navbar-brand" asp-controller="Home" asp-action="Index">Eventures</a>
+            <div class="collapse navbar-collapse d-flex justify-content-between" id="navbarNav">
+                <ul class="nav navbar-nav">
+                    <li class="nav-item left-side">
+                        <a class="nav-link nav-link-white" asp-controller="Home" asp-action="Index">Home</a>
+                    </li>
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <li class="nav-item left-side">
+                            <div class="dropdown">
+                                <a href="#" class="nav-link dropdown-toggle" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Events</a>
+                                <div class="dropdown-menu" aria-labelledby="dropdownMenu">
+
+                                    <a class="dropdown-item" asp-controller="Events" asp-action="All">All Events</a>
+
+                                    @if (User.IsInRole("Admin"))
+                                    {
+                                        <a class="dropdown-item" asp-controller="Events" asp-action="Create">Create Event</a>
+                                    }
+                                </div>
+                            </div>
+                        </li>
+                    }
+                </ul>
+                <partial name="_LoginPartial" />
+            </div>
+    </nav>
+    <partial name="_CookieConsentPartial" />
+    <div class="container body-content">
+        @RenderBody()
+        <footer class="footer">
+            <div class="container eventures-color">
+                <div class="text-white p-2 text-center text-dark">
+                    &copy; CopyRight Sanity Web Design Studios 2018. All rights reserved.
+                </div>
+            </div>
+        </footer>
+    </div>
+    </div>
+    <script src="~/js/jquery-3.3.1.min.js" type="text/javascript"></script>
+    <script src="~/js/popper.min.js" type="text/javascript"></script>
+    <script src="~/js/bootstrap.min.js" type="text/javascript"></script>
+    @RenderSection("Scripts", required: false)
+</body>
+</html>

@@ -1,0 +1,25 @@
+﻿@{
+    ViewData["Title"] = "Home Page";
+}
+
+@if (User.Identity.IsAuthenticated)
+{
+<div class="jumbotron mt-3 text-center">
+    <h3>Welcome, @User.Identity.Name</h3>
+    <hr class="my-2 hr-eventures-black">
+    <h5 class="text-muted">Eventures wishes you an exciting experience.</h5>
+</div>
+}
+else
+{
+    <div class="jumbotron mt-3">
+        <h3>Edventures - The best tickets service in the world.</h3>
+        <hr class="my-2 hr-eventures-black">
+        <div>
+            <h4><a asp-area="Identity" asp-page="/Account/Login">Login</a> to start "eventing".</h4>
+        </div>
+        <div>
+            <h4><a asp-area="Identity" asp-page="/Account/Rgister">Register</a> if you don't hava a account.</h4>
+        </div>
+    </div>
+}
