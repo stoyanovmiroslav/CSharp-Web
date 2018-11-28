@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Eventures.Data.Migrations
 {
     [DbContext(typeof(EventuresDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    partial class EventuresDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)
         {
@@ -96,6 +96,28 @@ namespace Eventures.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
+                });
+
+            modelBuilder.Entity("Eventures.Models.Order", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("CustomerId");
+
+                    b.Property<string>("EventId");
+
+                    b.Property<DateTime>("OrderedOn");
+
+                    b.Property<int>("TicketsCount");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("EventId");
+
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -206,6 +228,17 @@ namespace Eventures.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("Eventures.Models.Order", b =>
+                {
+                    b.HasOne("Eventures.Models.EventuresUser", "Customer")
+                        .WithMany("Orders")
+                        .HasForeignKey("CustomerId");
+
+                    b.HasOne("Eventures.Models.Event", "Event")
+                        .WithMany("Orders")
+                        .HasForeignKey("EventId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

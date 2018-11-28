@@ -5,6 +5,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.AspNetCore.Identity" Version="2.1.6" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Eventures.Data\Eventures.Data.csproj" />
   </ItemGroup>
 

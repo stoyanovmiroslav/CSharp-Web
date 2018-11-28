@@ -10,8 +10,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Eventures.Data.Migrations
 {
     [DbContext(typeof(EventuresDbContext))]
-    [Migration("20181121100702_InitialModels")]
-    partial class InitialModels
+    [Migration("20181128112856_OrderForeignKey")]
+    partial class OrderForeignKey
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -20,6 +20,28 @@ namespace Eventures.Data.Migrations
                 .HasAnnotation("ProductVersion", "2.1.4-rtm-31024")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128)
                 .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+
+            modelBuilder.Entity("Eventures.Models.Event", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<DateTime>("End");
+
+                    b.Property<string>("Name");
+
+                    b.Property<string>("Place");
+
+                    b.Property<decimal>("PricePerTicket");
+
+                    b.Property<DateTime>("Start");
+
+                    b.Property<int>("TotalTickets");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Events");
+                });
 
             modelBuilder.Entity("Eventures.Models.EventuresUser", b =>
                 {
@@ -76,6 +98,28 @@ namespace Eventures.Data.Migrations
                         .HasFilter("[NormalizedUserName] IS NOT NULL");
 
                     b.ToTable("AspNetUsers");
+                });
+
+            modelBuilder.Entity("Eventures.Models.Order", b =>
+                {
+                    b.Property<string>("Id")
+                        .ValueGeneratedOnAdd();
+
+                    b.Property<string>("CustomerId");
+
+                    b.Property<string>("EventId");
+
+                    b.Property<DateTime>("OrderedOn");
+
+                    b.Property<int>("TicketsCount");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CustomerId");
+
+                    b.HasIndex("EventId");
+
+                    b.ToTable("Orders");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -186,6 +230,17 @@ namespace Eventures.Data.Migrations
                     b.HasKey("UserId", "LoginProvider", "Name");
 
                     b.ToTable("AspNetUserTokens");
+                });
+
+            modelBuilder.Entity("Eventures.Models.Order", b =>
+                {
+                    b.HasOne("Eventures.Models.EventuresUser", "Customer")
+                        .WithMany("Orders")
+                        .HasForeignKey("CustomerId");
+
+                    b.HasOne("Eventures.Models.Event", "Event")
+                        .WithMany("Orders")
+                        .HasForeignKey("EventId");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

@@ -1,5 +1,6 @@
 ﻿using Eventures.Models;
 using Eventures.Models.BindingModels;
+using System.Collections.Generic;
 
 namespace Eventures.Services.Contracts
 {
@@ -7,6 +8,6 @@ namespace Eventures.Services.Contracts
     {
         void Create(CreateEvetBindingModel model);
 
-        Event[] GetAllEvents();
+        IList<Event> GetAllEvents();
     }
 }

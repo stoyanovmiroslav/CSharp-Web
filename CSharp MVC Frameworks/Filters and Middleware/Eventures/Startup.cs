@@ -56,6 +56,7 @@ namespace Eventures
             services.AddScoped<UserManager<EventuresUser>>();
             services.AddScoped<IEventService, EventService>();
             services.AddScoped<ILogger, FileLogger>();
+            services.AddScoped<IOrderService, OrderService>();
             services.AddScoped<LoggerActionFilter>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);

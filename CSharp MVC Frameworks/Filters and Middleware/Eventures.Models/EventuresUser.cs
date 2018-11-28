@@ -13,6 +13,6 @@ namespace Eventures.Models
 
         public string UniqueCitizenNumber { get; set; }
 
-        // Roles -> User, Admin
+        public virtual ICollection<Order> Orders { get; set; }
     }
 }

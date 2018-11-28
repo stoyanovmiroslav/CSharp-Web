@@ -2,6 +2,7 @@
 using Eventures.Models;
 using Eventures.Models.BindingModels;
 using Eventures.Services.Contracts;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Eventures.Services
@@ -31,9 +32,9 @@ namespace Eventures.Services
             this.db.SaveChanges();
         }
 
-        public Event[] GetAllEvents()
+        public IList<Event> GetAllEvents()
         {
-           return  this.db.Events.ToArray();
+           return this.db.Events.ToList();
         }
     }
 }

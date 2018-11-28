@@ -1,7 +1,7 @@
 ﻿@model EventViewModel[]
 
 @{
-    ViewData["Title"] = "All";
+    ViewData["Title"] = "All Events";
 }
 
 <h1 class="text-center text-torshia">All Events</h1>
@@ -9,23 +9,35 @@
     <thead>
         <tr class="row">
             <th class="col-md-1">#</th>
-            <th class="col-md-3">Name</th>
-            <th class="col-md-3">Start</th>
-            <th class="col-md-3">End</th>
-            <th class="col-md-2">Place</th>
+            <th class="col-md-2">Name</th>
+            <th class="col-md-2">Start</th>
+            <th class="col-md-2">End</th>
+            <th class="col-md-5">Action</th>
         </tr>
     </thead>
     <tbody>
-        @for (var i = 0; i < Model.Length; i++)
-            {
-                int count = i + 1;
-                <tr class="row">
-                    <th class="col-md-1">@count</th>
-                    <td class="col-md-3">@Model[i].Name</td>
-                    <td class="col-md-3">@Model[i].Start</td>
-                    <td class="col-md-3">@Model[i].End</td>
-                    <td class="col-md-2">@Model[i].Place</td>
-                </tr>
-            }
+        @{int row = 0;}
+        @foreach (var eventViewModel in Model)
+        {
+            row++;
+            <tr class="row">
+                <th class="col-md-1">@row</th>
+                <td class="col-md-2">@eventViewModel.Name</td>
+                <td class="col-md-2">@eventViewModel.Start</td>
+                <td class="col-md-2">@eventViewModel.End</td>
+                <td class="col-md-5">
+                    <form class="form-inline" asp-controller="Orders" asp-action="Create" asp-route-id="@eventViewModel.Id" method="post">
+                        <div class="form-group">
+                            <label asp-for="@eventViewModel.TicketsCount"></label>
+                            <input asp-for="@eventViewModel.TicketsCount" name="TicketsCount" class="form-control ml-1" placeholder="Tickets..." />
+                            <span asp-validation-for="@eventViewModel.TicketsCount" class="text-danger"></span>
+                        </div>
+                        <div class="form-group ml-1">
+                            <button type="submit" class="btn btn-default">Order</button>
+                        </div>
+                    </form>
+                </td>
+            </tr>
+        }
     </tbody>
 </table>

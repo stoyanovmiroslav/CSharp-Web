@@ -1,0 +1,29 @@
+﻿@model IList<AllOrderViewModel>
+@{
+    ViewData["Title"] = "All Orders";
+}
+
+<h1 class="text-center text-torshia">All Orders</h1>
+<table class="table mx-auto">
+    <thead>
+        <tr class="row">
+            <th class="col-md-1">#</th>
+            <th class="col-md-4">Event</th>
+            <th class="col-md-3">Customer</th>
+            <th class="col-md-4">Ordered On</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{int row = 0;}
+        @foreach (var eventViewModel in Model)
+        {
+            row++;
+            <tr class="row">
+                <th class="col-md-1">@row</th>
+                <td class="col-md-4">@eventViewModel.Event</td>
+                <td class="col-md-3">@eventViewModel.Customer</td>
+                <td class="col-md-4">@eventViewModel.OrderedOn</td>
+            </tr>
+        }
+    </tbody>
+</table>

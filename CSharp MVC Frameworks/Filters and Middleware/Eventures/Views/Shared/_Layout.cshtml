@@ -19,24 +19,12 @@
                     </li>
                     @if (User.Identity.IsAuthenticated)
                     {
-                        <li class="nav-item left-side">
-                            <div class="dropdown">
-                                <a href="#" class="nav-link dropdown-toggle" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Events</a>
-                                <div class="dropdown-menu" aria-labelledby="dropdownMenu">
-
-                                    <a class="dropdown-item" asp-controller="Events" asp-action="All">All Events</a>
-
-                                    @if (User.IsInRole("Admin"))
-                                    {
-                                        <a class="dropdown-item" asp-controller="Events" asp-action="Create">Create Event</a>
-                                    }
-                                </div>
-                            </div>
-                        </li>
+                        <partial name="_NavbarAuthenticatedUserPartial" />
                     }
                 </ul>
                 <partial name="_LoginPartial" />
             </div>
+        </div>
     </nav>
     <partial name="_CookieConsentPartial" />
     <div class="container body-content">
