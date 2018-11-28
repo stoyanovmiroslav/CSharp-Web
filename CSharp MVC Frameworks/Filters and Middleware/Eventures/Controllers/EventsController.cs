@@ -32,13 +32,13 @@ namespace Eventures.Controllers
             var oreders = this.orderService.GetMyOrders(username);
 
             var evetsViewModel = oreders.Select(x => new EventViewModel
-            {
-                Name = x.Event.Name,
-                Start = x.Event.Start.ToString(),
-                End = x.Event.End.ToString(),
-                Place = x.Event.Place,
-                TicketsCount = x.TicketsCount
-            }).ToArray();
+                                                {
+                                                    Name = x.Event.Name,
+                                                    Start = x.Event.Start.ToString(),
+                                                    End = x.Event.End.ToString(),
+                                                    Place = x.Event.Place,
+                                                    TicketsCount = x.TicketsCount
+                                                }).ToArray();
 
             return View(evetsViewModel);
         }

@@ -53,6 +53,7 @@ namespace Eventures
               .AddDefaultUI()
               .AddEntityFrameworkStores<EventuresDbContext>();
 
+
             services.AddAuthentication().AddFacebook(facebookOptions =>
             {
                 facebookOptions.AppId = Configuration["Authentication:Facebook:AppId"];
