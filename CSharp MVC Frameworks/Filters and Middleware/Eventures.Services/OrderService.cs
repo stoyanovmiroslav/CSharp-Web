@@ -28,11 +28,18 @@ namespace Eventures.Services
                 return;
             }
 
-            var eventa = this.db.Events.FirstOrDefault(x => x.Id == eventId);
+            var currentEvent = this.db.Events.FirstOrDefault(x => x.Id == eventId);
+
+            if (currentEvent.TotalTickets < ticketsCount)
+            {
+                return;
+            }
+
+            currentEvent.TotalTickets -= ticketsCount;
 
             var order = new Order
             {
-                Event = eventa,
+                Event = currentEvent,
                 CustomerId = user.Id,
                 OrderedOn = DateTime.UtcNow,
                 TicketsCount = ticketsCount,

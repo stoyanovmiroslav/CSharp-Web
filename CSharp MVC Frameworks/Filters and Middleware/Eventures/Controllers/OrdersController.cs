@@ -14,15 +14,26 @@ namespace Eventures.Controllers
     public class OrdersController : Controller
     {
         private IOrderService ordereService;
+        private IEventService eventService;
 
-        public OrdersController(IOrderService ordereService)
+        public OrdersController(IOrderService ordereService, IEventService eventService)
         {
             this.ordereService = ordereService;
+            this.eventService = eventService;
         }
+
         public IActionResult Create(string id, int ticketsCount)
         {
-            var username = this.User.Identity.Name;
+            int availableTickets = eventService.GetAvailableTickets(id);
 
+            if (availableTickets < ticketsCount)
+            {
+                this.TempData["error"] = $"Sorry! We have only {availableTickets} tickets left for this event!";
+
+                return RedirectToAction("All", "Events");
+            }
+
+            var username = this.User.Identity.Name;
             this.ordereService.CreateOrder(id, ticketsCount, username);
 
             return RedirectToAction("My", "Events");
@@ -36,11 +47,11 @@ namespace Eventures.Controllers
             var orders = this.ordereService.GetAllOrders();
 
             var viewModel = orders.Select(x => new AllOrderViewModel
-                                            {
-                                                Customer = x.Customer.UserName,
-                                                Event = x.Event.Name,
-                                                OrderedOn = x.OrderedOn.ToString()
-                                            }).ToList();
+            {
+                Customer = x.Customer.UserName,
+                Event = x.Event.Name,
+                OrderedOn = x.OrderedOn.ToString()
+            }).ToList();
 
             return View(viewModel);
         }

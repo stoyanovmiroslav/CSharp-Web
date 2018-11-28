@@ -46,7 +46,12 @@ namespace Eventures.Controllers
         [Authorize]
         public IActionResult All()
         {
-            var events = this.eventService.GetAllEvents();
+            if (this.TempData.ContainsKey("error"))
+            {
+                ModelState.AddModelError(string.Empty, (string)this.TempData["error"]);
+            }
+
+            var events = this.eventService.GetAllAvailableEvents();
 
             var evetsViewModel = events.Select(x => new EventViewModel
                                                {

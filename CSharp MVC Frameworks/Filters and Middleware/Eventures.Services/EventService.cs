@@ -2,6 +2,7 @@
 using Eventures.Models;
 using Eventures.Models.BindingModels;
 using Eventures.Services.Contracts;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -32,9 +33,26 @@ namespace Eventures.Services
             this.db.SaveChanges();
         }
 
-        public IList<Event> GetAllEvents()
+        public IList<Event> GetAllAvailableEvents()
         {
-           return this.db.Events.ToList();
+           return this.db.Events.Where(x => x.TotalTickets > 0).ToList();
+        }
+
+        public int GetAvailableTickets(string id)
+        {
+            var @event = this.GetEventById(id);
+
+            if (@event == null)
+            {
+                return 0;
+            }
+
+            return @event.TotalTickets;
+        }
+
+        private Event GetEventById(string id)
+        {
+            return this.db.Events.FirstOrDefault(x => x.Id == id);
         }
     }
 }

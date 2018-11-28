@@ -15,7 +15,8 @@ namespace Eventures.Models.ViewModel
         public string End { get; set; }
 
         [Display(Name = "Tickets")]
-        [Range(0, 20)]
+        [Required]
+        [Range(0, 20, ErrorMessage = "You can order up to 20 {0}")]
         public int TicketsCount { get; set; }
     }
 }

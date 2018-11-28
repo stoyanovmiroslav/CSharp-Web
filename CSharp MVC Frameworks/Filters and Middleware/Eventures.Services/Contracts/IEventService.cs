@@ -8,6 +8,8 @@ namespace Eventures.Services.Contracts
     {
         void Create(CreateEvetBindingModel model);
 
-        IList<Event> GetAllEvents();
+        IList<Event> GetAllAvailableEvents();
+
+        int GetAvailableTickets(string id);
     }
 }
