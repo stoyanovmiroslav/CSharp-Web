@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.VisualStudio.Web.CodeGeneration;
 using System.Linq;
 using Eventures.Filters;
+using AutoMapper;
+using Eventures.Models;
+using System.Collections.Generic;
 
 namespace Eventures.Controllers
 {
@@ -14,14 +17,15 @@ namespace Eventures.Controllers
         private IEventService eventService;
         private IOrderService orderService;
         private ILogger logger;
+        private IMapper autoMapper;
 
-        public EventsController(IEventService eventService, 
-                                IOrderService orderService,
-                                ILogger logger)
+        public EventsController(IEventService eventService, IOrderService orderService,
+                                ILogger logger, IMapper mapper)
         {
             this.eventService = eventService;
             this.logger = logger;
             this.orderService = orderService;
+            this.autoMapper = mapper;
         }
 
         [Authorize]
@@ -29,16 +33,8 @@ namespace Eventures.Controllers
         {
             var username = this.User.Identity.Name;
 
-            var oreders = this.orderService.GetMyOrders(username);
-
-            var evetsViewModel = oreders.Select(x => new EventViewModel
-                                                {
-                                                    Name = x.Event.Name,
-                                                    Start = x.Event.Start.ToString(),
-                                                    End = x.Event.End.ToString(),
-                                                    Place = x.Event.Place,
-                                                    TicketsCount = x.TicketsCount
-                                                }).ToArray();
+            var orders = this.orderService.GetMyOrders(username);
+            var evetsViewModel = autoMapper.Map<IList<Order>, IList<OrderEventViewModel>>(orders);
 
             return View(evetsViewModel);
         }
@@ -52,15 +48,7 @@ namespace Eventures.Controllers
             }
 
             var events = this.eventService.GetAllAvailableEvents();
-
-            var evetsViewModel = events.Select(x => new EventViewModel
-                                               {
-                                                  Id = x.Id,
-                                                  Name = x.Name,
-                                                  Start = x.Start.ToString(),
-                                                  End = x.End.ToString(),
-                                                  Place = x.Place,
-                                               }).ToArray();
+            var evetsViewModel = autoMapper.Map<IList<Event>, IList<EventViewModel>>(events);
 
             return View(evetsViewModel);
         }

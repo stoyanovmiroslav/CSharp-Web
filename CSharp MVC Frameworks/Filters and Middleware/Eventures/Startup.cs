@@ -14,6 +14,8 @@ using Microsoft.VisualStudio.Web.CodeGeneration;
 using Eventures.Middlewares;
 using Eventures.Loggers;
 using Eventures.Filters;
+using AutoMapper;
+using Eventures.MappingConfiguration;
 
 namespace Eventures
 {
@@ -58,6 +60,10 @@ namespace Eventures
             {
                 facebookOptions.AppId = Configuration["Authentication:Facebook:AppId"];
                 facebookOptions.AppSecret = Configuration["Authentication:Facebook:AppSecret"];
+            });
+
+            services.AddAutoMapper(cfg => {
+                cfg.AddProfile<EventuresProfile>();
             });
 
             services.AddScoped<UserManager<EventuresUser>>();

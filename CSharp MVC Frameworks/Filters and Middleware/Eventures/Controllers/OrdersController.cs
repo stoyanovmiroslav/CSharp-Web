@@ -1,25 +1,25 @@
-﻿using Eventures.Models;
+﻿using AutoMapper;
+using Eventures.Models;
 using Eventures.Models.ViewModel;
 using Eventures.Services.Contracts;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace Eventures.Controllers
 {
     [Authorize]
     public class OrdersController : Controller
     {
-        private IOrderService ordereService;
-        private IEventService eventService;
+        private readonly IOrderService ordereService;
+        private readonly IEventService eventService;
+        private readonly IMapper mapper;
 
-        public OrdersController(IOrderService ordereService, IEventService eventService)
+        public OrdersController(IOrderService ordereService, IEventService eventService, IMapper mapper)
         {
             this.ordereService = ordereService;
             this.eventService = eventService;
+            this.mapper = mapper;
         }
 
         public IActionResult Create(string id, int ticketsCount)
@@ -45,13 +45,7 @@ namespace Eventures.Controllers
             var username = this.User.Identity.Name;
 
             var orders = this.ordereService.GetAllOrders();
-
-            var viewModel = orders.Select(x => new AllOrderViewModel
-            {
-                Customer = x.Customer.UserName,
-                Event = x.Event.Name,
-                OrderedOn = x.OrderedOn.ToString()
-            }).ToList();
+            var viewModel = mapper.Map<IList<Order>, IList<AllOrderViewModel>>(orders);
 
             return View(viewModel);
         }

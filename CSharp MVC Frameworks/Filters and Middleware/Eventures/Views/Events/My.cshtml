@@ -1,4 +1,4 @@
-﻿@model EventViewModel[]
+﻿@model IList<OrderEventViewModel>
 
 @{
     ViewData["Title"] = "My";
@@ -17,14 +17,14 @@
     </thead>
     <tbody>
         @{int row = 0;}
-        @for (var i = 0; i < Model.Length; i++)
+        @for (var i = 0; i < Model.Count(); i++)
         {
             row++;
             <tr class="row">
                 <th class="col-md-1">@row</th>
-                <td class="col-md-3">@Model[i].Name</td>
-                <td class="col-md-3">@Model[i].Start</td>
-                <td class="col-md-3">@Model[i].End</td>
+                <td class="col-md-3">@Model[i].EventName</td>
+                <td class="col-md-3">@Model[i].EventStart</td>
+                <td class="col-md-3">@Model[i].EventEnd</td>
                 <td class="col-md-2">@Model[i].TicketsCount</td>
             </tr>
         }
