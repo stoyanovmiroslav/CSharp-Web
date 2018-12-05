@@ -1,0 +1,63 @@
+﻿@using X.PagedList.Mvc.Core;
+@using X.PagedList.Mvc.Common;
+@using X.PagedList;
+
+@model IPagedList<EventViewModel>
+
+@{
+    ViewData["Title"] = "All Events";
+}
+
+<h1 class="text-center text-torshia">All Events</h1>
+<div asp-validation-summary="All" class="text-danger"></div>
+<table class="table mx-auto">
+    <thead>
+        <tr class="row">
+            <th class="col-md-1">#</th>
+            <th class="col-md-2">Name</th>
+            <th class="col-md-2">Start</th>
+            <th class="col-md-2">End</th>
+            <th class="col-md-5">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{int row = 0;}
+
+        @foreach (var eventViewModel in Model)
+        {
+            row++;
+            <tr class="row">
+                <th class="col-md-1">@row</th>
+                <td class="col-md-2">@eventViewModel.Name</td>
+                <td class="col-md-2">@eventViewModel.Start</td>
+                <td class="col-md-2">@eventViewModel.End</td>
+                <td class="col-md-5">
+                    <form class="form-inline" asp-controller="Orders" asp-action="Create" asp-route-id="@eventViewModel.Id" method="post">
+                        <div class="form-group">
+                            <label asp-for="@eventViewModel.TicketsCount"></label>
+                            <input asp-for="@eventViewModel.TicketsCount" min="1" max="20" name="TicketsCount" class="form-control ml-1" placeholder="Tickets..." />
+                            <span asp-validation-for="@eventViewModel.TicketsCount" class="text-danger"></span>
+                        </div>
+                        <div class="form-group ml-1">
+                            <button type="submit" class="btn btn-default">Order</button>
+                        </div>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<div class="mt-3 d-flex justify-content-around">
+    @Html.PagedListPager((IPagedList)Model, page => Url.Action("All",
+                                            new { page = page }),
+                                            new PagedListRenderOptions
+                                            {
+                                                LiElementClasses = new string[] { "page-item" },
+                                                PageClasses = new string[] { "page-link" }
+                                            })
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

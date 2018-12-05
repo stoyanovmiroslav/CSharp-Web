@@ -1,0 +1,30 @@
+<li class="nav-item left-side">
+    <div class="dropdown">
+        <a asp-action="" class="nav-link dropdown-toggle" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Events</a>
+        <div class="dropdown-menu" aria-labelledby="dropdownMenu">
+            <a class="dropdown-item" asp-controller="Events" asp-action="All">All Events</a>
+            <a class="dropdown-item" asp-controller="Events" asp-action="My">My Events</a>
+            @if (User.IsInRole("Admin"))
+            {
+                <a class="dropdown-item" asp-controller="Events" asp-action="Create">Create Event</a>
+            }
+        </div>
+    </div>
+</li>
+@if (User.IsInRole("Admin"))
+{
+    <li class="nav-item left-side">
+        <div class="dropdown">
+            <a asp-action="" class="nav-link dropdown-toggle" id="dropdownMenu" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Orders</a>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenu">
+                <a class="dropdown-item" asp-controller="Orders" asp-action="All">All Orders</a>
+            </div>
+        </div>
+    </li>
+}
+@if (User.IsInRole("Admin"))
+{
+    <li class="nav-item left-side">
+        <a class="nav-link nav-link-white" asp-controller="Admin" asp-action="ChangeRole">Admin panel</a>
+    </li>
+}

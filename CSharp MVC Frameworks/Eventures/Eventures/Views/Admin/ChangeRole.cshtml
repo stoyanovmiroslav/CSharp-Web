@@ -1,0 +1,54 @@
+﻿@using X.PagedList.Mvc.Core;
+@using X.PagedList.Mvc.Common;
+@using X.PagedList;
+
+@model IList<AdminUserViewModel>
+
+@{
+    ViewData["Title"] = "Change Role";
+}
+
+<h1 class="text-center text-torshia">All Users</h1>
+
+<table class="table mx-auto">
+    <thead>
+        <tr class="row">
+            <th class="col-md-1">#</th>
+            <th class="col-md-4">Username</th>
+            <th class="col-md-4">Roles</th>
+            <th class="col-md-3">Action</th>
+        </tr>
+    </thead>
+    <tbody>
+        @{int row = 0;}
+
+        @foreach (var user in Model)
+        {
+            row++;
+            <tr class="row">
+                <th class="col-md-1">@row</th>
+                <td class="col-md-4">@user.Username</td>
+                <td class="col-md-4">
+                    @foreach (var userRole in user?.UserRoles)
+                    {
+                       <p>@userRole.RoleName</p>
+                    }
+                </td>
+                <td class="col-md-3">
+                    @if (user.UserRoles.Any(x => x.RoleName == "Admin"))
+                    {
+                        <a asp-controller="Admin" asp-action="Demote" asp-route-id="@user.Id" class="btn btn-primary">Demote</a>
+                    }
+                    else
+                    {
+                        <a asp-controller="Admin" asp-action="Promote" asp-route-id="@user.Id" class="btn btn-primary">Promote</a>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
